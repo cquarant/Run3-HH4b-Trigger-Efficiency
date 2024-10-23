@@ -1,0 +1,29 @@
+BDTG                     : Ranking result (top variable is best ranked)
+                         : ------------------------------------------------------------------------
+                         : Rank : Variable                               : Variable Importance
+                         : ------------------------------------------------------------------------
+                         :    1 : T_nBTaggedJets                         : 1.002e-01
+                         :    2 : T_fatJet1_particleNetWithMass_HbbvsQCD : 7.408e-02
+                         :    3 : T_fatJet1_particleNet_QCD1HF           : 5.972e-02
+                         :    4 : T_fatJet1_msoftdrop                    : 5.635e-02
+                         :    5 : T_fatJet1_particleNet_QCD2HF           : 5.524e-02
+                         :    6 : T_fatJet2_subJets_alpha                : 4.861e-02
+                         :    7 : T_FJ1_PtOverMFJ12                      : 4.820e-02
+                         :    8 : T_alpha_FJ12                           : 4.561e-02
+                         :    9 : T_fatJet1_Tau3OverTau2                 : 4.264e-02
+                         :   10 : T_NJets                                : 4.149e-02
+                         :   11 : T_FJ2_PtOverMFJ12                      : 4.120e-02
+                         :   12 : T_etaFJ12                              : 4.003e-02
+                         :   13 : T_MET                                  : 3.940e-02
+                         :   14 : T_fatJet2_Tau3OverTau2                 : 3.920e-02
+                         :   15 : T_fatJet1_subJets_alpha                : 3.891e-02
+                         :   16 : T_fatJet1_particleNet_XbbVsQCD         : 3.765e-02
+                         :   17 : T_ptFJ12                               : 3.627e-02
+                         :   18 : T_fatJet1_eta                          : 3.579e-02
+                         :   19 : T_fatJet1_pt                           : 2.964e-02
+                         :   20 : T_fatJet1_particleNet_QCD              : 2.582e-02
+                         :   21 : T_ptFJ1OverptFJ2                       : 2.540e-02
+                         :   22 : T_massFJ12                             : 2.421e-02
+                         :   23 : T_fatJet2_pt                           : 1.429e-02
+                         :   24 : T_fatJet1_particleNet_QCD0HF           : 0.000e+00
+                         : ------------------------------------------------------------------------

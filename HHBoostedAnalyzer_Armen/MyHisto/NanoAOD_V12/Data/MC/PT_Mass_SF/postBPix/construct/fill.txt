@@ -1,0 +1,34 @@
+   double PU_weight=PU_Rew[(int)npu];
+   weight = weight*PU_weight;
+
+// ********************************************************** Fill Histograms
+
+ _FatJet1_pt  ->Fill(FatJet1_pt,weight);
+ _FatJet1_eta ->Fill(FatJet1_eta,weight);
+ _FatJet1_phi ->Fill(FatJet1_phi,weight);
+ _FatJet1_eta_phi ->Fill(FatJet1_eta, FatJet1_phi,weight);
+ _FatJet1_Mass ->Fill(FatJet1_Mass,weight);
+ _FatJet1_MassSD ->Fill(FatJet1_MassSD,weight);
+ _FatJet1_Pt_Mass  -> Fill(FatJet1_pt,FatJet1_MassSD,weight);
+
+ _FatJet2_pt  ->Fill(FatJet2_pt,weight);
+ _FatJet2_eta ->Fill(FatJet2_eta,weight);
+ _FatJet2_phi ->Fill(FatJet2_phi,weight);
+ _FatJet2_eta_phi ->Fill(FatJet2_eta, FatJet2_phi,weight);
+ _FatJet2_Mass ->Fill(FatJet2_Mass,weight);
+ _FatJet2_MassSD ->Fill(FatJet2_MassSD,weight);
+ _FatJet2_Pt_Mass  -> Fill(FatJet2_pt,FatJet2_MassSD,weight);
+ _FatJet2_Pt_MassN  -> Fill(FatJet2_pt,FatJet2_MassSD,weight);
+
+  if(Probe_Matched)
+  {
+   _FatJet2_Pt_Mass_M  -> Fill(FatJet2_pt,FatJet2_MassSD,weight);
+   _FatJet2_Pt_MassN_M  -> Fill(FatJet2_pt,FatJet2_MassSD,weight);
+  }
+
+
+ } // end event loop
+
+f->Write();
+
+}

@@ -1,0 +1,63 @@
+   double PU_weight=PU_Rew[(int)npu];
+//   cout<<npu<<"           "<<PU_weight<<endl;
+   weight = weight*PU_weight;
+
+// ********************************************************** Fill Histograms
+ if(sqrt ( pow(lep1_Eta - FatJet1_eta,2) + pow(phi_dist(lep1_Phi,FatJet1_phi),2) ) <=2.0) continue;
+// if (MET < 100) continue;
+// if (FatJet1Tau3OverTau2 > 0.46) continue;
+// if (FatJet1_MassSD <140) continue;
+
+ _FatJet1_pt  ->Fill(FatJet1_pt,weight);
+ _FatJet1_eta ->Fill(FatJet1_eta,weight);
+ _FatJet1_phi ->Fill(FatJet1_phi,weight);
+ _FatJet1_eta_phi ->Fill(FatJet1_eta, FatJet1_phi, weight);
+ _FatJet1_Mass ->Fill(FatJet1_Mass,weight);
+ _FatJet1_MassSD ->Fill(FatJet1_MassSD,weight);
+ _FatJet1DDBTaggerV2 ->Fill(FatJet1DDBTaggerV2,weight);
+ _FatJet1PNetMD_QCD ->Fill(FatJet1PNetMD_QCD,weight);
+ _FatJet1PNetMD_Xbb ->Fill(FatJet1PNetMD_Xbb,weight);
+ _FatJet1PNetMD_Xcc ->Fill(FatJet1PNetMD_Xcc,weight);
+ _FatJet1PNetMD_Xqq ->Fill(FatJet1PNetMD_Xqq,weight);
+ _FatJet1PNetHbbvsQCD ->Fill(FatJet1PNetHbbvsQCD,weight);
+ _FatJet1PNet_QCD ->Fill(FatJet1PNet_QCD,weight);
+ _FatJet1PNet_TvsQCD ->Fill(FatJet1PNet_TvsQCD,weight);
+ _FatJet1PNet_WvsQCD ->Fill(FatJet1PNet_WvsQCD,weight);
+ _FatJet1PNet_ZvsQCD ->Fill(FatJet1PNet_ZvsQCD,weight);
+  double FatJet1PNetMD_Xbb_Modified_as_in_AN_Xbb = FatJet1PNetMD_Xbb/(1 - FatJet1PNetMD_Xcc - FatJet1PNetMD_Xqq);
+ _FatJet1PNetMD_Xbb_Modified_as_in_AN_Xbb->Fill(FatJet1PNetMD_Xbb_Modified_as_in_AN_Xbb,weight);
+ _FatJet1PNet_mass ->Fill(FatJet1PNet_mass,weight);
+ _FatJet1_Tau3OverTau2 ->Fill(FatJet1Tau3OverTau2,weight);
+
+//  if(HLT_IsoMu50_AK8PFJet230_SoftDropMass40)
+  if(HLT_AK8PFJet230_SoftDropMass40)
+  {
+     _FatJet2_pt  ->Fill(FatJet1_pt,weight);
+     _FatJet2_eta ->Fill(FatJet1_eta,weight);
+     _FatJet2_phi ->Fill(FatJet1_phi,weight);
+     _FatJet2_eta_phi ->Fill(FatJet1_eta, FatJet1_phi, weight);
+     _FatJet2_Mass ->Fill(FatJet1_Mass,weight);
+     _FatJet2_MassSD ->Fill(FatJet1_MassSD,weight);
+     _FatJet2DDBTaggerV2 ->Fill(FatJet1DDBTaggerV2,weight);
+     _FatJet2PNetMD_QCD ->Fill(FatJet1PNetMD_QCD,weight);
+     _FatJet2PNetMD_Xbb ->Fill(FatJet1PNetMD_Xbb,weight);
+     _FatJet2PNetMD_Xcc ->Fill(FatJet1PNetMD_Xcc,weight);
+     _FatJet2PNetMD_Xqq ->Fill(FatJet1PNetMD_Xqq,weight);
+     _FatJet2PNetHbbvsQCD ->Fill(FatJet1PNetHbbvsQCD,weight);
+     _FatJet2PNet_QCD ->Fill(FatJet1PNet_QCD,weight);
+     _FatJet2PNet_TvsQCD ->Fill(FatJet1PNet_TvsQCD,weight);
+     _FatJet2PNet_WvsQCD ->Fill(FatJet1PNet_WvsQCD,weight);
+     _FatJet2PNet_ZvsQCD ->Fill(FatJet1PNet_ZvsQCD,weight);
+      double FatJet2PNetMD_Xbb_Modified_as_in_AN_Xbb = FatJet2PNetMD_Xbb/(1 - FatJet2PNetMD_Xcc - FatJet2PNetMD_Xqq);
+     _FatJet2PNetMD_Xbb_Modified_as_in_AN_Xbb->Fill(FatJet1PNetMD_Xbb_Modified_as_in_AN_Xbb,weight);
+     _FatJet2PNet_mass ->Fill(FatJet1PNet_mass,weight);
+     _FatJet2_Tau3OverTau2 ->Fill(FatJet1Tau3OverTau2,weight);
+   }
+
+ _MET -> Fill(MET,weight);
+
+ } // end event loop
+
+f->Write();
+
+}

@@ -1,0 +1,37 @@
+   double PU_weight=PU_Rew[(int)npu];
+   if (PU_weight<20.0)
+      weight = weight*PU_weight;
+
+// ********************************************************** Fill Histograms
+
+  T_weight = weight;
+  T_fatJet1_pt = FatJet1_pt;
+  T_fatJet1_eta = FatJet1_eta;
+  T_fatJet1_phi = FatJet1_phi;
+  T_fatJet1_msoftdrop = FatJet1_MassSD;
+  T_fatJet1_particleNet_XbbVsQCD = FatJet1PNetMD_Xbb;
+  T_fatJet1_Tau3OverTau2 = FatJet1_Tau3OverTau2;
+  T_fatJet1_particleNet_Xbb_Legacy = FatJet1PNetMD_Xbb_Legacy;
+  double FatJet1PNetMD_Xbb_Legacy_AN = FatJet1PNetMD_Xbb_Legacy/(FatJet1PNetMD_Xbb_Legacy + FatJet1PNetMD_QCD_Legacy);
+  T_fatJet1_particleNet_Xbb_Legacy_AN = FatJet1PNetMD_Xbb_Legacy_AN;
+  T_fatJet2_pt = FatJet2_pt;
+  T_fatJet2_eta = FatJet2_eta;
+  T_fatJet2_msoftdrop = FatJet2_MassSD;
+
+  T_MET      = MET;
+  T_Lep1_Pt  = lep1_Pt;
+  T_Lep1_Eta = lep1_Eta;
+  T_Lep1_Phi = lep1_Phi;
+  T_Dr_LFJ   = Dr_LFJ;
+  T_Dr_J1FJ  = Dr_JFJ_Max;
+  T_Dr_J2FJ  = Dr_JFJ_Min;
+  T_Dr_JmaxL = Dr_JmaxL;
+
+  outputTree->Fill();
+
+ } // end event loop
+
+f->Write();
+
+}
+

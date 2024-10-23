@@ -1,0 +1,47 @@
+#include "TStyle.h"
+#include "TGaxis.h"
+#include "TRandom.h"
+#include "TFile.h"
+#include "TTree.h"
+#include <iostream>
+#include <math.h>
+#include <TF1.h>
+#include <TF2.h>
+#include <TH1D.h>
+#include "TCanvas.h"
+#include "TROOT.h"
+#include "TNtuple.h"
+#include <vector>
+#include <map>
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
+
+// D-phi
+ double phi_dist(double a, double b){
+   if(fabs(a - b) > 3.14159265)
+   {
+    return 6.2831853 - fabs(a - b);
+   }
+   return fabs(a - b);
+ }
+
+bool inRange(int low, int high, int x)
+{
+    return (low <= x && x <= high);
+}
+
+double PU_Rew[100] = {0.552875,1.03705,1.17684,1.09279,1.17336,1.17501,1.14858,1.11463,1.14098,1.17844,1.16723,1.2445,1.32702,1.52427,1.69805,1.7403,1.75334,1.8447,2.2354,2.77674,3.16751,3.10149,2.93969,2.90199,2.81243,2.735,2.60348,2.37099,2.15616,1.9852,1.84818,1.73102,1.66986,1.55718,1.49352,1.43964,1.39255,1.36398,1.34727,1.34113,1.34788,1.37159,1.40511,1.44573,1.50152,1.55852,1.60198,1.61822,1.60954,1.56008,1.47303,1.3643,1.21708,1.06146,0.908219,0.754511,0.617157,0.500328,0.406442,0.333317,0.276404,0.235751,0.203188,0.174879,0.161244,0.138147,0.123821,0.110808,0.0997031,0.0897595,0.0827855,0.0776173,0.0740599,0.0711833,0.0647596,0.0583041,0.0521346,0.0454088,0.0416007,0.0383446,0.0356971,0.0353548,0.0370903,0.0443115,0.0549878,0.0680183,0.0753875,0.0828112,0.103032,0.141383,0.306853,0.777128,1,1,1,1,1,1,1,1};
+
+// ********************** PT-Mass-SFs **************************
+  TFile* f_PT_Mass_SF       = new TFile("/afs/cern.ch/user/t/tumasyan/public/2023/Trigger_SFs/PT_Mass_SF_QCD/PT_Mass_2dSF_PreBPix.root");
+  TH2D * _Eff_Data    = (TH2D*)f_PT_Mass_SF->Get("Eff_Data_ETA0");
+  TH2D * _Eff_MC      = (TH2D*)f_PT_Mass_SF->Get("Eff_MC_ETA0");
+// ********************** BTG-SFs **************************
+  TFile* f_BTG_SF       = new TFile("/afs/cern.ch/user/t/tumasyan/public/BTG_SFs_TXbb/QCD/2023/BTG_SF_TXbb_2023.root");
+  TH1D * _BTG_Eff_Data  = (TH1D*)f_BTG_SF->Get("BTG_Eff_Data");
+  TH1D * _BTG_Eff_MC    = (TH1D*)f_BTG_SF->Get("BTG_Eff_MC");
+// ********************************************************************************
+
+#include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
+

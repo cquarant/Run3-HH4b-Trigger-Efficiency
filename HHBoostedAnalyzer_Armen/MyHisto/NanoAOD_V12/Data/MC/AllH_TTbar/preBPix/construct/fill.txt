@@ -1,0 +1,79 @@
+   double PU_weight=PU_Rew[(int)npu];
+   if (PU_weight<20.0)
+      weight = weight*PU_weight;
+
+   // Add Trigger PT_Mass-Scale Factor
+   double Eff_Data_1 = 0;
+   double Eff_MC_1   = 0;
+   if(matched_TRG_1)
+     {
+      Int_t bin_PT_1     = _Eff_Data->GetXaxis()->FindBin(FatJet1_pt);
+      Int_t bin_Mass_1   = _Eff_Data->GetYaxis()->FindBin(FatJet1_MassSD);
+      Eff_Data_1 = 1.0;
+      if(_Eff_Data->GetBinContent(bin_PT_1,bin_Mass_1) > 0)
+         Eff_Data_1      = _Eff_Data->GetBinContent(bin_PT_1,bin_Mass_1);
+      Eff_MC_1 =1.0;
+      if(_Eff_MC->GetBinContent(bin_PT_1,bin_Mass_1) >0)
+         Eff_MC_1        = _Eff_MC->GetBinContent(bin_PT_1,bin_Mass_1);
+     }
+
+   double Eff_Data_2 = 0;
+   double Eff_MC_2   = 0;
+   if(matched_TRG_2)
+     {
+      Int_t bin_PT_2     = _Eff_Data->GetXaxis()->FindBin(FatJet2_pt);
+      Int_t bin_Mass_2   = _Eff_Data->GetYaxis()->FindBin(FatJet2_MassSD);
+
+      Eff_Data_2 = 1.0;
+      if(_Eff_Data->GetBinContent(bin_PT_2,bin_Mass_2) > 0)
+         Eff_Data_2      = _Eff_Data->GetBinContent(bin_PT_2,bin_Mass_2);
+      Eff_MC_2 =1.0;
+      if(_Eff_MC->GetBinContent(bin_PT_2,bin_Mass_2) >0)
+         Eff_MC_2        = _Eff_MC->GetBinContent(bin_PT_2,bin_Mass_2);
+     }
+
+   double Tot_Data = 1 - (1 - Eff_Data_1)*(1 - Eff_Data_2);
+   double Tot_MC   = 1 - (1 - Eff_MC_1)*(1 - Eff_MC_2);
+   double PT_Mass_SF = Tot_Data/Tot_MC;
+
+   if(PT_Mass_SF > 0)
+       weight = weight*PT_Mass_SF;
+
+// ********************************************** PTJJ
+
+   double FatJet1_px = FatJet1_pt*cos(FatJet1_phi), FatJet1_py = FatJet1_pt*sin(FatJet1_phi);
+   double FatJet2_px = FatJet2_pt*cos(FatJet2_phi), FatJet2_py = FatJet2_pt*sin(FatJet2_phi);
+   double PTjj = sqrt(pow((FatJet1_px +FatJet2_px),2) + pow((FatJet1_py +FatJet2_py),2));
+
+// ********************************************************** Fill Histograms
+  T_weight   = weight;
+
+  T_fatJet1_pt                         = FatJet1_pt;
+  T_fatJet1_eta                        = FatJet1_eta;
+  T_fatJet1_phi                        = FatJet1_phi;
+  T_fatJet1_msoftdrop                  = FatJet1_MassSD;
+  T_fatJet1_particleNet_XbbVsQCD       = FatJet1PNetMD_Xbb;
+  T_fatJet1_Tau3OverTau2               = FatJet1_Tau3OverTau2;
+  T_fatJet1_particleNet_Xbb_Legacy     = FatJet1PNetMD_Xbb_Legacy;
+  double FatJet1PNetMD_Xbb_Legacy_AN   = FatJet1PNetMD_Xbb_Legacy/(FatJet1PNetMD_Xbb_Legacy + FatJet1PNetMD_QCD_Legacy);
+  T_fatJet1_particleNet_Xbb_Legacy_AN  = FatJet1PNetMD_Xbb_Legacy_AN;
+
+  T_fatJet2_pt                         = FatJet2_pt;
+  T_fatJet2_eta                        = FatJet2_eta;
+  T_fatJet2_phi                        = FatJet2_phi;
+  T_fatJet2_msoftdrop                  = FatJet2_MassSD;
+  T_fatJet2_particleNet_XbbVsQCD       = FatJet2PNetMD_Xbb;
+  T_fatJet2_Tau3OverTau2               = FatJet2_Tau3OverTau2;
+  T_fatJet2_particleNet_Xbb_Legacy     = FatJet2PNetMD_Xbb_Legacy;
+  double FatJet2PNetMD_Xbb_Legacy_AN   = FatJet2PNetMD_Xbb_Legacy/(FatJet2PNetMD_Xbb_Legacy + FatJet2PNetMD_QCD_Legacy);
+  T_fatJet2_particleNet_Xbb_Legacy_AN  = FatJet2PNetMD_Xbb_Legacy_AN;
+
+  T_PTjj = PTjj;
+
+  outputTree->Fill();
+
+ } // end event loop
+
+f->Write();
+
+}

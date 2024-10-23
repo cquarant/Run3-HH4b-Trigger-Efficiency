@@ -1,0 +1,25 @@
+ TH1D *_FatJet1_pt      = new TH1D("FatJet1_pt","FatJet1_pt",200,0,1000);
+ TH1D *_FatJet1_eta     = new TH1D("FatJet1_eta","FatJet1_eta",100,-5,5);
+ TH1D *_FatJet1_MassSD  = new TH1D("FatJet1_MassSD","FatJet1_MassSD",500,0,500);
+ TH1D *_FatJet1_Xbb     = new TH1D("FatJet1_Xbb","FatJet1_Xbb",100,0,1.0);
+ TH1D *_FatJet1_TXbb     = new TH1D("FatJet1_TXbb","FatJet1_TXbb",100,0,1.0);
+ TH1D *_FatJet1_Tau3OverTau2     = new TH1D("FatJet1_Tau3OverTau2","FatJet1_Tau3OverTau2",100,0,1.0);
+ TH1D *_FatJet1_particleNet_QCD0HF     = new TH1D("FatJet1_particleNet_QCD0HF","FatJet1_particleNet_QCD0HF",100,0,1.0);
+ TH1D *_FatJet1_particleNet_QCD1HF     = new TH1D("FatJet1_particleNet_QCD1HF","FatJet1_particleNet_QCD1HF",100,0,1.0);
+ TH1D *_FatJet1_particleNet_QCD2HF     = new TH1D("FatJet1_particleNet_QCD2HF","FatJet1_particleNet_QCD2HF",100,0,1.0);
+ TH1D *_FJ1_PtOverMFJ12      = new TH1D("FJ1_PtOverMFJ12","FJ1_PtOverMFJ12",50,0,2.5);
+
+ TH1D *_FatJet2_pt      = new TH1D("FatJet2_pt","FatJet2_pt",200,0,1000);
+ TH1D *_FatJet2_eta     = new TH1D("FatJet2_eta","FatJet2_eta",100,-5,5);
+ TH1D *_FatJet2_MassSD  = new TH1D("FatJet2_MassSD","FatJet2_MassSD",500,0,500);
+ TH1D *_FatJet2_Xbb     = new TH1D("FatJet2_Xbb","FatJet2_Xbb",100,0,1.0);
+ TH1D *_FatJet2_TXbb     = new TH1D("FatJet2_TXbb","FatJet2_TXbb",100,0,1.0);
+ TH1D *_FatJet2_Tau3OverTau2     = new TH1D("FatJet2_Tau3OverTau2","FatJet2_Tau3OverTau2",100,0,1.0);
+ TH1D *_FJ2_PtOverMFJ12      = new TH1D("FJ2_PtOverMFJ12","FJ2_PtOverMFJ12",50,0,2.5);
+
+ TH1D *_MET      = new TH1D("MET","MET",100,0,500);
+ TH1D *_ptFJ12      = new TH1D("ptFJ12","ptFJ12",100,0,1000);
+ TH1D *_massFJ12      = new TH1D("massFJ12","massFJ12",150,0,2500);
+ TH1D *_etaFJ12      = new TH1D("etaFJ12","etaFJ12",100,-5.0,5.0);
+ TH1D *_ptFJ1OverptFJ2      = new TH1D("ptFJ1OverptFJ2","ptFJ1OverptFJ2",60,0.0,3.0);
+

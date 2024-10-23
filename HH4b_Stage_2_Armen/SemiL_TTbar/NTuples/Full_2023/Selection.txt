@@ -1,0 +1,6 @@
+// if (fatJet1_pt < 300) continue;
+// if (fatJet1_particleNet_XbbVsQCD < 0.1) continue;
+
+if(Dr_J1FJ < 0.0 && Dr_J2FJ < 0.0) continue;
+if(Dr_JmaxL > 3.5) continue;
+//if(fatJet1_Tau3OverTau2 >= 0.5) continue;

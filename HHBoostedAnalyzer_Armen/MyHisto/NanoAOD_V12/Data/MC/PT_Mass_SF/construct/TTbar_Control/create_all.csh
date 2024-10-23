@@ -1,0 +1,11 @@
+csh create.csh QCD_PT_120to170
+csh create.csh QCD_PT_170to300
+csh create.csh QCD_PT_300to470
+csh create.csh QCD_PT_470to600
+csh create.csh QCD_PT_600to800
+csh create.csh QCD_PT_800to1000
+csh create.csh QCD_PT_1000to1400
+csh create.csh QCD_PT_1400to1800
+csh create.csh QCD_PT_1800to2400
+csh create.csh QCD_PT_2400to3200
+csh create.csh QCD_PT_3200toInf

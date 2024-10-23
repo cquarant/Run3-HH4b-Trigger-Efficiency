@@ -1,0 +1,148 @@
+TTree *outputTree = new TTree("tree", "");
+
+Float_t T_weight, T_Trig_SF, T_Trig_SF_Legacy;
+outputTree->Branch("T_weight", &T_weight, "T_weight/F");
+outputTree->Branch("T_Trig_SF", &T_Trig_SF, "T_Trig_SF/F");
+outputTree->Branch("T_Trig_SF_Legacy", &T_Trig_SF_Legacy, "T_Trig_SF_Legacy/F");
+
+// FatJet1
+Float_t T_fatJet1_pt, T_fatJet1_eta, T_fatJet1_phi, T_fatJet1_mass, T_fatJet1_msoftdrop, T_fatJet1_btagDDBvLV2, T_fatJet1_btagDeepB, T_fatJet1_particleNetWithMass_H4qvsQCD, T_fatJet1_particleNetWithMass_HbbvsQCD;
+Float_t T_fatJet1_particleNetWithMass_QCD, T_fatJet1_particleNetWithMass_TvsQCD, T_fatJet1_particleNetWithMass_WvsQCD, T_fatJet1_particleNetWithMass_ZvsQCD, T_fatJet1_particleNet_QCD;
+Float_t T_fatJet1_particleNet_QCD0HF, T_fatJet1_particleNet_QCD1HF, T_fatJet1_particleNet_QCD2HF, T_fatJet1_particleNet_XbbVsQCD, T_fatJet1_particleNet_XccVsQCD, T_fatJet1_particleNet_XggVsQCD;
+Float_t T_fatJet1_particleNet_XqqVsQCD, T_fatJet1_particleNet_massCorr, T_fatJet1_n2b1, T_fatJet1_n3b1, T_fatJet1_Tau3OverTau2;
+Bool_t  T_fatJet1_HasMuon, T_fatJet1_HasElectron, T_fatJet1_HasBJetMedium, T_fatJet1_OppositeHemisphereHasBJet;
+Float_t T_fatJet1_subJetIdx1_pt, T_fatJet1_subJetIdx1_eta, T_fatJet1_subJetIdx1_phi, T_fatJet1_subJetIdx1_mass;
+Float_t T_fatJet1_subJetIdx2_pt, T_fatJet1_subJetIdx2_eta, T_fatJet1_subJetIdx2_phi, T_fatJet1_subJetIdx2_mass;
+Float_t T_fatJet1_subJets_alpha;
+Float_t T_fatJet1_particleNet_Xbb_Legacy;
+
+outputTree->Branch("T_fatJet1_pt", &T_fatJet1_pt, "T_fatJet1_pt/F");
+outputTree->Branch("T_fatJet1_eta", &T_fatJet1_eta, "T_fatJet1_eta/F");
+outputTree->Branch("T_fatJet1_phi", &T_fatJet1_phi, "T_fatJet1_phi/F");
+outputTree->Branch("T_fatJet1_mass", &T_fatJet1_mass, "T_fatJet1_mass/F");
+outputTree->Branch("T_fatJet1_msoftdrop", &T_fatJet1_msoftdrop, "T_fatJet1_msoftdrop/F");
+outputTree->Branch("T_fatJet1_btagDeepB", &T_fatJet1_btagDeepB, "T_fatJet1_btagDeepB/F");
+outputTree->Branch("T_fatJet1_particleNetWithMass_H4qvsQCD", &T_fatJet1_particleNetWithMass_H4qvsQCD, "T_fatJet1_particleNetWithMass_H4qvsQCD/F");
+outputTree->Branch("T_fatJet1_particleNetWithMass_HbbvsQCD", &T_fatJet1_particleNetWithMass_HbbvsQCD, "T_fatJet1_particleNetWithMass_HbbvsQCD/F");
+outputTree->Branch("T_fatJet1_particleNetWithMass_QCD", &T_fatJet1_particleNetWithMass_QCD, "T_fatJet1_particleNetWithMass_QCD/F");
+outputTree->Branch("T_fatJet1_particleNetWithMass_TvsQCD", &T_fatJet1_particleNetWithMass_TvsQCD, "T_fatJet1_particleNetWithMass_TvsQCD/F");
+outputTree->Branch("T_fatJet1_particleNetWithMass_WvsQCD", &T_fatJet1_particleNetWithMass_WvsQCD, "T_fatJet1_particleNetWithMass_WvsQCD/F");
+outputTree->Branch("T_fatJet1_particleNetWithMass_ZvsQCD", &T_fatJet1_particleNetWithMass_ZvsQCD, "T_fatJet1_particleNetWithMass_ZvsQCD/F");
+outputTree->Branch("T_fatJet1_particleNet_QCD", &T_fatJet1_particleNet_QCD, "T_fatJet1_particleNet_QCD/F");
+outputTree->Branch("T_fatJet1_particleNet_QCD0HF", &T_fatJet1_particleNet_QCD0HF, "T_fatJet1_particleNet_QCD0HF/F");
+outputTree->Branch("T_fatJet1_particleNet_QCD1HF", &T_fatJet1_particleNet_QCD1HF, "T_fatJet1_particleNet_QCD1HF/F");
+outputTree->Branch("T_fatJet1_particleNet_QCD2HF", &T_fatJet1_particleNet_QCD2HF, "T_fatJet1_particleNet_QCD2HF/F");
+outputTree->Branch("T_fatJet1_particleNet_XbbVsQCD", &T_fatJet1_particleNet_XbbVsQCD, "T_fatJet1_particleNet_XbbVsQCD/F");
+outputTree->Branch("T_fatJet1_particleNet_XccVsQCD", &T_fatJet1_particleNet_XccVsQCD, "T_fatJet1_particleNet_XccVsQCD/F");
+outputTree->Branch("T_fatJet1_particleNet_XggVsQCD", &T_fatJet1_particleNet_XggVsQCD, "T_fatJet1_particleNet_XggVsQCD/F");
+outputTree->Branch("T_fatJet1_particleNet_XqqVsQCD", &T_fatJet1_particleNet_XqqVsQCD, "T_fatJet1_particleNet_XqqVsQCD/F");
+outputTree->Branch("T_fatJet1_particleNet_massCorr", &T_fatJet1_particleNet_massCorr, "T_fatJet1_particleNet_massCorr/F");
+outputTree->Branch("T_fatJet1_n2b1", &T_fatJet1_n2b1, "T_fatJet1_n2b1/F");
+outputTree->Branch("T_fatJet1_n3b1", &T_fatJet1_n3b1, "T_fatJet1_n3b1/F");
+outputTree->Branch("T_fatJet1_Tau3OverTau2", &T_fatJet1_Tau3OverTau2, "T_fatJet1_Tau3OverTau2/F");
+outputTree->Branch("T_fatJet1_HasMuon", &T_fatJet1_HasMuon, "T_fatJet1_HasMuon/O");
+outputTree->Branch("T_fatJet1_HasElectron", &T_fatJet1_HasElectron, "T_fatJet1_HasElectron/O");
+outputTree->Branch("T_fatJet1_HasBJetMedium", &T_fatJet1_HasBJetMedium, "T_fatJet1_HasBJetMedium/O");
+outputTree->Branch("T_fatJet1_OppositeHemisphereHasBJet", &T_fatJet1_OppositeHemisphereHasBJet, "T_fatJet1_OppositeHemisphereHasBJet/O");
+outputTree->Branch("T_fatJet1_subJetIdx1_pt", &T_fatJet1_subJetIdx1_pt, "T_fatJet1_subJetIdx1_pt/F");
+outputTree->Branch("T_fatJet1_subJetIdx1_eta", &T_fatJet1_subJetIdx1_eta, "T_fatJet1_subJetIdx1_eta/F");
+outputTree->Branch("T_fatJet1_subJetIdx1_phi", &T_fatJet1_subJetIdx1_phi, "T_fatJet1_subJetIdx1_phi/F");
+outputTree->Branch("T_fatJet1_subJetIdx1_mass", &T_fatJet1_subJetIdx1_mass, "T_fatJet1_subJetIdx1_mass/F");
+outputTree->Branch("T_fatJet1_subJetIdx2_pt", &T_fatJet1_subJetIdx2_pt, "T_fatJet1_subJetIdx2_pt/F");
+outputTree->Branch("T_fatJet1_subJetIdx2_eta", &T_fatJet1_subJetIdx2_eta, "T_fatJet1_subJetIdx2_eta/F");
+outputTree->Branch("T_fatJet1_subJetIdx2_phi", &T_fatJet1_subJetIdx2_phi, "T_fatJet1_subJetIdx2_phi/F");
+outputTree->Branch("T_fatJet1_subJetIdx2_mass", &T_fatJet1_subJetIdx2_mass, "T_fatJet1_subJetIdx2_mass/F");
+outputTree->Branch("T_fatJet1_subJets_alpha", &T_fatJet1_subJets_alpha, "T_fatJet1_subJets_alpha/F");
+outputTree->Branch("T_fatJet1_particleNet_Xbb_Legacy", &T_fatJet1_particleNet_Xbb_Legacy, "T_fatJet1_particleNet_Xbb_Legacy/F");
+
+// FatJet2
+Float_t T_fatJet2_pt, T_fatJet2_eta, T_fatJet2_phi, T_fatJet2_mass, T_fatJet2_msoftdrop, T_fatJet2_btagDDBvLV2, T_fatJet2_btagDeepB, T_fatJet2_particleNetWithMass_H4qvsQCD, T_fatJet2_particleNetWithMass_HbbvsQCD;
+Float_t T_fatJet2_particleNetWithMass_QCD, T_fatJet2_particleNetWithMass_TvsQCD, T_fatJet2_particleNetWithMass_WvsQCD, T_fatJet2_particleNetWithMass_ZvsQCD, T_fatJet2_particleNet_QCD;
+Float_t T_fatJet2_particleNet_QCD0HF, T_fatJet2_particleNet_QCD1HF, T_fatJet2_particleNet_QCD2HF, T_fatJet2_particleNet_XbbVsQCD, T_fatJet2_particleNet_XccVsQCD, T_fatJet2_particleNet_XggVsQCD;
+Float_t T_fatJet2_particleNet_XqqVsQCD, T_fatJet2_particleNet_massCorr, T_fatJet2_n2b1, T_fatJet2_n3b1, T_fatJet2_Tau3OverTau2;
+Bool_t  T_fatJet2_HasMuon, T_fatJet2_HasElectron, T_fatJet2_HasBJetMedium, T_fatJet2_OppositeHemisphereHasBJet;
+Float_t T_fatJet2_subJetIdx1_pt, T_fatJet2_subJetIdx1_eta, T_fatJet2_subJetIdx1_phi, T_fatJet2_subJetIdx1_mass;
+Float_t T_fatJet2_subJetIdx2_pt, T_fatJet2_subJetIdx2_eta, T_fatJet2_subJetIdx2_phi, T_fatJet2_subJetIdx2_mass;
+Float_t T_fatJet2_subJets_alpha;
+Float_t T_fatJet2_particleNet_Xbb_Legacy;
+
+outputTree->Branch("T_fatJet2_pt", &T_fatJet2_pt, "T_fatJet2_pt/F");
+outputTree->Branch("T_fatJet2_eta", &T_fatJet2_eta, "T_fatJet2_eta/F");
+outputTree->Branch("T_fatJet2_phi", &T_fatJet2_phi, "T_fatJet2_phi/F");
+outputTree->Branch("T_fatJet2_mass", &T_fatJet2_mass, "T_fatJet2_mass/F");
+outputTree->Branch("T_fatJet2_msoftdrop", &T_fatJet2_msoftdrop, "T_fatJet2_msoftdrop/F");
+outputTree->Branch("T_fatJet2_btagDeepB", &T_fatJet2_btagDeepB, "T_fatJet2_btagDeepB/F");
+outputTree->Branch("T_fatJet2_particleNetWithMass_H4qvsQCD", &T_fatJet2_particleNetWithMass_H4qvsQCD, "T_fatJet2_particleNetWithMass_H4qvsQCD/F");
+outputTree->Branch("T_fatJet2_particleNetWithMass_HbbvsQCD", &T_fatJet2_particleNetWithMass_HbbvsQCD, "T_fatJet2_particleNetWithMass_HbbvsQCD/F");
+outputTree->Branch("T_fatJet2_particleNetWithMass_QCD", &T_fatJet2_particleNetWithMass_QCD, "T_fatJet2_particleNetWithMass_QCD/F");
+outputTree->Branch("T_fatJet2_particleNetWithMass_TvsQCD", &T_fatJet2_particleNetWithMass_TvsQCD, "T_fatJet2_particleNetWithMass_TvsQCD/F");
+outputTree->Branch("T_fatJet2_particleNetWithMass_WvsQCD", &T_fatJet2_particleNetWithMass_WvsQCD, "T_fatJet2_particleNetWithMass_WvsQCD/F");
+outputTree->Branch("T_fatJet2_particleNetWithMass_ZvsQCD", &T_fatJet2_particleNetWithMass_ZvsQCD, "T_fatJet2_particleNetWithMass_ZvsQCD/F");
+outputTree->Branch("T_fatJet2_particleNet_QCD", &T_fatJet2_particleNet_QCD, "T_fatJet2_particleNet_QCD/F");
+outputTree->Branch("T_fatJet2_particleNet_QCD0HF", &T_fatJet2_particleNet_QCD0HF, "T_fatJet2_particleNet_QCD0HF/F");
+outputTree->Branch("T_fatJet2_particleNet_QCD1HF", &T_fatJet2_particleNet_QCD1HF, "T_fatJet2_particleNet_QCD1HF/F");
+outputTree->Branch("T_fatJet2_particleNet_QCD2HF", &T_fatJet2_particleNet_QCD2HF, "T_fatJet2_particleNet_QCD2HF/F");
+outputTree->Branch("T_fatJet2_particleNet_XbbVsQCD", &T_fatJet2_particleNet_XbbVsQCD, "T_fatJet2_particleNet_XbbVsQCD/F");
+outputTree->Branch("T_fatJet2_particleNet_XccVsQCD", &T_fatJet2_particleNet_XccVsQCD, "T_fatJet2_particleNet_XccVsQCD/F");
+outputTree->Branch("T_fatJet2_particleNet_XggVsQCD", &T_fatJet2_particleNet_XggVsQCD, "T_fatJet2_particleNet_XggVsQCD/F");
+outputTree->Branch("T_fatJet2_particleNet_XqqVsQCD", &T_fatJet2_particleNet_XqqVsQCD, "T_fatJet2_particleNet_XqqVsQCD/F");
+outputTree->Branch("T_fatJet2_particleNet_massCorr", &T_fatJet2_particleNet_massCorr, "T_fatJet2_particleNet_massCorr/F");
+outputTree->Branch("T_fatJet2_n2b1", &T_fatJet2_n2b1, "T_fatJet2_n2b1/F");
+outputTree->Branch("T_fatJet2_n3b1", &T_fatJet2_n3b1, "T_fatJet2_n3b1/F");
+outputTree->Branch("T_fatJet2_Tau3OverTau2", &T_fatJet2_Tau3OverTau2, "T_fatJet2_Tau3OverTau2/F");
+outputTree->Branch("T_fatJet2_HasMuon", &T_fatJet2_HasMuon, "T_fatJet2_HasMuon/O");
+outputTree->Branch("T_fatJet2_HasElectron", &T_fatJet2_HasElectron, "T_fatJet2_HasElectron/O");
+outputTree->Branch("T_fatJet2_HasBJetMedium", &T_fatJet2_HasBJetMedium, "T_fatJet2_HasBJetMedium/O");
+outputTree->Branch("T_fatJet2_OppositeHemisphereHasBJet", &T_fatJet2_OppositeHemisphereHasBJet, "T_fatJet2_OppositeHemisphereHasBJet/O");
+outputTree->Branch("T_fatJet2_subJetIdx1_pt", &T_fatJet2_subJetIdx1_pt, "T_fatJet2_subJetIdx1_pt/F");
+outputTree->Branch("T_fatJet2_subJetIdx1_eta", &T_fatJet2_subJetIdx1_eta, "T_fatJet2_subJetIdx1_eta/F");
+outputTree->Branch("T_fatJet2_subJetIdx1_phi", &T_fatJet2_subJetIdx1_phi, "T_fatJet2_subJetIdx1_phi/F");
+outputTree->Branch("T_fatJet2_subJetIdx1_mass", &T_fatJet2_subJetIdx1_mass, "T_fatJet2_subJetIdx1_mass/F");
+outputTree->Branch("T_fatJet2_subJetIdx2_pt", &T_fatJet2_subJetIdx2_pt, "T_fatJet2_subJetIdx2_pt/F");
+outputTree->Branch("T_fatJet2_subJetIdx2_eta", &T_fatJet2_subJetIdx2_eta, "T_fatJet2_subJetIdx2_eta/F");
+outputTree->Branch("T_fatJet2_subJetIdx2_phi", &T_fatJet2_subJetIdx2_phi, "T_fatJet2_subJetIdx2_phi/F");
+outputTree->Branch("T_fatJet2_subJetIdx2_mass", &T_fatJet2_subJetIdx2_mass, "T_fatJet2_subJetIdx2_mass/F");
+outputTree->Branch("T_fatJet2_subJets_alpha", &T_fatJet2_subJets_alpha, "T_fatJet2_subJets_alpha/F");
+outputTree->Branch("T_fatJet2_particleNet_Xbb_Legacy", &T_fatJet2_particleNet_Xbb_Legacy, "T_fatJet2_particleNet_Xbb_Legacy/F");
+
+// FatJet3
+Float_t T_fatJet3_pt, T_fatJet3_eta, T_fatJet3_phi, T_fatJet3_mass, T_fatJet3_msoftdrop, T_fatJet3_particleNet_XbbVsQCD, T_fatJet3_particleNet_Xbb_Legacy;
+
+outputTree->Branch("T_fatJet3_pt", &T_fatJet3_pt, "T_fatJet3_pt/F");
+outputTree->Branch("T_fatJet3_eta", &T_fatJet3_eta, "T_fatJet3_eta/F");
+outputTree->Branch("T_fatJet3_phi", &T_fatJet3_phi, "T_fatJet3_phi/F");
+outputTree->Branch("T_fatJet3_mass", &T_fatJet3_mass, "T_fatJet3_mass/F");
+outputTree->Branch("T_fatJet3_msoftdrop", &T_fatJet3_msoftdrop, "T_fatJet3_msoftdrop/F");
+outputTree->Branch("T_fatJet3_particleNet_XbbVsQCD", &T_fatJet3_particleNet_XbbVsQCD, "T_fatJet3_particleNet_XbbVsQCD/F");
+outputTree->Branch("T_fatJet3_particleNet_Xbb_Legacy", &T_fatJet3_particleNet_Xbb_Legacy, "T_fatJet3_particleNet_Xbb_Legacy/F");
+
+// Other variables
+Int_t T_NJets,T_nBTaggedJets;
+Float_t T_MET, T_alpha_FJ12, T_ptFJ12, T_etaFJ12, T_phiFJ12, T_massFJ12, T_detaFJ12, T_dphiFJ12, T_dRFJ12, T_FJ1_PtOverMFJ12, T_FJ2_PtOverMFJ12, T_FJ1_PtOverMSDFJ1, T_FJ2_PtOverMSDFJ2;
+Float_t T_ptFJ1OverptFJ2, T_massFJ1OvermassFJ2, T_ptak4J1, T_ptak4J2, T_dRak4J1FJ1, T_dRak4J1FJ2, T_dRak4J2FJ1, T_dRak4J2FJ2;
+
+outputTree->Branch("T_NJets", &T_NJets, "T_NJets/I");
+outputTree->Branch("T_nBTaggedJets", &T_nBTaggedJets, "T_nBTaggedJets/I");
+outputTree->Branch("T_MET", &T_MET, "T_MET/F");
+outputTree->Branch("T_alpha_FJ12", &T_alpha_FJ12, "T_alpha_FJ12/F");
+outputTree->Branch("T_ptFJ12", &T_ptFJ12, "T_ptFJ12/F");
+outputTree->Branch("T_etaFJ12", &T_etaFJ12, "T_etaFJ12/F");
+outputTree->Branch("T_phiFJ12", &T_phiFJ12, "T_phiFJ12/F");
+outputTree->Branch("T_massFJ12", &T_massFJ12, "T_massFJ12/F");
+outputTree->Branch("T_detaFJ12", &T_detaFJ12, "T_detaFJ12/F");
+outputTree->Branch("T_dphiFJ12", &T_dphiFJ12, "T_dphiFJ12/F");
+outputTree->Branch("T_dRFJ12", &T_dRFJ12, "T_dRFJ12/F");
+outputTree->Branch("T_FJ1_PtOverMFJ12", &T_FJ1_PtOverMFJ12, "T_FJ1_PtOverMFJ12/F");
+outputTree->Branch("T_FJ2_PtOverMFJ12", &T_FJ2_PtOverMFJ12, "T_FJ2_PtOverMFJ12/F");
+outputTree->Branch("T_FJ1_PtOverMSDFJ1", &T_FJ1_PtOverMSDFJ1, "T_FJ1_PtOverMSDFJ1/F");
+outputTree->Branch("T_FJ2_PtOverMSDFJ2", &T_FJ2_PtOverMSDFJ2, "T_FJ2_PtOverMSDFJ2/F");
+outputTree->Branch("T_ptFJ1OverptFJ2", &T_ptFJ1OverptFJ2, "T_ptFJ1OverptFJ2/F");
+outputTree->Branch("T_massFJ1OvermassFJ2", &T_massFJ1OvermassFJ2, "T_massFJ1OvermassFJ2/F");
+outputTree->Branch("T_ptak4J1", &T_ptak4J1, "T_ptak4J1/F");
+outputTree->Branch("T_ptak4J2", &T_ptak4J2, "T_ptak4J2/F");
+outputTree->Branch("T_dRak4J1FJ1", &T_dRak4J1FJ1, "T_dRak4J1FJ1/F");
+outputTree->Branch("T_dRak4J1FJ2", &T_dRak4J1FJ2, "T_dRak4J1FJ2/F");
+outputTree->Branch("T_dRak4J2FJ1", &T_dRak4J2FJ1, "T_dRak4J2FJ1/F");
+outputTree->Branch("T_dRak4J2FJ2", &T_dRak4J2FJ2, "T_dRak4J2FJ2/F");
+
+// **************************************************** Output Tree END

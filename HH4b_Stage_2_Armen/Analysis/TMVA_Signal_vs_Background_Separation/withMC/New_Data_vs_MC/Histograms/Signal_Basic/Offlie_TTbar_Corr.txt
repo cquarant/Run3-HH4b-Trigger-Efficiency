@@ -1,0 +1,38 @@
+     // adding Tau3OverTau2 SF
+     double tau3overtau2_sf_1 = 1.0;
+     Int_t bin_Tau3OverTau2_1  = _SF_Tau3toTau2->GetXaxis()->FindBin(fatJet1_Tau3OverTau2);
+     if(_SF_Tau3toTau2->GetBinContent(bin_Tau3OverTau2_1) > 0)
+        tau3overtau2_sf_1 = _SF_Tau3toTau2->GetBinContent(bin_Tau3OverTau2_1);
+
+     weight = weight * tau3overtau2_sf_1;
+
+     double tau3overtau2_sf_2 = 1.0;
+     Int_t bin_Tau3OverTau2_2  = _SF_Tau3toTau2->GetXaxis()->FindBin(fatJet2_Tau3OverTau2);
+     if(_SF_Tau3toTau2->GetBinContent(bin_Tau3OverTau2_2) > 0)
+        tau3overtau2_sf_2 = _SF_Tau3toTau2->GetBinContent(bin_Tau3OverTau2_2);
+
+     weight = weight * tau3overtau2_sf_2;
+
+     // adding Xbb SF
+     double Xbb_sf_1 = 1.0;
+     Int_t bin_Xbb_1  = _SF_Xbb->GetXaxis()->FindBin(fatJet1_particleNet_Xbb_Legacy);
+     if(_SF_Xbb->GetBinContent(bin_Xbb_1) > 0)
+       Xbb_sf_1 = _SF_Xbb->GetBinContent(bin_Xbb_1);
+
+     weight = weight * Xbb_sf_1;
+
+     double Xbb_sf_2 = 1.0;
+     Int_t bin_Xbb_2  = _SF_Xbb->GetXaxis()->FindBin(fatJet2_particleNet_Xbb_Legacy);
+     if(_SF_Xbb->GetBinContent(bin_Xbb_2) > 0)
+       Xbb_sf_2 = _SF_Xbb->GetBinContent(bin_Xbb_2);
+
+     weight = weight * Xbb_sf_2;
+
+
+     // adding PTJJ SF
+     double PTJJ_SF = 1.0;
+     Int_t bin_PTJJ  = _SF_PTJJ->GetXaxis()->FindBin(ptFJ12);
+     if(_SF_Xbb->GetBinContent(bin_PTJJ) > 0)
+       PTJJ_SF = _SF_Xbb->GetBinContent(bin_Xbb_2);
+
+     weight = weight * PTJJ_SF;

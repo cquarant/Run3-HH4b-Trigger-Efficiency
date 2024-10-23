@@ -1,0 +1,36 @@
+#include "TStyle.h"
+#include "TGaxis.h"
+#include "TRandom.h"
+#include "TFile.h"
+#include "TTree.h"
+#include <iostream>
+#include <math.h>
+#include <TF1.h>
+#include <TF2.h>
+#include <TH1D.h>
+#include "TCanvas.h"
+#include "TROOT.h"
+#include "TNtuple.h"
+#include <vector>
+#include <map>
+
+// D-phi
+ double phi_dist(double a, double b){
+   if(fabs(a - b) > 3.14159265)
+   {
+    return 6.2831853 - fabs(a - b);
+   }
+   return fabs(a - b);
+ }
+
+bool inRange(int low, int high, int x)
+{
+    return (low <= x && x <= high);
+}
+
+double PU_Rew[100]={10.8497,4.42194,4.65723,20.3724,23.8022,13.7557,7.99435,4.19632,2.25956,1.1874,0.760477,0.484277,0.24048,0.172868,0.143258,0.064479,0.0499436,0.0266,0.0319528,0.0192531,0.0837497,0.0850733,0.15549,0.117273,0.130173,0.138538,0.131814,0.178734,0.249517,0.380582,0.413954,0.464502,0.464131,0.471535,0.53024,0.60752,0.571946,0.566939,0.480804,0.563873,0.512671,0.544993,0.539009,0.547109,0.576103,0.645572,0.719275,0.761689,0.874711,1.21862,1.51221,2.36156,3.95115,9.95135,16.477,18.3475,10.4246,3.23251,1.75302,2.70381,4.29273,6.57119,4.28892,0.986744,1.64368,5.21225,9.35711,9.75092,10.751,16.5981,30.7719,50.8975,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+// ******************************************
+
+#include "/afs/cern.ch/work/t/tumasyan/HHTo4B/CMSSW_9_4_2/src/HHBoostedAnalyzer/MyHisto/MC/postEE/parameters.txt"
+

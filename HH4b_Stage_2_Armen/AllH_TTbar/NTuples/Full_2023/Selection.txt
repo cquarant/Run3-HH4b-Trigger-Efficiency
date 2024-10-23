@@ -1,0 +1,4 @@
+ if (fatJet1_pt < 450 || fatJet1_msoftdrop < 50 || fabs(fatJet1_eta) > 2.4 || fatJet1_particleNet_Xbb_Legacy_AN < 0.1 || fatJet1_Tau3OverTau2 >= 0.46) continue;
+ if (fatJet2_pt < 450 || fatJet2_msoftdrop < 50 || fabs(fatJet2_eta) > 2.4 || fatJet2_particleNet_Xbb_Legacy_AN < 0.1 || fatJet2_Tau3OverTau2 >= 0.46) continue;
+
+//if(fatJet1_Tau3OverTau2 >= 0.5) continue;

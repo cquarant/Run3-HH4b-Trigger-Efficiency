@@ -1,0 +1,85 @@
+   double PU_weight=PU_Rew[(int)npu];
+   if (PU_weight<20.0)
+      weight = weight*PU_weight;
+
+   // Add Trigger PT_Mass and PNet Scale Factors
+   double Eff_Data_1 = 0;
+   double Eff_MC_1   = 0;
+
+   if(matched_TRG_1)
+     {
+      Int_t bin_PT_1    = _Eff_Data->GetXaxis()->FindBin(FatJet1_pt);
+      Int_t bin_Mass_1  = _Eff_Data->GetYaxis()->FindBin(FatJet1_MassSD);
+      Eff_Data_1 = 1.0;
+      if(_Eff_Data->GetBinContent(bin_PT_1,bin_Mass_1) > 0)
+         Eff_Data_1        = _Eff_Data->GetBinContent(bin_PT_1,bin_Mass_1);
+      Eff_MC_1 =1.0;
+      if(_Eff_MC->GetBinContent(bin_PT_1,bin_Mass_1) >0)
+         Eff_MC_1          = _Eff_MC->GetBinContent(bin_PT_1,bin_Mass_1);
+     }
+
+   double Tot_Data = 1 - (1 - Eff_Data_1);
+   double Tot_MC   = 1 - (1 - Eff_MC_1);
+   double PT_Mass_BTG_SF = Tot_Data/Tot_MC;
+
+   if(PT_Mass_BTG_SF > 0)
+       weight = weight*PT_Mass_BTG_SF;
+
+// ********************************************************** Fill Histograms
+ _FatJet1_pt  ->Fill(FatJet1_pt,weight);
+ _FatJet1_eta ->Fill(FatJet1_eta,weight);
+ _FatJet1_phi ->Fill(FatJet1_phi,weight);
+ _FatJet1_eta_phi ->Fill(FatJet1_eta, FatJet1_phi,weight);
+ _FatJet1_Mass ->Fill(FatJet1_Mass,weight);
+ _FatJet1_MassSD ->Fill(FatJet1_MassSD,weight);
+ _FatJet1_Pt_Mass  -> Fill(FatJet1_pt,FatJet1_MassSD,weight);
+ _FatJet1PNetMD_Xbb ->Fill(FatJet1PNetMD_Xbb,weight);
+ _FatJet1PNetMD_Xbb_Legacy ->Fill(FatJet1PNetMD_Xbb_Legacy,weight);
+ double FatJet1PNetMD_Xbb_Legacy_AN = FatJet1PNetMD_Xbb_Legacy/(FatJet1PNetMD_Xbb_Legacy + FatJet1PNetMD_QCD_Legacy);
+ _FatJet1PNetMD_Xbb_Legacy_AN ->Fill(FatJet1PNetMD_Xbb_Legacy_AN,weight);
+
+ if(FatJet1_hadronFlavour ==0)
+  _FatJet1PNetMD_Xbb_UDSG ->Fill(FatJet1PNetMD_Xbb,weight);
+ if(FatJet1_hadronFlavour ==4)
+  _FatJet1PNetMD_Xbb_C ->Fill(FatJet1PNetMD_Xbb,weight);
+ if(FatJet1_hadronFlavour ==5)
+  {
+   _FatJet1PNetMD_Xbb_B ->Fill(FatJet1PNetMD_Xbb,weight);
+   if(FatJet1_nBHadrons <= 1)
+     _FatJet1PNetMD_Xbb_B_1 ->Fill(FatJet1PNetMD_Xbb,weight);
+   if(FatJet1_nBHadrons >= 2)
+    _FatJet1PNetMD_Xbb_B_2 ->Fill(FatJet1PNetMD_Xbb,weight);
+  }
+
+if(matched_TRG_2)
+ {
+ _FatJet2_pt  ->Fill(FatJet1_pt,weight);
+ _FatJet2_eta ->Fill(FatJet1_eta,weight);
+ _FatJet2_phi ->Fill(FatJet1_phi,weight);
+ _FatJet2_eta_phi ->Fill(FatJet1_eta, FatJet1_phi,weight);
+ _FatJet2_Mass ->Fill(FatJet1_Mass,weight);
+ _FatJet2_MassSD ->Fill(FatJet1_MassSD,weight);
+ _FatJet2_Pt_Mass  -> Fill(FatJet1_pt,FatJet1_MassSD,weight);
+ _FatJet2PNetMD_Xbb ->Fill(FatJet1PNetMD_Xbb,weight);
+ _FatJet2PNetMD_Xbb_Legacy ->Fill(FatJet1PNetMD_Xbb_Legacy,weight);
+ _FatJet2PNetMD_Xbb_Legacy_AN ->Fill(FatJet1PNetMD_Xbb_Legacy_AN,weight);
+
+ if(FatJet1_hadronFlavour ==0)
+  _FatJet2PNetMD_Xbb_UDSG ->Fill(FatJet1PNetMD_Xbb,weight);
+ if(FatJet1_hadronFlavour ==4)
+  _FatJet2PNetMD_Xbb_C ->Fill(FatJet1PNetMD_Xbb,weight);
+ if(FatJet1_hadronFlavour ==5)
+  {
+   _FatJet2PNetMD_Xbb_B ->Fill(FatJet1PNetMD_Xbb,weight);
+   if(FatJet1_nBHadrons <= 1)
+     _FatJet2PNetMD_Xbb_B_1 ->Fill(FatJet1PNetMD_Xbb,weight);
+   if(FatJet1_nBHadrons >= 2)
+    _FatJet2PNetMD_Xbb_B_2 ->Fill(FatJet1PNetMD_Xbb,weight);
+  }
+ }
+
+} // end event loop
+
+f->Write();
+
+}

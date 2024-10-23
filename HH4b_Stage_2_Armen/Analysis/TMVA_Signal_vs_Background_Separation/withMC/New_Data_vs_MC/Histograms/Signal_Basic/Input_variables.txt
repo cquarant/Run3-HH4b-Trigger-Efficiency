@@ -1,0 +1,42 @@
+ Float_t weight, Trig_SF_Legacy;
+ Float_t fatJet1_pt,FJ1_PtOverMFJ12,fatJet1_Tau3OverTau2,fatJet1_msoftdrop,fatJet1_eta,fatJet1_particleNet_QCD,fatJet1_particleNet_QCD0HF, fatJet1_particleNet_QCD1HF;
+ Float_t fatJet1_particleNet_QCD2HF, fatJet1_particleNetWithMass_TvsQCD, fatJet1_particleNetWithMass_WvsQCD, fatJet1_particleNet_XbbVsQCD, fatJet1_subJets_alpha;
+ Float_t fatJet2_pt,FJ2_PtOverMFJ12,fatJet2_Tau3OverTau2,fatJet2_msoftdrop,fatJet2_eta,fatJet2_particleNet_QCD,fatJet2_particleNet_QCD0HF, fatJet2_particleNet_QCD1HF;
+ Float_t fatJet2_particleNet_QCD2HF, fatJet2_particleNetWithMass_TvsQCD, fatJet2_particleNetWithMass_WvsQCD, fatJet2_particleNet_XbbVsQCD, fatJet2_subJets_alpha;
+ Float_t ptFJ12, etaFJ12, massFJ12, ptFJ1OverptFJ2, MET, alpha_FJ12;
+ Int_t   nBTaggedJets, NJets;
+ Float_t fatJet1_particleNet_Xbb_Legacy;
+ Float_t fatJet2_particleNet_Xbb_Legacy;
+
+ T_ntuples->SetBranchAddress( "T_weight",                          &weight);
+ T_ntuples->SetBranchAddress( "T_Trig_SF_Legacy",                  &Trig_SF_Legacy);
+ T_ntuples->SetBranchAddress( "T_fatJet1_pt",                      &fatJet1_pt);
+ T_ntuples->SetBranchAddress( "T_fatJet1_eta",                     &fatJet1_eta);
+ T_ntuples->SetBranchAddress( "T_fatJet1_msoftdrop",               &fatJet1_msoftdrop);
+ T_ntuples->SetBranchAddress( "T_fatJet1_particleNet_XbbVsQCD",    &fatJet1_particleNet_XbbVsQCD);
+ T_ntuples->SetBranchAddress( "T_FJ1_PtOverMFJ12",                 &FJ1_PtOverMFJ12);
+ T_ntuples->SetBranchAddress( "T_fatJet1_Tau3OverTau2",            &fatJet1_Tau3OverTau2);
+ T_ntuples->SetBranchAddress( "T_fatJet1_particleNet_QCD",                        &fatJet1_particleNet_QCD);
+ T_ntuples->SetBranchAddress( "T_fatJet1_particleNet_QCD0HF",                     &fatJet1_particleNet_QCD0HF);
+ T_ntuples->SetBranchAddress( "T_fatJet1_particleNet_QCD1HF",                     &fatJet1_particleNet_QCD1HF);
+ T_ntuples->SetBranchAddress( "T_fatJet1_particleNet_QCD2HF",                     &fatJet1_particleNet_QCD2HF);
+ T_ntuples->SetBranchAddress( "T_fatJet1_particleNet_Xbb_Legacy",                 &fatJet1_particleNet_Xbb_Legacy);
+
+ T_ntuples->SetBranchAddress( "T_fatJet2_pt",                      &fatJet2_pt);
+ T_ntuples->SetBranchAddress( "T_fatJet2_eta",                     &fatJet2_eta);
+ T_ntuples->SetBranchAddress( "T_fatJet2_msoftdrop",               &fatJet2_msoftdrop);
+ T_ntuples->SetBranchAddress( "T_fatJet2_particleNet_XbbVsQCD",    &fatJet2_particleNet_XbbVsQCD);
+ T_ntuples->SetBranchAddress( "T_FJ2_PtOverMFJ12",                 &FJ2_PtOverMFJ12);
+ T_ntuples->SetBranchAddress( "T_fatJet2_Tau3OverTau2",            &fatJet2_Tau3OverTau2);
+ T_ntuples->SetBranchAddress( "T_fatJet2_particleNet_QCD",                        &fatJet2_particleNet_QCD);
+ T_ntuples->SetBranchAddress( "T_fatJet2_particleNet_QCD0HF",                     &fatJet2_particleNet_QCD0HF);
+ T_ntuples->SetBranchAddress( "T_fatJet2_particleNet_QCD1HF",                     &fatJet2_particleNet_QCD1HF);
+ T_ntuples->SetBranchAddress( "T_fatJet2_particleNet_QCD2HF",                     &fatJet2_particleNet_QCD2HF);
+ T_ntuples->SetBranchAddress( "T_fatJet2_particleNet_Xbb_Legacy",                 &fatJet2_particleNet_Xbb_Legacy);
+
+ T_ntuples->SetBranchAddress( "T_ptFJ12",                      &ptFJ12);
+ T_ntuples->SetBranchAddress( "T_etaFJ12",                     &etaFJ12);
+ T_ntuples->SetBranchAddress( "T_massFJ12",                    &massFJ12);
+ T_ntuples->SetBranchAddress( "T_MET",                         &MET);
+ T_ntuples->SetBranchAddress( "T_ptFJ1OverptFJ2",              &ptFJ1OverptFJ2);
+

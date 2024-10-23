@@ -1,0 +1,53 @@
+TH1D *_FatJet1_pt  = new TH1D("FatJet1_pt","FatJet1_pt",200,0,1000);
+TH1D *_FatJet1_eta  = new TH1D("FatJet1_eta","FatJet1_eta",100,-5,5);
+TH1D *_FatJet1_phi  = new TH1D("FatJet1_phi","FatJet1_phi",100,-5,5);
+TH2D *_FatJet1_eta_phi = new TH2D("FatJet1_eta_phi","FatJet1_eta_phi",100,-5,5,100,-5,5);
+TH1D *_FatJet1_Mass  = new TH1D("FatJet1_Mass","FatJet1_Mass",500,0,500);
+TH1D *_FatJet1_MassSD  = new TH1D("FatJet1_MassSD","FatJet1_MassSD",500,0,500);
+TH1D *_FatJet1DDBTaggerV2  = new TH1D("FatJet1DDBTaggerV2","FatJet1DDBTaggerV2",100,0,1.0);
+TH1D *_FatJet1PNetMD_QCD  = new TH1D("FatJet1PNetMD_QCD","FatJet1PNetMD_QCD",100,0,1.0);
+TH1D *_FatJet1PNetMD_Xbb  = new TH1D("FatJet1PNetMD_Xbb","FatJet1PNetMD_Xbb",100,0,1.0);
+TH1D *_FatJet1PNetMD_Xcc  = new TH1D("FatJet1PNetMD_Xcc","FatJet1PNetMD_Xcc",100,0,1.0);
+TH1D *_FatJet1PNetMD_Xqq  = new TH1D("FatJet1PNetMD_Xqq","FatJet1PNetMD_Xqq",100,0,1.0);
+TH1D *_FatJet1PNetHbbvsQCD  = new TH1D("FatJet1PNetHbbvsQCD","FatJet1PNetHbbvsQCD",100,0,1.0);
+TH1D *_FatJet1PNet_QCD  = new TH1D("FatJet1PNet_QCD","FatJet1PNet_QCD",100,0,1.0);
+TH1D *_FatJet1PNet_TvsQCD  = new TH1D("FatJet1PNet_TvsQCD","FatJet1PNet_TvsQCD",100,0,1.0);
+TH1D *_FatJet1PNet_WvsQCD  = new TH1D("FatJet1PNet_WvsQCD","FatJet1PNet_WvsQCD",100,0,1.0);
+TH1D *_FatJet1PNet_ZvsQCD  = new TH1D("FatJet1PNet_ZvsQCD","FatJet1PNet_ZvsQCD",100,0,1.0);
+TH1D *_FatJet1PNetMD_Xbb_Modified_as_in_AN_Xbb  = new TH1D("FatJet1PNetMD_Xbb_Modified_as_in_AN_Xbb","FatJet1PNetMD_Xbb_Modified_as_in_AN_Xbb",100,0,1.0);
+TH1D *_FatJet1PNet_mass  = new TH1D("FatJet1PNet_mass","FatJet1PNet_mass",500,0,500);
+TH1D *_FatJet1_Tau3OverTau2  = new TH1D("FatJet1_Tau3OverTau2","FatJet1_Tau3OverTau2",100,0.0,1.0);
+
+TH1D *_FatJet2_pt  = new TH1D("FatJet2_pt","FatJet2_pt",200,0,1000);
+TH1D *_FatJet2_eta  = new TH1D("FatJet2_eta","FatJet2_eta",100,-5,5);
+TH1D *_FatJet2_phi  = new TH1D("FatJet2_phi","FatJet2_phi",100,-5,5);
+TH2D *_FatJet2_eta_phi = new TH2D("FatJet2_eta_phi","FatJet2_eta_phi",100,-5,5,100,-5,5);
+TH1D *_FatJet2_Mass  = new TH1D("FatJet2_Mass","FatJet2_Mass",500,0,500);
+TH1D *_FatJet2_MassSD  = new TH1D("FatJet2_MassSD","FatJet2_MassSD",500,0,500);
+TH1D *_FatJet2DDBTaggerV2  = new TH1D("FatJet2DDBTaggerV2","FatJet2DDBTaggerV2",100,0,1.0);
+TH1D *_FatJet2PNetMD_QCD  = new TH1D("FatJet2PNetMD_QCD","FatJet2PNetMD_QCD",100,0,1.0);
+TH1D *_FatJet2PNetMD_Xbb  = new TH1D("FatJet2PNetMD_Xbb","FatJet2PNetMD_Xbb",100,0,1.0);
+TH1D *_FatJet2PNetMD_Xcc  = new TH1D("FatJet2PNetMD_Xcc","FatJet2PNetMD_Xcc",100,0,1.0);
+TH1D *_FatJet2PNetMD_Xqq  = new TH1D("FatJet2PNetMD_Xqq","FatJet2PNetMD_Xqq",100,0,1.0);
+TH1D *_FatJet2PNetHbbvsQCD  = new TH1D("FatJet2PNetHbbvsQCD","FatJet2PNetHbbvsQCD",100,0,1.0);
+TH1D *_FatJet2PNet_QCD  = new TH1D("FatJet2PNet_QCD","FatJet2PNet_QCD",100,0,1.0);
+TH1D *_FatJet2PNet_TvsQCD  = new TH1D("FatJet2PNet_TvsQCD","FatJet2PNet_TvsQCD",100,0,1.0);
+TH1D *_FatJet2PNet_WvsQCD  = new TH1D("FatJet2PNet_WvsQCD","FatJet2PNet_WvsQCD",100,0,1.0);
+TH1D *_FatJet2PNet_ZvsQCD  = new TH1D("FatJet2PNet_ZvsQCD","FatJet2PNet_ZvsQCD",100,0,1.0);
+TH1D *_FatJet2PNetMD_Xbb_Modified_as_in_AN_Xbb  = new TH1D("FatJet2PNetMD_Xbb_Modified_as_in_AN_Xbb","FatJet2PNetMD_Xbb_Modified_as_in_AN_Xbb",100,0,1.0);
+TH1D *_FatJet2PNet_mass  = new TH1D("FatJet2PNet_mass","FatJet2PNet_mass",500,0,500);
+TH1D *_FatJet2_Tau3OverTau2  = new TH1D("FatJet2_Tau3OverTau2","FatJet2_Tau3OverTau2",100,0.0,1.0);
+
+TH1D *_MET = new TH1D("MET","MET",100,0,500);
+
+/*
+Float_t Lower_m[18]   = {0,50,100,150,200,250,300,350,400,450,500,600,700,800,1000,1200,1600,2000};
+Float_t Lower_eta[25] = {0.0,0.2,0.4,0.6,0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4,2.6,2.8,3.0,3.2,3.4,3.6,3.8,4.2,4.6,5.0,5.5,7.0};
+TH2D *_VBF_mINV_dETA = new TH2D("UnOrd_VBF_mINV_dETA","UnOrd_VBF_mINV_dETA",24,Lower_eta,17,Lower_m);
+
+Float_t Lower_btg1[] ={0.0, 0.05, 0.10, 0.15, 0.20, 0.28, 0.36, 0.46, 0.60, 0.70, 0.80, 0.85, 0.90, 0.93, 0.97, 1.00};
+Float_t Lower_btg2[] ={0.0, 0.05, 0.10, 0.15, 0.20, 0.28, 0.36, 0.46, 0.60, 0.70, 0.80, 0.85, 0.90, 0.93, 0.97, 1.00};
+TH2D * _BTG1_BTG2 = new TH2D("UnOrd_BTG1_BTG2","UnOrd_BTG1_BTG2",15,Lower_btg1,15,Lower_btg2);
+TH2D * _HBTG_btg_DeepJet_matchedtoL3BTag_2D = new TH2D("HBTG_btg_DeepJet_matchedtoL3BTag_2D","HBTG_btg_DeepJet_matchedtoL3BTag_2D",15,Lower_btg1,15,Lower_btg2);
+*/
+

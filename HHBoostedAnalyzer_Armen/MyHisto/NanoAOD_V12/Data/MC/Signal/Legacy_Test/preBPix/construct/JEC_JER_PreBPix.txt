@@ -1,0 +1,25 @@
+gSystem->Load("libFWCoreFWLite.so");
+
+// ********************************************************* JEC
+
+vector<JetCorrectorParameters> vPar;
+vPar.push_back(JetCorrectorParameters("/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23_V1_MC/Summer23Prompt23_V1_MC_L2Relative_AK4PFPuppi.txt"));
+FactorizedJetCorrector*  corrector_AK4 = new FactorizedJetCorrector(vPar);
+
+vector<JetCorrectorParameters> vParAK8;
+vParAK8.push_back(JetCorrectorParameters("/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23_V1_MC/Summer23Prompt23_V1_MC_L2Relative_AK8PFPuppi.txt"));
+FactorizedJetCorrector*  corrector_AK8 = new FactorizedJetCorrector(vParAK8);
+/*
+// ********************************************************* JER   (should be added when available)
+std::string resptstr =    "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_PtResolution_AK4PFPuppi.txt";
+std::string resptstr_sf = "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_SF_AK4PFPuppi.txt";
+JME::JetResolution resolution_pt = JME::JetResolution(resptstr.c_str());
+JME::JetResolutionScaleFactor resolution_pt_sf = JME::JetResolutionScaleFactor(resptstr_sf.c_str());
+
+std::string resptstr_AK8 =    "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_PtResolution_AK8PFPuppi.txt";
+std::string resptstr_sf_AK8 = "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_SF_AK8PFPuppi.txt";
+JME::JetResolution resolution_pt_AK8 = JME::JetResolution(resptstr_AK8.c_str());
+JME::JetResolutionScaleFactor resolution_pt_sf_AK8 = JME::JetResolutionScaleFactor(resptstr_sf_AK8.c_str());
+
+// *********************************************************
+*/

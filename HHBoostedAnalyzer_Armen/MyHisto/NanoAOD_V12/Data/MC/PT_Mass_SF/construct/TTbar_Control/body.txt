@@ -1,0 +1,175 @@
+TH1F  *NEvents = (TH1F*)f1->Get("NEvents");
+double SumGenWeights = NEvents->GetBinContent(1);
+TTree *InputTree = (TTree*)f1->Get("tree");
+
+Float_t    weight;
+UInt_t     run;
+UInt_t     lumi;
+Float_t    npu;
+Int_t      isVBFtag;
+
+Bool_t     HLT_Ele32_WPTight_Gsf;
+Bool_t     HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40;
+Bool_t     HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PFAK8ParticleNetBB0p35;
+
+Bool_t     HLT_Mu50;
+Bool_t     HLT_IsoMu27;
+Bool_t     HLT_IsoMu50_AK8PFJet230_SoftDropMass40;
+Bool_t     HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PFAK8ParticleNetBB0p35;
+
+Bool_t     HLT_AK8PFJet230_SoftDropMass40;
+
+Float_t    MET;
+
+Float_t    lep1_Pt;
+Float_t    lep1_Eta;
+Float_t    lep1_Phi;
+Int_t      lep1_Id;
+
+Float_t    lep2_Pt;
+Float_t    lep2_Eta;
+Float_t    lep2_Phi;
+Int_t      lep2_Id;
+
+Float_t    FatJet1_pt;
+Float_t    FatJet1_eta;
+Float_t    FatJet1_phi;
+Float_t    FatJet1_Mass;
+Float_t    FatJet1_MassSD;
+Float_t    FatJet1DDBTaggerV2;
+Float_t    FatJet1PNetMD_QCD;
+Float_t    FatJet1PNetMD_Xbb;
+Float_t    FatJet1PNetMD_Xcc;
+Float_t    FatJet1PNetMD_Xqq;
+Float_t    FatJet1PNetHbbvsQCD;
+Float_t    FatJet1PNet_QCD;
+Float_t    FatJet1PNet_TvsQCD;
+Float_t    FatJet1PNet_WvsQCD;
+Float_t    FatJet1PNet_ZvsQCD;
+Float_t    FatJet1PNet_mass;
+Float_t    FatJet1Tau3OverTau2;
+
+Float_t    FatJet2_pt;
+Float_t    FatJet2_eta;
+Float_t    FatJet2_phi;
+Float_t    FatJet2_Mass;
+Float_t    FatJet2_MassSD;
+Float_t    FatJet2DDBTaggerV2;
+Float_t    FatJet2PNetMD_QCD;
+Float_t    FatJet2PNetMD_Xbb;
+Float_t    FatJet2PNetMD_Xcc;
+Float_t    FatJet2PNetMD_Xqq;
+Float_t    FatJet2PNetHbbvsQCD;
+Float_t    FatJet2PNet_QCD;
+Float_t    FatJet2PNet_TvsQCD;
+Float_t    FatJet2PNet_WvsQCD;
+Float_t    FatJet2PNet_ZvsQCD;
+Float_t    FatJet2PNet_mass;
+Float_t    FatJet2Tau3OverTau2;
+
+Float_t    FatJet3_pt;
+Float_t    FatJet3_MassSD;
+
+
+InputTree->SetBranchAddress("weight",&weight);
+InputTree->SetBranchAddress("run",&run);
+InputTree->SetBranchAddress("lumi",&lumi);
+InputTree->SetBranchAddress("npu",&npu);
+InputTree->SetBranchAddress("isVBFtag",&isVBFtag);
+
+InputTree->SetBranchAddress("HLT_Ele32_WPTight_Gsf", &HLT_Ele32_WPTight_Gsf);
+InputTree->SetBranchAddress("HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40", &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40);
+InputTree->SetBranchAddress("HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PFAK8ParticleNetBB0p35", &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PFAK8ParticleNetBB0p35);
+
+InputTree->SetBranchAddress("HLT_Mu50", &HLT_Mu50);
+InputTree->SetBranchAddress("HLT_IsoMu27", &HLT_IsoMu27);
+InputTree->SetBranchAddress("HLT_IsoMu50_AK8PFJet230_SoftDropMass40", &HLT_IsoMu50_AK8PFJet230_SoftDropMass40);
+InputTree->SetBranchAddress("HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PFAK8ParticleNetBB0p35", &HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PFAK8ParticleNetBB0p35);
+
+InputTree->SetBranchAddress("HLT_AK8PFJet230_SoftDropMass40", &HLT_AK8PFJet230_SoftDropMass40);
+
+InputTree->SetBranchAddress("lep1Pt",&lep1_Pt);
+InputTree->SetBranchAddress("lep1Eta",&lep1_Eta);
+InputTree->SetBranchAddress("lep1Phi",&lep1_Phi);
+InputTree->SetBranchAddress("lep1Id",&lep1_Id);
+
+InputTree->SetBranchAddress("lep2Pt",&lep2_Pt);
+InputTree->SetBranchAddress("lep2Eta",&lep2_Eta);
+InputTree->SetBranchAddress("lep2Phi",&lep2_Phi);
+InputTree->SetBranchAddress("lep2Id",&lep2_Id);
+
+InputTree->SetBranchAddress("MET",&MET);
+
+InputTree->SetBranchAddress("fatJet1Pt",&FatJet1_pt);
+InputTree->SetBranchAddress("fatJet1Eta",&FatJet1_eta);
+InputTree->SetBranchAddress("fatJet1Phi",&FatJet1_phi);
+InputTree->SetBranchAddress("fatJet1Mass",&FatJet1_Mass);
+InputTree->SetBranchAddress("fatJet1MassSD",&FatJet1_MassSD);
+InputTree->SetBranchAddress("fatJet1DDBTaggerV2",&FatJet1DDBTaggerV2);
+InputTree->SetBranchAddress("fatJet1PNetMD_QCD",&FatJet1PNetMD_QCD);
+InputTree->SetBranchAddress("fatJet1PNetMD_Xbb",&FatJet1PNetMD_Xbb);
+InputTree->SetBranchAddress("fatJet1PNetMD_Xcc",&FatJet1PNetMD_Xcc);
+InputTree->SetBranchAddress("fatJet1PNetMD_Xqq",&FatJet1PNetMD_Xqq);
+InputTree->SetBranchAddress("fatJet1PNetHbbvsQCD",&FatJet1PNetHbbvsQCD);
+InputTree->SetBranchAddress("fatJet1PNet_QCD",&FatJet1PNet_QCD);
+InputTree->SetBranchAddress("fatJet1PNet_TvsQCD",&FatJet1PNet_TvsQCD);
+InputTree->SetBranchAddress("fatJet1PNet_WvsQCD",&FatJet1PNet_WvsQCD);
+InputTree->SetBranchAddress("fatJet1PNet_ZvsQCD",&FatJet1PNet_ZvsQCD);
+InputTree->SetBranchAddress("fatJet1PNet_mass",&FatJet1PNet_mass);
+InputTree->SetBranchAddress("fatJet1Tau3OverTau2",&FatJet1Tau3OverTau2);
+
+InputTree->SetBranchAddress("fatJet2Pt",&FatJet2_pt);
+InputTree->SetBranchAddress("fatJet2Eta",&FatJet2_eta);
+InputTree->SetBranchAddress("fatJet2Phi",&FatJet2_phi);
+InputTree->SetBranchAddress("fatJet2Mass",&FatJet2_Mass);
+InputTree->SetBranchAddress("fatJet2MassSD",&FatJet2_MassSD);
+InputTree->SetBranchAddress("fatJet2DDBTaggerV2",&FatJet2DDBTaggerV2);
+InputTree->SetBranchAddress("fatJet2PNetMD_QCD",&FatJet2PNetMD_QCD);
+InputTree->SetBranchAddress("fatJet2PNetMD_Xbb",&FatJet2PNetMD_Xbb);
+InputTree->SetBranchAddress("fatJet2PNetMD_Xcc",&FatJet2PNetMD_Xcc);
+InputTree->SetBranchAddress("fatJet2PNetMD_Xqq",&FatJet2PNetMD_Xqq);
+InputTree->SetBranchAddress("fatJet2PNetHbbvsQCD",&FatJet2PNetHbbvsQCD);
+InputTree->SetBranchAddress("fatJet2PNet_QCD",&FatJet2PNet_QCD);
+InputTree->SetBranchAddress("fatJet2PNet_TvsQCD",&FatJet2PNet_TvsQCD);
+InputTree->SetBranchAddress("fatJet2PNet_WvsQCD",&FatJet2PNet_WvsQCD);
+InputTree->SetBranchAddress("fatJet2PNet_ZvsQCD",&FatJet2PNet_ZvsQCD);
+InputTree->SetBranchAddress("fatJet2PNet_mass",&FatJet2PNet_mass);
+InputTree->SetBranchAddress("fatJet2Tau3OverTau2",&FatJet2Tau3OverTau2);
+
+InputTree->SetBranchAddress("fatJet3Pt",&FatJet3_pt);
+InputTree->SetBranchAddress("fatJet3MassSD",&FatJet3_MassSD);
+
+  // Events Loop
+  for(int i=0;i<InputTree->GetEntries();i++)
+   {
+    InputTree->GetEntry(i);
+// ********************************************************** HLT Selection
+//   if(HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35==0) continue;
+//   if(HLT_AK8PFJet230_SoftDropMass40==0) continue;
+
+// ********************************************************** FatJets Selection
+//    if(FatJet1_pt<300 || FatJet2_pt<300 || FatJet1_MassSD<40 || FatJet2_MassSD<40) continue;
+//    if(FatJet1_pt<250 || FatJet2_pt<250 || FatJet1_MassSD<50 || FatJet2_MassSD<50 || FatJet1PNetMD_Xbb<0.8) continue;
+//    if(FatJet1_pt<300 || FatJet2_pt<300 || FatJet1_MassSD<40 || FatJet2_MassSD<40 || FatJet1PNetMD_Xbb<0.8) continue;
+//    if(FatJet1_pt<300 || FatJet2_pt<300 || FatJet1_MassSD<50 || FatJet2_MassSD<50 || FatJet1PNetMD_Xbb<0.8) continue;
+    // Control region
+//    if(FatJet1_MassSD<105 || FatJet1_MassSD>135) continue;
+//    if(FatJet2_MassSD>95  && FatJet2_MassSD<135) continue;
+
+   if(HLT_IsoMu27==0 || HLT_Mu50==0) continue;
+//   if(HLT_Ele32_WPTight_Gsf==0) continue;
+
+// ********************************************************** VBFTag veto
+   if(isVBFtag) continue;
+
+   if (fabs(lep1_Id) !=13 ) continue;
+//   if (fabs(lep1_Id) !=11 ) continue;
+
+   if (lep1_Pt < 55 ) continue;
+//   if (lep1_Pt >  150 ) continue;
+//   if (lep2_Pt >  0 ) continue;
+
+   if(FatJet2_pt > 180 || FatJet3_pt > 180 ) continue;
+   if(FatJet1_MassSD < 80) continue;
+//   if((FatJet2_pt > 130 && FatJet2_MassSD > 30) || (FatJet3_pt > 130 && FatJet3_MassSD > 30)) continue;
+// ********************************************************** weight

@@ -1,0 +1,11 @@
+    if(fatJet1_pt < 250 || fatJet2_pt < 250) continue;
+
+    if(fatJet1_msoftdrop < 100 || fatJet1_msoftdrop > 150) continue;
+    if(fatJet2_msoftdrop > 100 && fatJet2_msoftdrop < 150) continue;
+
+    if(fatJet1_particleNet_Xbb_Legacy < 0.8) continue;
+    if(fatJet2_particleNet_Xbb_Legacy < 0.8) continue;
+
+
+//   if(fatJet1_particleNet_XbbVsQCD<0.4) continue;
+//   if(fatJet2_particleNet_XbbVsQCD<0.8) continue;

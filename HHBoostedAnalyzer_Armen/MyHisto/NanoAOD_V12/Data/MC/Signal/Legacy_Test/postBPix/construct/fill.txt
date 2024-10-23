@@ -1,0 +1,264 @@
+   double PU_weight=PU_Rew[(int)npu];
+   weight = weight*PU_weight;
+
+   // Add Trigger PT_Mass and PNet Scale Factors
+   double Eff_Data_1 = 0;
+   double Eff_MC_1   = 0;
+   double Eff_Data_BTG_1 = 0;
+   double Eff_MC_BTG_1   = 0;
+
+   double Eff_Data_1_Legacy = 0;
+   double Eff_MC_1_Legacy   = 0;
+   double Eff_Data_BTG_1_Legacy = 0;
+   double Eff_MC_BTG_1_Legacy   = 0;
+
+   if(matched_to_AK8PFJet230_SoftDropMass40_1)
+     {
+      Int_t bin_PT_1    = _Eff_Data->GetXaxis()->FindBin(fatJet_pt[Idx_1]);
+      Int_t bin_Mass_1  = _Eff_Data->GetYaxis()->FindBin(fatJet_msoftdrop[Idx_1]);
+      Eff_Data_1 = 1.0;
+      if(_Eff_Data->GetBinContent(bin_PT_1,bin_Mass_1) > 0)
+         Eff_Data_1        = _Eff_Data->GetBinContent(bin_PT_1,bin_Mass_1);
+      Eff_MC_1 =1.0;
+      if(_Eff_MC->GetBinContent(bin_PT_1,bin_Mass_1) >0)
+         Eff_MC_1          = _Eff_MC->GetBinContent(bin_PT_1,bin_Mass_1);
+      Eff_Data_1_Legacy = Eff_Data_1;
+      Eff_MC_1_Legacy   = Eff_MC_1;
+
+      Int_t bin_BTG_1 = _BTG_Eff_Data->GetXaxis()->FindBin(fatJet_particleNet_XbbVsQCD[Idx_1]);
+      Eff_Data_BTG_1  = _BTG_Eff_Data->GetBinContent(bin_BTG_1);
+      Eff_MC_BTG_1    = _BTG_Eff_MC->GetBinContent(bin_BTG_1);
+
+      Int_t bin_BTG_1_Legacy = _BTG_Eff_Data_Legacy->GetXaxis()->FindBin(fatJet_particleNet_Xbb_Legacy[Idx_1]);
+      Eff_Data_BTG_1_Legacy  = _BTG_Eff_Data_Legacy->GetBinContent(bin_BTG_1_Legacy);
+      Eff_MC_BTG_1_Legacy    = _BTG_Eff_MC_Legacy->GetBinContent(bin_BTG_1_Legacy);
+
+      Eff_Data_1 = Eff_Data_1 * Eff_Data_BTG_1;
+      Eff_MC_1 = Eff_MC_1 * Eff_MC_BTG_1;
+      Eff_Data_1_Legacy = Eff_Data_1_Legacy * Eff_Data_BTG_1_Legacy;
+      Eff_MC_1_Legacy = Eff_MC_1_Legacy * Eff_MC_BTG_1_Legacy;
+     }
+
+   double Eff_Data_2 = 0;
+   double Eff_MC_2   = 0;
+   double Eff_Data_BTG_2 = 0;
+   double Eff_MC_BTG_2   = 0;
+
+   double Eff_Data_2_Legacy = 0;
+   double Eff_MC_2_Legacy   = 0;
+   double Eff_Data_BTG_2_Legacy = 0;
+   double Eff_MC_BTG_2_Legacy   = 0;
+   if(matched_to_AK8PFJet230_SoftDropMass40_2)
+     {
+      Int_t bin_PT_2    = _Eff_Data->GetXaxis()->FindBin(fatJet_pt[Idx_2]);
+      Int_t bin_Mass_2  = _Eff_Data->GetYaxis()->FindBin(fatJet_msoftdrop[Idx_2]);
+      Eff_Data_2=1.0;
+      if(_Eff_Data->GetBinContent(bin_PT_2,bin_Mass_2) >0)
+        Eff_Data_2        = _Eff_Data->GetBinContent(bin_PT_2,bin_Mass_2);
+      Eff_MC_2=1.0;
+      if(_Eff_MC->GetBinContent(bin_PT_2,bin_Mass_2) >0)
+        Eff_MC_2          = _Eff_MC->GetBinContent(bin_PT_2,bin_Mass_2);
+      Eff_Data_2_Legacy = Eff_Data_2;
+      Eff_MC_2_Legacy   = Eff_MC_2;
+
+      Int_t bin_BTG_2 = _BTG_Eff_Data->GetXaxis()->FindBin(fatJet_particleNet_XbbVsQCD[Idx_2]);
+      Eff_Data_BTG_2  = _BTG_Eff_Data->GetBinContent(bin_BTG_2);
+      Eff_MC_BTG_2    = _BTG_Eff_MC->GetBinContent(bin_BTG_2);
+
+      Int_t bin_BTG_2_Legacy = _BTG_Eff_Data_Legacy->GetXaxis()->FindBin(fatJet_particleNet_Xbb_Legacy[Idx_2]);
+      Eff_Data_BTG_2_Legacy  = _BTG_Eff_Data_Legacy->GetBinContent(bin_BTG_2_Legacy);
+      Eff_MC_BTG_2_Legacy    = _BTG_Eff_MC_Legacy->GetBinContent(bin_BTG_2_Legacy);
+
+      Eff_Data_2 = Eff_Data_2 * Eff_Data_BTG_2;
+      Eff_MC_2 = Eff_MC_2 * Eff_MC_BTG_2;
+      Eff_Data_2_Legacy = Eff_Data_2_Legacy * Eff_Data_BTG_2_Legacy;
+      Eff_MC_2_Legacy = Eff_MC_2_Legacy * Eff_MC_BTG_2_Legacy;
+     }
+
+   double Tot_Data = 1 - (1 - Eff_Data_1)*(1 - Eff_Data_2);
+   double Tot_MC   = 1 - (1 - Eff_MC_1)*(1 - Eff_MC_2);
+   double PT_Mass_BTG_SF = Tot_Data/Tot_MC;
+
+   double Tot_Data_Legacy = 1 - (1 - Eff_Data_1_Legacy)*(1 - Eff_Data_2_Legacy);
+   double Tot_MC_Legacy   = 1 - (1 - Eff_MC_1_Legacy)*(1 - Eff_MC_2_Legacy);
+   double PT_Mass_BTG_SF_Legacy = Tot_Data_Legacy/Tot_MC_Legacy;
+
+   if(PT_Mass_BTG_SF > 0)
+       weight = weight*PT_Mass_BTG_SF;
+
+//   if (weight > 300.0) continue;
+
+// ********************************************** Final Tree Variables
+   T_weight = weight;
+   T_Trig_SF = PT_Mass_BTG_SF;
+   T_Trig_SF_Legacy = PT_Mass_BTG_SF_Legacy;
+
+   T_fatJet1_pt = fatJet_pt[Idx_1];
+   T_fatJet1_eta = fatJet_eta[Idx_1];
+   T_fatJet1_phi = fatJet_phi[Idx_1];
+   T_fatJet1_mass = fatJet_mass[Idx_1];
+   T_fatJet1_msoftdrop = fatJet_msoftdrop[Idx_1];
+   T_fatJet1_btagDDBvLV2 = fatJet_btagDDBvLV2[Idx_1];
+   T_fatJet1_btagDeepB = fatJet_btagDeepB[Idx_1];
+   T_fatJet1_particleNetWithMass_H4qvsQCD = fatJet_particleNetWithMass_H4qvsQCD[Idx_1];
+   T_fatJet1_particleNetWithMass_HbbvsQCD = fatJet_particleNetWithMass_HbbvsQCD[Idx_1];
+   T_fatJet1_particleNetWithMass_QCD = fatJet_particleNetWithMass_QCD[Idx_1];
+   T_fatJet1_particleNetWithMass_TvsQCD = fatJet_particleNetWithMass_TvsQCD[Idx_1];
+   T_fatJet1_particleNetWithMass_WvsQCD = fatJet_particleNetWithMass_WvsQCD[Idx_1];
+   T_fatJet1_particleNetWithMass_ZvsQCD = fatJet_particleNetWithMass_ZvsQCD[Idx_1];
+   T_fatJet1_particleNet_QCD = fatJet_particleNet_QCD[Idx_1];
+   T_fatJet1_particleNet_QCD0HF = fatJet_particleNet_QCD0HF[Idx_1];
+   T_fatJet1_particleNet_QCD1HF = fatJet_particleNet_QCD1HF[Idx_1];
+   T_fatJet1_particleNet_QCD2HF = fatJet_particleNet_QCD2HF[Idx_1];
+   T_fatJet1_particleNet_XbbVsQCD = fatJet_particleNet_XbbVsQCD[Idx_1];
+   T_fatJet1_particleNet_XccVsQCD = fatJet_particleNet_XccVsQCD[Idx_1];
+   T_fatJet1_particleNet_XggVsQCD = fatJet_particleNet_XggVsQCD[Idx_1];
+   T_fatJet1_particleNet_XqqVsQCD = fatJet_particleNet_XqqVsQCD[Idx_1];
+   T_fatJet1_particleNet_massCorr = fatJet_mass[Idx_1]*fatJet_particleNet_massCorr[Idx_1];
+   T_fatJet1_n2b1 = fatJet_n2b1[Idx_1];
+   T_fatJet1_n3b1 = fatJet_n3b1[Idx_1];
+   T_fatJet1_Tau3OverTau2 = fatJet_Tau3OverTau2[Idx_1];
+   T_fatJet1_HasMuon = fatJet_HasMuon[Idx_1];
+   T_fatJet1_HasElectron = fatJet_HasElectron[Idx_1];
+   T_fatJet1_HasBJetMedium = fatJet_HasBJetMedium[Idx_1];
+   T_fatJet1_OppositeHemisphereHasBJet = fatJet_OppositeHemisphereHasBJet[Idx_1];
+   T_fatJet1_subJetIdx1_pt   = fatJet_subJetIdx1_pt[Idx_1];
+   T_fatJet1_subJetIdx1_eta  = fatJet_subJetIdx1_eta[Idx_1];
+   T_fatJet1_subJetIdx1_phi  = fatJet_subJetIdx1_phi[Idx_1];
+   T_fatJet1_subJetIdx1_mass = fatJet_subJetIdx1_mass[Idx_1];
+   T_fatJet1_subJetIdx2_pt   = fatJet_subJetIdx2_pt[Idx_1];
+   T_fatJet1_subJetIdx2_eta  = fatJet_subJetIdx2_eta[Idx_1];
+   T_fatJet1_subJetIdx2_phi  = fatJet_subJetIdx2_phi[Idx_1];
+   T_fatJet1_subJetIdx2_mass = fatJet_subJetIdx2_mass[Idx_1];
+   T_fatJet1_particleNet_Xbb_Legacy = fatJet_particleNet_Xbb_Legacy[Idx_1];
+
+   T_fatJet2_pt = fatJet_pt[Idx_2];
+   T_fatJet2_eta = fatJet_eta[Idx_2];
+   T_fatJet2_phi = fatJet_phi[Idx_2];
+   T_fatJet2_mass = fatJet_mass[Idx_2];
+   T_fatJet2_msoftdrop = fatJet_msoftdrop[Idx_2];
+   T_fatJet2_btagDDBvLV2 = fatJet_btagDDBvLV2[Idx_2];
+   T_fatJet2_btagDeepB = fatJet_btagDeepB[Idx_2];
+   T_fatJet2_particleNetWithMass_H4qvsQCD = fatJet_particleNetWithMass_H4qvsQCD[Idx_2];
+   T_fatJet2_particleNetWithMass_HbbvsQCD = fatJet_particleNetWithMass_HbbvsQCD[Idx_2];
+   T_fatJet2_particleNetWithMass_QCD = fatJet_particleNetWithMass_QCD[Idx_2];
+   T_fatJet2_particleNetWithMass_TvsQCD = fatJet_particleNetWithMass_TvsQCD[Idx_2];
+   T_fatJet2_particleNetWithMass_WvsQCD = fatJet_particleNetWithMass_WvsQCD[Idx_2];
+   T_fatJet2_particleNetWithMass_ZvsQCD = fatJet_particleNetWithMass_ZvsQCD[Idx_2];
+   T_fatJet2_particleNet_QCD = fatJet_particleNet_QCD[Idx_2];
+   T_fatJet2_particleNet_QCD0HF = fatJet_particleNet_QCD0HF[Idx_2];
+   T_fatJet2_particleNet_QCD1HF = fatJet_particleNet_QCD1HF[Idx_2];
+   T_fatJet2_particleNet_QCD2HF = fatJet_particleNet_QCD2HF[Idx_2];
+   T_fatJet2_particleNet_XbbVsQCD = fatJet_particleNet_XbbVsQCD[Idx_2];
+   T_fatJet2_particleNet_XccVsQCD = fatJet_particleNet_XccVsQCD[Idx_2];
+   T_fatJet2_particleNet_XggVsQCD = fatJet_particleNet_XggVsQCD[Idx_2];
+   T_fatJet2_particleNet_XqqVsQCD = fatJet_particleNet_XqqVsQCD[Idx_2];
+   T_fatJet2_particleNet_massCorr = fatJet_mass[Idx_2]*fatJet_particleNet_massCorr[Idx_2];
+   T_fatJet2_n2b1 = fatJet_n2b1[Idx_2];
+   T_fatJet2_n3b1 = fatJet_n3b1[Idx_2];
+   T_fatJet2_Tau3OverTau2 = fatJet_Tau3OverTau2[Idx_2];
+   T_fatJet2_HasMuon = fatJet_HasMuon[Idx_2];
+   T_fatJet2_HasElectron = fatJet_HasElectron[Idx_2];
+   T_fatJet2_HasBJetMedium = fatJet_HasBJetMedium[Idx_2];
+   T_fatJet2_OppositeHemisphereHasBJet = fatJet_OppositeHemisphereHasBJet[Idx_2];
+   T_fatJet2_subJetIdx1_pt   = fatJet_subJetIdx1_pt[Idx_2];
+   T_fatJet2_subJetIdx1_eta  = fatJet_subJetIdx1_eta[Idx_2];
+   T_fatJet2_subJetIdx1_phi  = fatJet_subJetIdx1_phi[Idx_2];
+   T_fatJet2_subJetIdx1_mass = fatJet_subJetIdx1_mass[Idx_2];
+   T_fatJet2_subJetIdx2_pt   = fatJet_subJetIdx2_pt[Idx_2];
+   T_fatJet2_subJetIdx2_eta  = fatJet_subJetIdx2_eta[Idx_2];
+   T_fatJet2_subJetIdx2_phi  = fatJet_subJetIdx2_phi[Idx_2];
+   T_fatJet2_subJetIdx2_mass = fatJet_subJetIdx2_mass[Idx_2];
+   T_fatJet2_particleNet_Xbb_Legacy = fatJet_particleNet_Xbb_Legacy[Idx_2];
+
+   T_fatJet3_pt = fatJet_pt[Idx_3];
+   T_fatJet3_eta = fatJet_eta[Idx_3];
+   T_fatJet3_phi = fatJet_phi[Idx_3];
+   T_fatJet3_mass = fatJet_mass[Idx_3];
+   T_fatJet3_msoftdrop = fatJet_msoftdrop[Idx_3];
+   T_fatJet3_particleNet_XbbVsQCD = fatJet_particleNet_XbbVsQCD[Idx_3];
+
+   // Other variables
+   T_NJets = NJets;
+   T_nBTaggedJets = nBTaggedJets;
+   T_MET = MET;
+   // jj-system
+   TLorentzVector p4_fatJet1,p4_fatJet2;
+   p4_fatJet1.SetPtEtaPhiM(fatJet_pt[Idx_1],fatJet_eta[Idx_1],fatJet_phi[Idx_1],fatJet_msoftdrop[Idx_1]);
+   p4_fatJet2.SetPtEtaPhiM(fatJet_pt[Idx_2],fatJet_eta[Idx_2],fatJet_phi[Idx_2],fatJet_msoftdrop[Idx_2]);
+   TLorentzVector p4_System = p4_fatJet1 + p4_fatJet2;
+   T_ptFJ12   = p4_System.Pt();
+   T_etaFJ12  = p4_System.Eta();
+   T_phiFJ12  = p4_System.Phi();
+   T_massFJ12 = p4_System.M();
+   T_detaFJ12 = fabs(fatJet_eta[Idx_1] - fatJet_eta[Idx_2]);
+   T_dphiFJ12 = phi_dist(fatJet_phi[Idx_1],fatJet_phi[Idx_2]);
+   T_dRFJ12   = sqrt(T_detaFJ12*T_detaFJ12 + T_dphiFJ12*T_dphiFJ12);
+   T_FJ1_PtOverMFJ12    = T_fatJet1_pt/T_massFJ12;
+   T_FJ2_PtOverMFJ12    = T_fatJet2_pt/T_massFJ12;
+   T_FJ1_PtOverMSDFJ1   = T_fatJet1_pt/T_fatJet1_msoftdrop;
+   T_FJ2_PtOverMSDFJ2   = T_fatJet2_pt/T_fatJet2_msoftdrop;
+   T_ptFJ1OverptFJ2     = T_fatJet1_pt/T_fatJet2_pt;
+   T_massFJ1OvermassFJ2 = T_fatJet1_msoftdrop/T_fatJet2_msoftdrop;
+   T_ptak4J1     = ak4J_pt[0];
+   T_ptak4J2     = ak4J_pt[1];
+   T_dRak4J1FJ1 = -99.0;
+   T_dRak4J1FJ2 = -99.0;
+   if(ak4J_pt[0] >40)
+    {
+     T_dRak4J1FJ1 = sqrt( pow((T_fatJet1_eta - ak4J_eta[0]),2) + pow(phi_dist(T_fatJet1_phi,ak4J_phi[0]),2)  );
+     T_dRak4J1FJ2 = sqrt( pow((T_fatJet2_eta - ak4J_eta[0]),2) + pow(phi_dist(T_fatJet2_phi,ak4J_phi[0]),2)  );
+    }
+   T_dRak4J2FJ1 = -99.0;
+   T_dRak4J2FJ2 = -99.0;
+   if(ak4J_pt[1] >40)
+    {
+     T_dRak4J2FJ1 = sqrt( pow((T_fatJet1_eta - ak4J_eta[1]),2) + pow(phi_dist(T_fatJet1_phi,ak4J_phi[1]),2)  );
+     T_dRak4J2FJ2 = sqrt( pow((T_fatJet2_eta - ak4J_eta[1]),2) + pow(phi_dist(T_fatJet2_phi,ak4J_phi[1]),2)  );
+    }
+
+   // Mixing Angle hh
+   p4_fatJet1.Boost(-p4_System.BoostVector());
+   p4_fatJet2.Boost(-p4_System.BoostVector());
+   TVector3 P3_fatJet1(p4_fatJet1.Px(),p4_fatJet1.Py(),p4_fatJet1.Pz());
+   TVector3 P3_fatJet2(p4_fatJet2.Px(),p4_fatJet2.Py(),p4_fatJet2.Pz());
+   TVector3 System_Direction(p4_System.Px(),p4_System.Py(),p4_System.Pz());
+   double alpha_FatJets = min(P3_fatJet1.Angle(System_Direction),P3_fatJet2.Angle(System_Direction));
+   T_alpha_FJ12 = alpha_FatJets;
+
+   // Mixing Angle h1
+   TLorentzVector p4_fatJet1_subJet1,p4_fatJet1_subJet2;
+   p4_fatJet1_subJet1.SetPtEtaPhiM(T_fatJet1_subJetIdx1_pt, T_fatJet1_subJetIdx1_eta, T_fatJet1_subJetIdx1_phi, T_fatJet1_subJetIdx1_mass);
+   p4_fatJet1_subJet2.SetPtEtaPhiM(T_fatJet1_subJetIdx2_pt, T_fatJet1_subJetIdx2_eta, T_fatJet1_subJetIdx2_phi, T_fatJet1_subJetIdx2_mass);
+   TLorentzVector p4_fatJet1_subJets_system = p4_fatJet1_subJet1 + p4_fatJet1_subJet2;
+   p4_fatJet1_subJet1.Boost(-p4_fatJet1_subJets_system.BoostVector());
+   p4_fatJet1_subJet2.Boost(-p4_fatJet1_subJets_system.BoostVector());
+   TVector3 P3_fatJet1_SubJ1(p4_fatJet1_subJet1.Px(), p4_fatJet1_subJet1.Py(), p4_fatJet1_subJet1.Pz());
+   TVector3 P3_fatJet1_SubJ2(p4_fatJet1_subJet2.Px(), p4_fatJet1_subJet2.Py(), p4_fatJet1_subJet2.Pz());
+   TVector3 fatJet1_SubJets_System_Direction(p4_fatJet1_subJets_system.Px(), p4_fatJet1_subJets_system.Py(), p4_fatJet1_subJets_system.Pz());
+   double fatJet1_subJets_alpha = min(P3_fatJet1_SubJ1.Angle(fatJet1_SubJets_System_Direction), P3_fatJet1_SubJ2.Angle(fatJet1_SubJets_System_Direction));
+   T_fatJet1_subJets_alpha = fatJet1_subJets_alpha;
+
+   // Mixing Angle h2
+   TLorentzVector p4_fatJet2_subJet1,p4_fatJet2_subJet2;
+   p4_fatJet2_subJet1.SetPtEtaPhiM(T_fatJet2_subJetIdx1_pt, T_fatJet2_subJetIdx1_eta, T_fatJet2_subJetIdx1_phi, T_fatJet2_subJetIdx1_mass);
+   p4_fatJet2_subJet2.SetPtEtaPhiM(T_fatJet2_subJetIdx2_pt, T_fatJet2_subJetIdx2_eta, T_fatJet2_subJetIdx2_phi, T_fatJet2_subJetIdx2_mass);
+   TLorentzVector p4_fatJet2_subJets_system = p4_fatJet2_subJet1 + p4_fatJet2_subJet2;
+   p4_fatJet2_subJet1.Boost(-p4_fatJet2_subJets_system.BoostVector());
+   p4_fatJet2_subJet2.Boost(-p4_fatJet2_subJets_system.BoostVector());
+   TVector3 P3_fatJet2_SubJ1(p4_fatJet2_subJet1.Px(), p4_fatJet2_subJet1.Py(), p4_fatJet2_subJet1.Pz());
+   TVector3 P3_fatJet2_SubJ2(p4_fatJet2_subJet2.Px(), p4_fatJet2_subJet2.Py(), p4_fatJet2_subJet2.Pz());
+   TVector3 fatJet2_SubJets_System_Direction(p4_fatJet2_subJets_system.Px(), p4_fatJet2_subJets_system.Py(), p4_fatJet2_subJets_system.Pz());
+   double fatJet2_subJets_alpha = min(P3_fatJet2_SubJ1.Angle(fatJet2_SubJets_System_Direction), P3_fatJet2_SubJ2.Angle(fatJet2_SubJets_System_Direction));
+   T_fatJet2_subJets_alpha = fatJet2_subJets_alpha;
+
+// ********************************************************** Fill the Tree
+   outputTree->Fill();
+
+ } // end event loop
+
+f->Write();
+
+}
+
+

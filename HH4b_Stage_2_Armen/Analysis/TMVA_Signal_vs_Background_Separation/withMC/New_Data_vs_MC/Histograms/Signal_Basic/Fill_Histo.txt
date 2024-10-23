@@ -1,0 +1,25 @@
+    _FatJet1_pt->Fill(fatJet1_pt,weight);
+    _FatJet1_eta->Fill(fatJet1_eta,weight);
+    _FatJet1_MassSD->Fill(fatJet1_msoftdrop,weight);
+    _FatJet1_Xbb->Fill(fatJet1_particleNet_XbbVsQCD,weight);
+    _FatJet1_TXbb->Fill(fatJet1_particleNet_Xbb_Legacy,weight);
+    _FatJet1_particleNet_QCD0HF->Fill(fatJet1_particleNet_QCD0HF,weight);
+    _FatJet1_particleNet_QCD1HF->Fill(fatJet1_particleNet_QCD1HF,weight);
+    _FatJet1_particleNet_QCD2HF->Fill(fatJet1_particleNet_QCD2HF,weight);
+    _FatJet1_Tau3OverTau2->Fill(fatJet1_Tau3OverTau2,weight);
+    _FJ1_PtOverMFJ12->Fill(FJ1_PtOverMFJ12,weight);
+
+    _FatJet2_pt->Fill(fatJet2_pt,weight);
+    _FatJet2_eta->Fill(fatJet2_eta,weight);
+    _FatJet2_MassSD->Fill(fatJet2_msoftdrop,weight);
+    _FatJet2_Xbb->Fill(fatJet2_particleNet_XbbVsQCD,weight);
+    _FatJet2_TXbb->Fill(fatJet2_particleNet_Xbb_Legacy,weight);
+    _FatJet2_Tau3OverTau2->Fill(fatJet2_Tau3OverTau2,weight);
+    _FJ2_PtOverMFJ12->Fill(FJ2_PtOverMFJ12,weight);
+
+    _MET->Fill(MET,weight);
+    _ptFJ12->Fill(ptFJ12,weight);
+    _etaFJ12->Fill(etaFJ12,weight);
+    _massFJ12->Fill(massFJ12,weight);
+    _ptFJ1OverptFJ2->Fill(ptFJ1OverptFJ2,weight);
+
