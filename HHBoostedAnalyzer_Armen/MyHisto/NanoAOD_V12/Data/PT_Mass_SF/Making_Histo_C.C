@@ -396,4 +396,5 @@ void Making_Histo_C() {
   } // end event loop
 
   f->Write();
+  std::cout << "Done. Writing to file Histograms_" + Run + ".root" << std::endl;
 }

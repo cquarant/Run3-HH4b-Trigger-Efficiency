@@ -518,4 +518,5 @@ void EGamma_Making_Histo_C() {
   } // end event loop
 
   f->Write();
+  std::cout << "Done. Written to EGamma_Histograms_" + Run + ".root" << std::endl;
 }

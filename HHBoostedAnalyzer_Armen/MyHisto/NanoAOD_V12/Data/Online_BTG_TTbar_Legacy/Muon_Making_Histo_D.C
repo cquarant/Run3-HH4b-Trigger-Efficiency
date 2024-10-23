@@ -480,4 +480,5 @@ void Muon_Making_Histo_D() {
   } // end event loop
 
   f->Write();
+  std::cout << "Done. Written to Muon_Histograms_" + Run + ".root" << std::endl;
 }
