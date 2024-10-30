@@ -20,7 +20,7 @@ QCD_HT_BINS = [
 
 def get_root_file_path(HT_low: str, HT_high: str, run: str) -> str:
     # TODO: Update this if needed
-    file_path = EOS_DATA_BASE / f"PreBPix/QCD_HT_{HT_low}to{HT_high}.root"
+    file_path = EOS_DATA_BASE / f"{run}/QCD_HT_{HT_low}to{HT_high}.root"
     return str(file_path)
 
 
@@ -92,7 +92,7 @@ double PU_Rew[100] = {{
 
 // ******************************************
 
-// #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
+// #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_{run}.txt"
 #include "HHBoostedAnalyzer_Armen/MyHisto/NanoAOD_V12/MC/parameters_{run}.txt"
 
 void Making_Histo_QCD_HT_{HT_low}to{HT_high}() {{
