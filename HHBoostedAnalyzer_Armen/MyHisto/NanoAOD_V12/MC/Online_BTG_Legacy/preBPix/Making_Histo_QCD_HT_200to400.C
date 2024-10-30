@@ -57,14 +57,17 @@ double PU_Rew[100] = {
     1,         1};
 
 // ********************** PT-Mass-SFs **************************
+std::string pf_path = getCMSSWBase() + "/src/Trigger_SFs/PT_Mass_SF_QCD/PT_Mass_2dSF_PreBPix.root";
 TFile *f_PT_Mass_SF =
-    new TFile("/afs/cern.ch/user/t/tumasyan/public/2023/Trigger_SFs/"
-              "PT_Mass_SF_QCD/PT_Mass_2dSF_PreBPix.root");
+    new TFile(
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/Trigger_SFs/"PT_Mass_SF_QCD/PT_Mass_2dSF_PreBPix.root");
+      pf_path.c_str());
 TH2D *_Eff_Data = (TH2D *)f_PT_Mass_SF->Get("Eff_Data_ETA0");
 TH2D *_Eff_MC = (TH2D *)f_PT_Mass_SF->Get("Eff_MC_ETA0");
 // *************************************************************
 
-#include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
+// #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
+#include "HHBoostedAnalyzer_Armen/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
 void Making_Histo_QCD_HT_200to400() {
   gSystem->Load("libFWCoreFWLite.so");
 
@@ -72,7 +75,7 @@ void Making_Histo_QCD_HT_200to400() {
   std::string jec_path = getCMSSWBase() + "/src/JECs/";
   vector<JetCorrectorParameters> vPar;
   vPar.push_back(JetCorrectorParameters(
-      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23_V1_MC/"
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
       jec_path + "Summer23Prompt23_V1_MC/"
                  "Summer23Prompt23_V1_MC_L2Relative_AK4PFPuppi.txt"));
   FactorizedJetCorrector *corrector = new FactorizedJetCorrector(vPar);
@@ -170,8 +173,7 @@ void Making_Histo_QCD_HT_200to400() {
       new TH1D("FatJet2PNetMD_Xbb_Legacy_AN", "FatJet2PNetMD_Xbb_Legacy_AN",
                100, 0, 1.0);
 
-  TFile *f1 = new TFile("/eos/home-t/tumasyan/HHTo4B/Data_2023/Legacy/PreBPix/"
-                        "QCD_HT_200to400.root");
+  TFile *f1 = new TFile("/eos/cms/store/group/phys_higgs/nonresonant_HH/bbbb/sixie/Run3Analysis/HH/HHTo4BNtupler/ArmenVersion_ICHEP2024/Data_2023/Legacy/QCD_HT_200to400.root");
 
   TH1F *NEvents = (TH1F *)f1->Get("NEvents");
   double SumGenWeights = NEvents->GetBinContent(1);
@@ -585,4 +587,6 @@ void Making_Histo_QCD_HT_200to400() {
   } // end event loop
 
   f->Write();
+  
+  std::cout << "Done with Making_Histo_QCD_HT_200to400.C" << std::endl;
 }
