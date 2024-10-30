@@ -1,21 +1,33 @@
-#include "TStyle.h"
-#include "TGaxis.h"
-#include "TRandom.h"
-#include "TFile.h"
-#include "TTree.h"
-#include <iostream>
-#include <math.h>
-#include <TF1.h>
-#include <TF2.h>
-#include <TH1D.h>
-#include "TCanvas.h"
-#include "TROOT.h"
-#include "TNtuple.h"
-#include <vector>
-#include <map>
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
+#include "TCanvas.h"
+#include "TFile.h"
+#include "TGaxis.h"
+#include "TNtuple.h"
+#include "TROOT.h"
+#include "TRandom.h"
+#include "TStyle.h"
+#include "TTree.h"
+#include <TF1.h>
+#include <TF2.h>
+#include <TH1D.h>
+#include <cstdlib> // for std::getenv
+#include <iostream>
+#include <map>
+#include <math.h>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+std::string getCMSSWBase() {
+  const char *cmssw_base = std::getenv("CMSSW_BASE");
+  if (!cmssw_base) {
+    throw std::runtime_error("CMSSW_BASE environment variable not set! Did you "
+                             "forget to run 'cmsenv'?");
+  }
+  return std::string(cmssw_base);
+}
 
 // D-phi
  double phi_dist(double a, double b){
@@ -46,7 +58,7 @@ void Making_Histo_TTtoLNu2Q_PostBPix()
 gSystem->Load("libFWCoreFWLite.so");
 
 // ********************************************************* JEC
-
+std::string jec_path = getCMSSWBase() + "/src/JECs/";
 vector<JetCorrectorParameters> vPar;
 vPar.push_back(JetCorrectorParameters("/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23BPixPrompt23_V1_MC/Summer23BPixPrompt23_V1_MC_L2Relative_AK4PFPuppi.txt"));
 FactorizedJetCorrector*  corrector = new FactorizedJetCorrector(vPar);

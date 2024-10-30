@@ -11,10 +11,23 @@
 #include <TF1.h>
 #include <TF2.h>
 #include <TH1D.h>
+#include <cstdlib> // for std::getenv
 #include <iostream>
 #include <map>
 #include <math.h>
+#include <stdexcept>
+#include <string>
 #include <vector>
+
+
+std::string getCMSSWBase() {
+  const char *cmssw_base = std::getenv("CMSSW_BASE");
+  if (!cmssw_base) {
+    throw std::runtime_error("CMSSW_BASE environment variable not set! Did you "
+                             "forget to run 'cmsenv'?");
+  }
+  return std::string(cmssw_base);
+}
 
 // D-phi
 double phi_dist(double a, double b) {
@@ -35,14 +48,17 @@ void Muon_Making_Histo_D() {
   };
 
   // JEC
+  std::string jec_path = getCMSSWBase() + "/src/JECs/";
   gSystem->Load("libFWCoreFWLite.so");
   vector<JetCorrectorParameters> vPar_AK8;
   vPar_AK8.push_back(JetCorrectorParameters(
-      "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
+      jec_path + 
       "Summer23BPixPrompt23_RunD_V1_DATA/"
       "Summer23BPixPrompt23_RunD_V1_DATA_L2Relative_AK8PFPuppi.txt"));
   vPar_AK8.push_back(JetCorrectorParameters(
-      "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
+      jec_path + 
       "Summer23BPixPrompt23_RunD_V1_DATA/"
       "Summer23BPixPrompt23_RunD_V1_DATA_L2L3Residual_AK8PFPuppi.txt"));
   FactorizedJetCorrector *corrector_AK8 = new FactorizedJetCorrector(vPar_AK8);
@@ -119,6 +135,7 @@ void Muon_Making_Histo_D() {
   TH1D *_Dr_J2FJ = new TH1D("Dr_J2FJ", "Dr_J2FJ", 100, -1.0, 9.0);
   TH1D *_Dr_JmaxL = new TH1D("Dr_JmaxL", "Dr_JmaxL", 100, -1.0, 9.0);
 
+  // TODO: Update this if necessary
   // TFile *f1 = new TFile(
   //     "/eos/home-t/tumasyan/HHTo4B/Data_2023/Legacy/PostBPix/Run2023" + Run +
   //     "_Muon.root");

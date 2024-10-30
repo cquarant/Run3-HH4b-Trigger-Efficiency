@@ -11,10 +11,23 @@
 #include <TF1.h>
 #include <TF2.h>
 #include <TH1D.h>
+#include <cstdlib> // for std::getenv
 #include <iostream>
 #include <map>
 #include <math.h>
+#include <stdexcept>
+#include <string>
 #include <vector>
+
+
+std::string getCMSSWBase() {
+  const char *cmssw_base = std::getenv("CMSSW_BASE");
+  if (!cmssw_base) {
+    throw std::runtime_error("CMSSW_BASE environment variable not set! Did you "
+                             "forget to run 'cmsenv'?");
+  }
+  return std::string(cmssw_base);
+}
 
 // D-phi
 double phi_dist(double a, double b) {
@@ -33,16 +46,22 @@ void EGamma_Making_Histo_C() {
   map<int, vector<pair<int, int>>> Good_Lumis{
 #include "HHBoostedAnalyzer_Armen/MyHisto/NanoAOD_V12/Data/GoodLumiList_Map_eraC.txt"
   };
+  const char *cmssw_base = std::getenv("CMSSW_BASE");
+  if (not cmssw_base) {
+    throw std::runtime_error("CMSSW_BASE environment variable not set!");
+  }
 
   // JEC
+  std::string jec_path = getCMSSWBase() + "/src/JECs/";
   gSystem->Load("libFWCoreFWLite.so");
   vector<JetCorrectorParameters> vPar_AK8_Cv123;
   vPar_AK8_Cv123.push_back(JetCorrectorParameters(
-      "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
-      "Summer23Prompt23_RunCv123_V1_DATA/"
-      "Summer23Prompt23_RunCv123_V1_DATA_L2Relative_AK8PFPuppi.txt"));
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
+      jec_path + "Summer23Prompt23_RunCv123_V1_DATA/"
+               "Summer23Prompt23_RunCv123_V1_DATA_L2Relative_AK8PFPuppi.txt"));
   vPar_AK8_Cv123.push_back(JetCorrectorParameters(
-      "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
+      jec_path +
       "Summer23Prompt23_RunCv123_V1_DATA/"
       "Summer23Prompt23_RunCv123_V1_DATA_L2L3Residual_AK8PFPuppi.txt"));
   FactorizedJetCorrector *corrector_AK8_Cv123 =
@@ -50,13 +69,13 @@ void EGamma_Making_Histo_C() {
 
   vector<JetCorrectorParameters> vPar_AK8_Cv4;
   vPar_AK8_Cv4.push_back(JetCorrectorParameters(
-      "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
-      "Summer23Prompt23_RunCv4_V1_DATA/"
-      "Summer23Prompt23_RunCv4_V1_DATA_L2Relative_AK8PFPuppi.txt"));
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
+      jec_path + "Summer23Prompt23_RunCv4_V1_DATA/"
+             "Summer23Prompt23_RunCv4_V1_DATA_L2Relative_AK8PFPuppi.txt"));
   vPar_AK8_Cv4.push_back(JetCorrectorParameters(
-      "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
-      "Summer23Prompt23_RunCv4_V1_DATA/"
-      "Summer23Prompt23_RunCv4_V1_DATA_L2L3Residual_AK8PFPuppi.txt"));
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/"
+      jec_path + "Summer23Prompt23_RunCv4_V1_DATA/"
+               "Summer23Prompt23_RunCv4_V1_DATA_L2L3Residual_AK8PFPuppi.txt"));
   FactorizedJetCorrector *corrector_AK8_Cv4 =
       new FactorizedJetCorrector(vPar_AK8_Cv4);
 
@@ -132,6 +151,7 @@ void EGamma_Making_Histo_C() {
   TH1D *_Dr_J2FJ = new TH1D("Dr_J2FJ", "Dr_J2FJ", 100, -1.0, 9.0);
   TH1D *_Dr_JmaxL = new TH1D("Dr_JmaxL", "Dr_JmaxL", 100, -1.0, 9.0);
 
+  // TODO: Update this if necessary
   TFile *f1 = new TFile(
       "/eos/cms/store/group/phys_higgs/nonresonant_HH/bbbb/sixie/Run3Analysis/"
       "HH/HHTo4BNtupler/ArmenVersion_ICHEP2024/Data_2023/PreBPix/Run2023" +

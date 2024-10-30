@@ -1,21 +1,33 @@
-#include "TStyle.h"
-#include "TGaxis.h"
-#include "TRandom.h"
-#include "TFile.h"
-#include "TTree.h"
-#include <iostream>
-#include <math.h>
-#include <TF1.h>
-#include <TF2.h>
-#include <TH1D.h>
-#include "TCanvas.h"
-#include "TROOT.h"
-#include "TNtuple.h"
-#include <vector>
-#include <map>
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
+#include "TCanvas.h"
+#include "TFile.h"
+#include "TGaxis.h"
+#include "TNtuple.h"
+#include "TROOT.h"
+#include "TRandom.h"
+#include "TStyle.h"
+#include "TTree.h"
+#include <TF1.h>
+#include <TF2.h>
+#include <TH1D.h>
+#include <cstdlib> // for std::getenv
+#include <iostream>
+#include <map>
+#include <math.h>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+std::string getCMSSWBase() {
+  const char *cmssw_base = std::getenv("CMSSW_BASE");
+  if (!cmssw_base) {
+    throw std::runtime_error("CMSSW_BASE environment variable not set! Did you "
+                             "forget to run 'cmsenv'?");
+  }
+  return std::string(cmssw_base);
+}
 
 // D-phi
  double phi_dist(double a, double b){
@@ -37,12 +49,12 @@ double PU_Rew[100] = {0.552875,1.03705,1.17684,1.09279,1.17336,1.17501,1.14858,1
 
 #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
 
-void Making_Histo_QCD_HT_200to400()
+void Making_Histo_QCD_HT_600to800()
 {
 gSystem->Load("libFWCoreFWLite.so");
 
 // ********************************************************* JEC
-
+std::string jec_path = getCMSSWBase() + "/src/JECs/";
 vector<JetCorrectorParameters> vPar;
 vPar.push_back(JetCorrectorParameters("/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23_V1_MC/Summer23Prompt23_V1_MC_L2Relative_AK4PFPuppi.txt"));
 FactorizedJetCorrector*  corrector = new FactorizedJetCorrector(vPar);
@@ -64,7 +76,7 @@ JME::JetResolution resolution_pt_AK8 = JME::JetResolution(resptstr_AK8.c_str());
 JME::JetResolutionScaleFactor resolution_pt_sf_AK8 = JME::JetResolutionScaleFactor(resptstr_sf_AK8.c_str());
 
 // *********************************************************
-*/ TFile *f = new TFile("Histograms_QCD_HT_200to400.root","RECREATE");
+*/ TFile *f = new TFile("Histograms_QCD_HT_600to800.root","RECREATE");
 
     // Modification begin: New variables
 Float_t Lower_m[16]   = {0,5,10,20,30,40,50,60,80,100,120,150,200,250,300,350};
@@ -91,7 +103,7 @@ Float_t Lower_pt_N[9]  = {230,240,250,270,300,350,500,700,1000};
 TH2D *_FatJet2_Pt_MassN      = new TH2D("FatJet2_Pt_MassN","FatJet2_Pt_MassN",8,Lower_pt_N,15,Lower_m);
 TH2D *_FatJet2_Pt_MassN_M    = new TH2D("FatJet2_Pt_MassN_M","FatJet2_Pt_MassN_M",8,Lower_pt_N,15,Lower_m);
 
-TFile *f1 = new TFile("/eos/home-t/tumasyan/HHTo4B/Data_2023/PreBPix/QCD_HT_200to400.root");
+TFile *f1 = new TFile("/eos/home-t/tumasyan/HHTo4B/Data_2023/PreBPix/QCD_HT_600to800.root");
 
 TH1F  *NEvents = (TH1F*)f1->Get("NEvents");
 double SumGenWeights = NEvents->GetBinContent(1);
@@ -358,7 +370,7 @@ InputTree_TrgObj->SetBranchAddress("Trigger_Object_bit",  Trigger_Object_bit);
 
 // ********************************************************** weight
 
-   weight = (weight/SumGenWeights)*XSec_QCD_HT_200to400*Lumi;
+   weight = (weight/SumGenWeights)*XSec_QCD_HT_600to800*Lumi;
    double PU_weight=PU_Rew[(int)npu];
    weight = weight*PU_weight;
 

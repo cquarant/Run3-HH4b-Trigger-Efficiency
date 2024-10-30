@@ -1,21 +1,33 @@
-#include "TStyle.h"
-#include "TGaxis.h"
-#include "TRandom.h"
-#include "TFile.h"
-#include "TTree.h"
-#include <iostream>
-#include <math.h>
-#include <TF1.h>
-#include <TF2.h>
-#include <TH1D.h>
-#include "TCanvas.h"
-#include "TROOT.h"
-#include "TNtuple.h"
-#include <vector>
-#include <map>
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
+#include "TCanvas.h"
+#include "TFile.h"
+#include "TGaxis.h"
+#include "TNtuple.h"
+#include "TROOT.h"
+#include "TRandom.h"
+#include "TStyle.h"
+#include "TTree.h"
+#include <TF1.h>
+#include <TF2.h>
+#include <TH1D.h>
+#include <cstdlib> // for std::getenv
+#include <iostream>
+#include <map>
+#include <math.h>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+std::string getCMSSWBase() {
+  const char *cmssw_base = std::getenv("CMSSW_BASE");
+  if (!cmssw_base) {
+    throw std::runtime_error("CMSSW_BASE environment variable not set! Did you "
+                             "forget to run 'cmsenv'?");
+  }
+  return std::string(cmssw_base);
+}
 
 // D-phi
  double phi_dist(double a, double b){
@@ -31,29 +43,26 @@ bool inRange(int low, int high, int x)
     return (low <= x && x <= high);
 }
 
-double PU_Rew[100] = {0.552875,1.03705,1.17684,1.09279,1.17336,1.17501,1.14858,1.11463,1.14098,1.17844,1.16723,1.2445,1.32702,1.52427,1.69805,1.7403,1.75334,1.8447,2.2354,2.77674,3.16751,3.10149,2.93969,2.90199,2.81243,2.735,2.60348,2.37099,2.15616,1.9852,1.84818,1.73102,1.66986,1.55718,1.49352,1.43964,1.39255,1.36398,1.34727,1.34113,1.34788,1.37159,1.40511,1.44573,1.50152,1.55852,1.60198,1.61822,1.60954,1.56008,1.47303,1.3643,1.21708,1.06146,0.908219,0.754511,0.617157,0.500328,0.406442,0.333317,0.276404,0.235751,0.203188,0.174879,0.161244,0.138147,0.123821,0.110808,0.0997031,0.0897595,0.0827855,0.0776173,0.0740599,0.0711833,0.0647596,0.0583041,0.0521346,0.0454088,0.0416007,0.0383446,0.0356971,0.0353548,0.0370903,0.0443115,0.0549878,0.0680183,0.0753875,0.0828112,0.103032,0.141383,0.306853,0.777128,1,1,1,1,1,1,1,1};
+double PU_Rew[100] = {0.750156,1.89753,1.16218,1.17185,1.24144,1.24093,1.21528,1.24569,1.22439,1.13186,1.268,1.22833,0.898481,1.72457,2.50901,3.71031,3.94382,2.84716,2.23894,2.00194,1.94304,1.9546,2.13721,2.41457,2.55297,2.55506,2.44414,2.26349,2.049,1.82273,1.69234,1.5774,1.54434,1.48068,1.44632,1.38943,1.33936,1.29638,1.26625,1.26429,1.26815,1.27409,1.31266,1.35538,1.42214,1.49389,1.55454,1.61395,1.63681,1.62573,1.59832,1.54196,1.43462,1.30671,1.14609,0.97302,0.820247,0.689621,0.572241,0.473172,0.392613,0.32013,0.260165,0.210414,0.182732,0.14334,0.116381,0.0954352,0.0793652,0.0667483,0.0549356,0.0456514,0.0380612,0.0318324,0.0281388,0.0241728,0.0210379,0.0192466,0.0180967,0.0183505,0.0211177,0.0249506,0.023001,0.022844,0.0209544,0.018289,0.0155916,0.0123924,0.0101449,0.010468,0.006118,0.0044397,0.00357126,0.00463679,0.0842234,0.0488443,0.0560634,1,1,1};
 
-// ********************** PT-Mass-SFs **************************
-  TFile* f_PT_Mass_SF       = new TFile("/afs/cern.ch/user/t/tumasyan/public/2023/Trigger_SFs/PT_Mass_SF_QCD/PT_Mass_2dSF_PreBPix.root");
-  TH2D * _Eff_Data    = (TH2D*)f_PT_Mass_SF->Get("Eff_Data_ETA0");
-  TH2D * _Eff_MC      = (TH2D*)f_PT_Mass_SF->Get("Eff_MC_ETA0");
-// *************************************************************
+// ******************************************
 
-#include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
-void Making_Histo_QCD_HT_1500to2000()
+#include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PostBPix.txt"
+
+void Making_Histo_TTtoLNu2Q_PostBPix()
 {
 gSystem->Load("libFWCoreFWLite.so");
 
 // ********************************************************* JEC
-
+std::string jec_path = getCMSSWBase() + "/src/JECs/";
 vector<JetCorrectorParameters> vPar;
-vPar.push_back(JetCorrectorParameters("/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23_V1_MC/Summer23Prompt23_V1_MC_L2Relative_AK4PFPuppi.txt"));
+vPar.push_back(JetCorrectorParameters("/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23BPixPrompt23_V1_MC/Summer23BPixPrompt23_V1_MC_L2Relative_AK4PFPuppi.txt"));
 FactorizedJetCorrector*  corrector = new FactorizedJetCorrector(vPar);
 
 vector<JetCorrectorParameters> vParAK8;
-vParAK8.push_back(JetCorrectorParameters("/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23_V1_MC/Summer23Prompt23_V1_MC_L2Relative_AK8PFPuppi.txt"));
+vParAK8.push_back(JetCorrectorParameters("/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23BPixPrompt23_V1_MC/Summer23BPixPrompt23_V1_MC_L2Relative_AK8PFPuppi.txt"));
 FactorizedJetCorrector*  corrector_AK8 = new FactorizedJetCorrector(vParAK8);
-/*
+
 // ********************************************************* JER   (should be added when available)
 std::string resptstr =    "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_PtResolution_AK4PFPuppi.txt";
 std::string resptstr_sf = "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_SF_AK4PFPuppi.txt";
@@ -64,9 +73,9 @@ std::string resptstr_AK8 =    "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/J
 std::string resptstr_sf_AK8 = "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_SF_AK8PFPuppi.txt";
 JME::JetResolution resolution_pt_AK8 = JME::JetResolution(resptstr_AK8.c_str());
 JME::JetResolutionScaleFactor resolution_pt_sf_AK8 = JME::JetResolutionScaleFactor(resptstr_sf_AK8.c_str());
-
 // *********************************************************
-*/ TFile *f = new TFile("Histograms_QCD_HT_1500to2000.root","RECREATE");
+
+ TFile *f = new TFile("Histograms_TTtoLNu2Q_PostBPix.root","RECREATE");
 
     // Modification begin: New variables
 Float_t Lower_m[16]   = {0,5,10,20,30,40,50,60,80,100,120,150,200,250,300,350};
@@ -79,32 +88,10 @@ TH2D *_FatJet1_eta_phi = new TH2D("FatJet1_eta_phi","FatJet1_eta_phi",100,-5,5,1
 TH1D *_FatJet1_Mass  = new TH1D("FatJet1_Mass","FatJet1_Mass",500,0,500);
 TH1D *_FatJet1_MassSD  = new TH1D("FatJet1_MassSD","FatJet1_MassSD",500,0,500);
 TH2D *_FatJet1_Pt_Mass    = new TH2D("FatJet1_Pt_Mass","FatJet1_Pt_Mass",45,Lower_pt,15,Lower_m);
-TH1D *_FatJet1PNetMD_Xbb  = new TH1D("FatJet1PNetMD_Xbb","FatJet1PNetMD_Xbb",100,0,1.0);
-TH1D *_FatJet1PNetMD_Xbb_UDSG  = new TH1D("FatJet1PNetMD_Xbb_UDSG","FatJet1PNetMD_Xbb_UDSG",100,0,1.0);
-TH1D *_FatJet1PNetMD_Xbb_C  = new TH1D("FatJet1PNetMD_Xbb_C","FatJet1PNetMD_Xbb_C",100,0,1.0);
-TH1D *_FatJet1PNetMD_Xbb_B  = new TH1D("FatJet1PNetMD_Xbb_B","FatJet1PNetMD_Xbb_B",100,0,1.0);
-TH1D *_FatJet1PNetMD_Xbb_B_1  = new TH1D("FatJet1PNetMD_Xbb_B_1","FatJet1PNetMD_Xbb_B_1",100,0,1.0);
-TH1D *_FatJet1PNetMD_Xbb_B_2  = new TH1D("FatJet1PNetMD_Xbb_B_2","FatJet1PNetMD_Xbb_B_2",100,0,1.0);
-TH1D *_FatJet1PNetMD_Xbb_Legacy  = new TH1D("FatJet1PNetMD_Xbb_Legacy","FatJet1PNetMD_Xbb_Legacy",100,0,1.0);
-TH1D *_FatJet1PNetMD_Xbb_Legacy_AN  = new TH1D("FatJet1PNetMD_Xbb_Legacy_AN","FatJet1PNetMD_Xbb_Legacy_AN",100,0,1.0);
 
-TH1D *_FatJet2_pt  = new TH1D("FatJet2_pt","FatJet2_pt",200,0,1000);
-TH1D *_FatJet2_eta  = new TH1D("FatJet2_eta","FatJet2_eta",100,-5,5);
-TH1D *_FatJet2_phi  = new TH1D("FatJet2_phi","FatJet2_phi",100,-5,5);
-TH2D *_FatJet2_eta_phi = new TH2D("FatJet2_eta_phi","FatJet2_eta_phi",100,-5,5,100,-5,5);
-TH1D *_FatJet2_Mass  = new TH1D("FatJet2_Mass","FatJet2_Mass",500,0,500);
-TH1D *_FatJet2_MassSD  = new TH1D("FatJet2_MassSD","FatJet2_MassSD",500,0,500);
-TH2D *_FatJet2_Pt_Mass    = new TH2D("FatJet2_Pt_Mass","FatJet2_Pt_Mass",45,Lower_pt,15,Lower_m);
-TH1D *_FatJet2PNetMD_Xbb  = new TH1D("FatJet2PNetMD_Xbb","FatJet2PNetMD_Xbb",100,0,1.0);
-TH1D *_FatJet2PNetMD_Xbb_UDSG  = new TH1D("FatJet2PNetMD_Xbb_UDSG","FatJet2PNetMD_Xbb_UDSG",100,0,1.0);
-TH1D *_FatJet2PNetMD_Xbb_C  = new TH1D("FatJet2PNetMD_Xbb_C","FatJet2PNetMD_Xbb_C",100,0,1.0);
-TH1D *_FatJet2PNetMD_Xbb_B  = new TH1D("FatJet2PNetMD_Xbb_B","FatJet2PNetMD_Xbb_B",100,0,1.0);
-TH1D *_FatJet2PNetMD_Xbb_B_1  = new TH1D("FatJet2PNetMD_Xbb_B_1","FatJet2PNetMD_Xbb_B_1",100,0,1.0);
-TH1D *_FatJet2PNetMD_Xbb_B_2  = new TH1D("FatJet2PNetMD_Xbb_B_2","FatJet2PNetMD_Xbb_B_2",100,0,1.0);
-TH1D *_FatJet2PNetMD_Xbb_Legacy  = new TH1D("FatJet2PNetMD_Xbb_Legacy","FatJet2PNetMD_Xbb_Legacy",100,0,1.0);
-TH1D *_FatJet2PNetMD_Xbb_Legacy_AN  = new TH1D("FatJet2PNetMD_Xbb_Legacy_AN","FatJet2PNetMD_Xbb_Legacy_AN",100,0,1.0);
+TH2D *_FatJet2_Pt_Mass_M    = new TH2D("FatJet2_Pt_Mass_M","FatJet2_Pt_Mass_M",45,Lower_pt,15,Lower_m);
 
-TFile *f1 = new TFile("/eos/home-t/tumasyan/HHTo4B/Data_2023/Legacy/PreBPix/QCD_HT_1500to2000.root");
+TFile *f1 = new TFile("/eos/home-t/tumasyan/HHTo4B/Data_2023/PostBPix/TTtoLNu2Q.root");
 
 TH1F  *NEvents = (TH1F*)f1->Get("NEvents");
 double SumGenWeights = NEvents->GetBinContent(1);
@@ -122,6 +109,7 @@ Bool_t     HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40;
 Bool_t     HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
 
 Bool_t     HLT_Mu50;
+Bool_t     HLT_IsoMu27;
 Bool_t     HLT_IsoMu50_AK8PFJet230_SoftDropMass40;
 Bool_t     HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06;
 
@@ -134,55 +122,32 @@ Float_t    lep1_Pt;
 Float_t    lep1_Eta;
 Float_t    lep1_Phi;
 Int_t      lep1_Id;
+Float_t    lep2_Pt;
+Float_t    lep2_Eta;
+Float_t    lep2_Phi;
+Int_t      lep2_Id;
+
+Float_t    Jet1_Pt;
+Float_t    Jet1_Eta;
+Float_t    Jet1_Phi;
+
+Float_t    Jet2_Pt;
+Float_t    Jet2_Eta;
+Float_t    Jet2_Phi;
 
 Float_t    FatJet1_pt;
 Float_t    FatJet1_eta;
 Float_t    FatJet1_phi;
 Float_t    FatJet1_Mass;
 Float_t    FatJet1_MassSD;
-Float_t    FatJet1DDBTaggerV2;
-Float_t    FatJet1PNetMD_QCD;
-Float_t    FatJet1PNetMD_Xbb;
-Float_t    FatJet1PNetMD_Xcc;
-Float_t    FatJet1PNetMD_Xqq;
-Float_t    FatJet1PNetHbbvsQCD;
-Float_t    FatJet1PNet_QCD;
-Float_t    FatJet1PNet_TvsQCD;
-Float_t    FatJet1PNet_WvsQCD;
-Float_t    FatJet1PNet_ZvsQCD;
-Float_t    FatJet1PNet_mass;
-Float_t    FatJet1Tau3OverTau2;
 Float_t    FatJet1_rawFactor;
-Int_t      FatJet1_hadronFlavour;
-Int_t      FatJet1_nBHadrons;
-Int_t      FatJet1_nCHadrons;
-Float_t    FatJet1PNetMD_Xbb_Legacy;
-Float_t    FatJet1PNetMD_QCD_Legacy;
-
 
 Float_t    FatJet2_pt;
 Float_t    FatJet2_eta;
 Float_t    FatJet2_phi;
 Float_t    FatJet2_Mass;
 Float_t    FatJet2_MassSD;
-Float_t    FatJet2DDBTaggerV2;
-Float_t    FatJet2PNetMD_QCD;
-Float_t    FatJet2PNetMD_Xbb;
-Float_t    FatJet2PNetMD_Xcc;
-Float_t    FatJet2PNetMD_Xqq;
-Float_t    FatJet2PNetHbbvsQCD;
-Float_t    FatJet2PNet_QCD;
-Float_t    FatJet2PNet_TvsQCD;
-Float_t    FatJet2PNet_WvsQCD;
-Float_t    FatJet2PNet_ZvsQCD;
-Float_t    FatJet2PNet_mass;
-Float_t    FatJet2Tau3OverTau2;
 Float_t    FatJet2_rawFactor;
-Int_t      FatJet2_hadronFlavour;
-Int_t      FatJet2_nBHadrons;
-Int_t      FatJet2_nCHadrons;
-Float_t    FatJet2PNetMD_Xbb_Legacy;
-Float_t    FatJet2PNetMD_QCD_Legacy;
 
 Float_t    FatJet3_pt;
 Float_t    FatJet3_rawFactor;
@@ -208,6 +173,7 @@ InputTree->SetBranchAddress("HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMa
 InputTree->SetBranchAddress("HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06", &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06);
 
 InputTree->SetBranchAddress("HLT_Mu50", &HLT_Mu50);
+InputTree->SetBranchAddress("HLT_IsoMu27", &HLT_IsoMu27);
 InputTree->SetBranchAddress("HLT_IsoMu50_AK8PFJet230_SoftDropMass40", &HLT_IsoMu50_AK8PFJet230_SoftDropMass40);
 InputTree->SetBranchAddress("HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06", &HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06);
 
@@ -218,7 +184,18 @@ InputTree->SetBranchAddress("lep1Pt",&lep1_Pt);
 InputTree->SetBranchAddress("lep1Eta",&lep1_Eta);
 InputTree->SetBranchAddress("lep1Phi",&lep1_Phi);
 InputTree->SetBranchAddress("lep1Id",&lep1_Id);
+InputTree->SetBranchAddress("lep2Pt",&lep2_Pt);
+InputTree->SetBranchAddress("lep2Eta",&lep2_Eta);
+InputTree->SetBranchAddress("lep2Phi",&lep2_Phi);
+InputTree->SetBranchAddress("lep2Id",&lep2_Id);
 InputTree->SetBranchAddress("MET",&MET);
+
+InputTree->SetBranchAddress("jet1Pt",&Jet1_Pt);
+InputTree->SetBranchAddress("jet1Eta",&Jet1_Eta);
+InputTree->SetBranchAddress("jet1Phi",&Jet1_Phi);
+InputTree->SetBranchAddress("jet2Pt",&Jet2_Pt);
+InputTree->SetBranchAddress("jet2Eta",&Jet2_Eta);
+InputTree->SetBranchAddress("jet2Phi",&Jet2_Phi);
 
 InputTree->SetBranchAddress("fatJet1_pt",&FatJet1_pt);
 InputTree->SetBranchAddress("fatJet1_eta",&FatJet1_eta);
@@ -226,12 +203,6 @@ InputTree->SetBranchAddress("fatJet1_phi",&FatJet1_phi);
 InputTree->SetBranchAddress("fatJet1_mass",&FatJet1_Mass);
 InputTree->SetBranchAddress("fatJet1_msoftdrop",&FatJet1_MassSD);
 InputTree->SetBranchAddress("fatJet1_rawFactor",&FatJet1_rawFactor);
-InputTree->SetBranchAddress("fatJet1_particleNet_XbbVsQCD",&FatJet1PNetMD_Xbb);
-InputTree->SetBranchAddress("fatJet1_hadronFlavour",&FatJet1_hadronFlavour);
-InputTree->SetBranchAddress("fatJet1_nBHadrons",&FatJet1_nBHadrons);
-InputTree->SetBranchAddress("fatJet1_nCHadrons",&FatJet1_nCHadrons);
-InputTree->SetBranchAddress("fatJet1_particleNetLegacy_Xbb",&FatJet1PNetMD_Xbb_Legacy);
-InputTree->SetBranchAddress("fatJet1_particleNetLegacy_QCD",&FatJet1PNetMD_QCD_Legacy);
 
 InputTree->SetBranchAddress("fatJet2_pt",&FatJet2_pt);
 InputTree->SetBranchAddress("fatJet2_eta",&FatJet2_eta);
@@ -239,12 +210,6 @@ InputTree->SetBranchAddress("fatJet2_phi",&FatJet2_phi);
 InputTree->SetBranchAddress("fatJet2_mass",&FatJet2_Mass);
 InputTree->SetBranchAddress("fatJet2_msoftdrop",&FatJet2_MassSD);
 InputTree->SetBranchAddress("fatJet2_rawFactor",&FatJet2_rawFactor);
-InputTree->SetBranchAddress("fatJet2_particleNet_XbbVsQCD",&FatJet2PNetMD_Xbb);
-InputTree->SetBranchAddress("fatJet2_hadronFlavour",&FatJet2_hadronFlavour);
-InputTree->SetBranchAddress("fatJet2_nBHadrons",&FatJet2_nBHadrons);
-InputTree->SetBranchAddress("fatJet2_nCHadrons",&FatJet2_nCHadrons);
-InputTree->SetBranchAddress("fatJet2_particleNetLegacy_Xbb",&FatJet2PNetMD_Xbb_Legacy);
-InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCD",&FatJet2PNetMD_QCD_Legacy);
 
 InputTree->SetBranchAddress("fatJet3_pt",&FatJet3_pt);
 InputTree->SetBranchAddress("fatJet3_rawFactor",&FatJet3_rawFactor);
@@ -278,7 +243,9 @@ InputTree_TrgObj->SetBranchAddress("Trigger_Object_bit",  Trigger_Object_bit);
     InputTree_TrgObj->GetEntry(i);
 
 // ********************************************************** HLT Selection
-   if(HLT_AK8PFJet230_SoftDropMass40==0) continue;
+//   if(HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35==0) continue;
+//   if ( ! (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) ==11) ) continue;
+   if ( ! ( (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) ==11) || (HLT_IsoMu27 && fabs(lep1_Id) ==13) ) )continue;
 
 // ********************************************************** FatJets correction and selection
    if(FatJet1_pt > 0)
@@ -301,7 +268,6 @@ InputTree_TrgObj->SetBranchAddress("Trigger_Object_bit",  Trigger_Object_bit);
       FatJet2_pt = Raw_FatJet2_pt* This_correction;
       FatJet2_MassSD = FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * This_correction;
      }
-
 /*
    // Jet Smearing
    double res_pt_1;
@@ -357,125 +323,85 @@ InputTree_TrgObj->SetBranchAddress("Trigger_Object_bit",  Trigger_Object_bit);
      FatJet2_MassSD = FatJet2_MassSD * SmearFactor_2;
 */
 // ********************************************************** FatJets Selection
-    if(FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) continue;
+    if(FatJet2_pt > 180) continue;
+    if(FatJet1_pt < 160) continue;
+    if (lep1_Pt < 55) continue;
+    if (lep2_Pt > 30) continue;
+    if(phi_dist(FatJet1_phi,lep1_Phi) < 2.0) continue;
+//    if(fabs(FatJet1_eta) > 1.4) continue;
+//    if(fabs(FatJet1_eta) > 2.5 || fabs(FatJet1_eta) < 1.4) continue;
+   if (MET < 50) continue;
+
+   double Dr_J1FJ =-1;
+   double Dr_J1L =10;
+   if(Jet1_Pt > 40)
+     {
+      Dr_J1FJ = sqrt ( pow(Jet1_Eta - FatJet1_eta,2) + pow(phi_dist(Jet1_Phi,FatJet1_phi),2) );
+      Dr_J1L  = sqrt ( pow(Jet1_Eta - lep1_Eta,2) + pow(phi_dist(Jet1_Phi,lep1_Phi),2) );
+     }
+   double Dr_J2FJ =-1;
+   double Dr_J2L =10;
+   if(Jet2_Pt > 40)
+    {
+      Dr_J2FJ = sqrt ( pow(Jet2_Eta - FatJet1_eta,2) + pow(phi_dist(Jet2_Phi,FatJet1_phi),2) );
+      Dr_J2L  = sqrt ( pow(Jet2_Eta - lep1_Eta,2) + pow(phi_dist(Jet2_Phi,lep1_Phi),2) );
+    }
+
+   double Dr_JFJ_Max = Dr_J1FJ;
+   double Dr_JFJ_Min = Dr_J2FJ;
+   double Dr_JmaxL   = Dr_J1L;
+   if(Dr_J2FJ > Dr_J1FJ)
+     {
+      Dr_JFJ_Max = Dr_J2FJ;
+      Dr_JFJ_Min = Dr_J1FJ;
+      Dr_JmaxL   = Dr_J2L;
+     }
+
+  if(Dr_JFJ_Max < 0) continue;
+  if( Dr_J1L <= 0.4 || Dr_J2L <= 0.4 ) continue;
+  if(Dr_JmaxL > 3.5 ) continue;
 
 // ********************************************************** VBFTag veto
 //   if(isVBFtag) continue;
 
 // ********************************************************** Lepton Selection or Veto
-   if (lep1_Pt >20.0 ) continue;
+//   if (fabs(lep1_Id) !=11 ) continue;
 
 // ********************************************************** Trigger Objects and Matchings
 
-  // Matching 1st
-  bool matched_TRG_1=false;
+  // Probe Matched
+  bool Probe_Matched = false;
 
   bool matched_to_AK8PFJet230_SoftDropMass40 = false;
   for(int itrg=0;itrg<NTrigger_Objects;itrg++)
     if((Trigger_Object_bit[itrg] & 4) == 4)
-       if(sqrt(pow((FatJet1_eta - Trigger_Object_eta[itrg]),2) + pow(phi_dist(FatJet1_phi,Trigger_Object_phi[itrg]),2)) < 0.4 && Trigger_Object_pt[itrg] > 100) 
+       if(sqrt(pow((FatJet1_eta - Trigger_Object_eta[itrg]),2) + pow(phi_dist(FatJet1_phi,Trigger_Object_phi[itrg]),2)) < 0.4 && Trigger_Object_pt[itrg] > 100)
          {matched_to_AK8PFJet230_SoftDropMass40 = true; break;}
 
-  if (matched_to_AK8PFJet230_SoftDropMass40) matched_TRG_1=true;
-  else continue;
-
-  bool matched_to_AK8PFJet230_SoftDropMass40_fJ2 = false;
-  for(int itrg=0;itrg<NTrigger_Objects;itrg++)
-    if((Trigger_Object_bit[itrg] & 4) == 4)
-       if(sqrt(pow((FatJet2_eta - Trigger_Object_eta[itrg]),2) + pow(phi_dist(FatJet2_phi,Trigger_Object_phi[itrg]),2)) < 0.4 && Trigger_Object_pt[itrg] > 100) 
-         {matched_to_AK8PFJet230_SoftDropMass40_fJ2 = true; break;}
-
-  if (matched_to_AK8PFJet230_SoftDropMass40_fJ2) continue;
-  if (FatJet3_pt >200) continue;
-
-  // Matching 2nd
-  bool matched_TRG_2=false;
-  if (HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06) matched_TRG_2=true;
+  if (matched_to_AK8PFJet230_SoftDropMass40)
+     Probe_Matched=true;
 
 // ********************************************************** weight
-
-   weight = (weight/SumGenWeights)*XSec_QCD_HT_1500to2000*Lumi;
+   weight = (weight/SumGenWeights)*XSec_TTtoLNu2Q*Lumi;
    double PU_weight=PU_Rew[(int)npu];
-   if (PU_weight<20.0)
-      weight = weight*PU_weight;
-
-   // Add Trigger PT_Mass and PNet Scale Factors
-   double Eff_Data_1 = 0;
-   double Eff_MC_1   = 0;
-
-   if(matched_TRG_1)
-     {
-      Int_t bin_PT_1    = _Eff_Data->GetXaxis()->FindBin(FatJet1_pt);
-      Int_t bin_Mass_1  = _Eff_Data->GetYaxis()->FindBin(FatJet1_MassSD);
-      Eff_Data_1 = 1.0;
-      if(_Eff_Data->GetBinContent(bin_PT_1,bin_Mass_1) > 0)
-         Eff_Data_1        = _Eff_Data->GetBinContent(bin_PT_1,bin_Mass_1);
-      Eff_MC_1 =1.0;
-      if(_Eff_MC->GetBinContent(bin_PT_1,bin_Mass_1) >0)
-         Eff_MC_1          = _Eff_MC->GetBinContent(bin_PT_1,bin_Mass_1);
-     }
-
-   double Tot_Data = 1 - (1 - Eff_Data_1);
-   double Tot_MC   = 1 - (1 - Eff_MC_1);
-   double PT_Mass_BTG_SF = Tot_Data/Tot_MC;
-
-   if(PT_Mass_BTG_SF > 0)
-       weight = weight*PT_Mass_BTG_SF;
+   weight = weight*PU_weight;
 
 // ********************************************************** Fill Histograms
  _FatJet1_pt  ->Fill(FatJet1_pt,weight);
  _FatJet1_eta ->Fill(FatJet1_eta,weight);
  _FatJet1_phi ->Fill(FatJet1_phi,weight);
- _FatJet1_eta_phi ->Fill(FatJet1_eta, FatJet1_phi,weight);
+ _FatJet1_eta_phi ->Fill(FatJet1_eta, FatJet1_phi, weight);
  _FatJet1_Mass ->Fill(FatJet1_Mass,weight);
  _FatJet1_MassSD ->Fill(FatJet1_MassSD,weight);
  _FatJet1_Pt_Mass  -> Fill(FatJet1_pt,FatJet1_MassSD,weight);
- _FatJet1PNetMD_Xbb ->Fill(FatJet1PNetMD_Xbb,weight);
- _FatJet1PNetMD_Xbb_Legacy ->Fill(FatJet1PNetMD_Xbb_Legacy,weight);
- double FatJet1PNetMD_Xbb_Legacy_AN = FatJet1PNetMD_Xbb_Legacy/(FatJet1PNetMD_Xbb_Legacy + FatJet1PNetMD_QCD_Legacy);
- _FatJet1PNetMD_Xbb_Legacy_AN ->Fill(FatJet1PNetMD_Xbb_Legacy_AN,weight);
 
- if(FatJet1_hadronFlavour ==0)
-  _FatJet1PNetMD_Xbb_UDSG ->Fill(FatJet1PNetMD_Xbb,weight);
- if(FatJet1_hadronFlavour ==4)
-  _FatJet1PNetMD_Xbb_C ->Fill(FatJet1PNetMD_Xbb,weight);
- if(FatJet1_hadronFlavour ==5)
+  if(Probe_Matched)
   {
-   _FatJet1PNetMD_Xbb_B ->Fill(FatJet1PNetMD_Xbb,weight);
-   if(FatJet1_nBHadrons <= 1)
-     _FatJet1PNetMD_Xbb_B_1 ->Fill(FatJet1PNetMD_Xbb,weight);
-   if(FatJet1_nBHadrons >= 2)
-    _FatJet1PNetMD_Xbb_B_2 ->Fill(FatJet1PNetMD_Xbb,weight);
+   _FatJet2_Pt_Mass_M  -> Fill(FatJet1_pt,FatJet1_MassSD,weight);
   }
 
-if(matched_TRG_2)
- {
- _FatJet2_pt  ->Fill(FatJet1_pt,weight);
- _FatJet2_eta ->Fill(FatJet1_eta,weight);
- _FatJet2_phi ->Fill(FatJet1_phi,weight);
- _FatJet2_eta_phi ->Fill(FatJet1_eta, FatJet1_phi,weight);
- _FatJet2_Mass ->Fill(FatJet1_Mass,weight);
- _FatJet2_MassSD ->Fill(FatJet1_MassSD,weight);
- _FatJet2_Pt_Mass  -> Fill(FatJet1_pt,FatJet1_MassSD,weight);
- _FatJet2PNetMD_Xbb ->Fill(FatJet1PNetMD_Xbb,weight);
- _FatJet2PNetMD_Xbb_Legacy ->Fill(FatJet1PNetMD_Xbb_Legacy,weight);
- _FatJet2PNetMD_Xbb_Legacy_AN ->Fill(FatJet1PNetMD_Xbb_Legacy_AN,weight);
 
- if(FatJet1_hadronFlavour ==0)
-  _FatJet2PNetMD_Xbb_UDSG ->Fill(FatJet1PNetMD_Xbb,weight);
- if(FatJet1_hadronFlavour ==4)
-  _FatJet2PNetMD_Xbb_C ->Fill(FatJet1PNetMD_Xbb,weight);
- if(FatJet1_hadronFlavour ==5)
-  {
-   _FatJet2PNetMD_Xbb_B ->Fill(FatJet1PNetMD_Xbb,weight);
-   if(FatJet1_nBHadrons <= 1)
-     _FatJet2PNetMD_Xbb_B_1 ->Fill(FatJet1PNetMD_Xbb,weight);
-   if(FatJet1_nBHadrons >= 2)
-    _FatJet2PNetMD_Xbb_B_2 ->Fill(FatJet1PNetMD_Xbb,weight);
-  }
- }
-
-} // end event loop
+ } // end event loop
 
 f->Write();
 
