@@ -1,3 +1,43 @@
+from pathlib import Path
+import sys
+
+SCRIPT_DIR = Path(__file__).parent
+sys.path.append(str(SCRIPT_DIR))
+
+from pu_dict import PU_Rew_dict
+
+ERAS_2023 = ["PreBPix", "PostBPix"]
+
+EOS_DATA_BASE = Path(
+    "/eos/cms/store/group/phys_higgs/nonresonant_HH/bbbb/sixie/Run3Analysis/HH/HHTo4BNtupler/ArmenVersion_ICHEP2024/Data_2023"
+)
+
+
+def get_PU_Rew_str(PU_Rew: list[float]) -> str:
+    return ", ".join(str(x) for x in PU_Rew)
+
+
+def get_root_file_path(era):
+    # /eos/home-t/tumasyan/HHTo4B/Data_2023/PreBPix/TTtoLNu2Q.root
+    return EOS_DATA_BASE / f"{era}/TTtoLNu2Q.root"
+
+
+def gen_script(era: str) -> tuple[str, str]:
+    PU_Rew = PU_Rew_dict[era]
+    PU_Rew_len = len(PU_Rew)
+    PU_Rew_str = get_PU_Rew_str(PU_Rew)
+    filename = f"Making_Histo_TTtoLNu2Q_{era}.C"
+    root_file_path = get_root_file_path(era)
+
+    # relevant to vPar and vParAK8
+    if era == "PreBPix":
+        extra_tag = ""
+    elif era == "PostBPix":
+        extra_tag = "BPix"
+    else:
+        raise ValueError(f"Invalid era: {era}")
+
+    script = f"""
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
@@ -20,47 +60,47 @@
 #include <string>
 #include <vector>
 
-std::string getCMSSWBase() {
+std::string getCMSSWBase() {{
   const char *cmssw_base = std::getenv("CMSSW_BASE");
-  if (!cmssw_base) {
+  if (!cmssw_base) {{
     throw std::runtime_error("CMSSW_BASE environment variable not set! Did you "
                              "forget to run 'cmsenv'?");
-  }
+  }}
   return std::string(cmssw_base);
-}
+}}
 
 // D-phi
-double phi_dist(double a, double b) {
-  if (fabs(a - b) > 3.14159265) {
+double phi_dist(double a, double b) {{
+  if (fabs(a - b) > 3.14159265) {{
     return 6.2831853 - fabs(a - b);
-  }
+  }}
   return fabs(a - b);
-}
+}}
 
-bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
+bool inRange(int low, int high, int x) {{ return (low <= x && x <= high); }}
 
-double PU_Rew[100] = { 0.552875, 1.03705, 1.17684, 1.09279, 1.17336, 1.17501, 1.14858, 1.11463, 1.14098, 1.17844, 1.16723, 1.2445, 1.32702, 1.52427, 1.69805, 1.7403, 1.75334, 1.8447, 2.2354, 2.77674, 3.16751, 3.10149, 2.93969, 2.90199, 2.81243, 2.735, 2.60348, 2.37099, 2.15616, 1.9852, 1.84818, 1.73102, 1.66986, 1.55718, 1.49352, 1.43964, 1.39255, 1.36398, 1.34727, 1.34113, 1.34788, 1.37159, 1.40511, 1.44573, 1.50152, 1.55852, 1.60198, 1.61822, 1.60954, 1.56008, 1.47303, 1.3643, 1.21708, 1.06146, 0.908219, 0.754511, 0.617157, 0.500328, 0.406442, 0.333317, 0.276404, 0.235751, 0.203188, 0.174879, 0.161244, 0.138147, 0.123821, 0.110808, 0.0997031, 0.0897595, 0.0827855, 0.0776173, 0.0740599, 0.0711833, 0.0647596, 0.0583041, 0.0521346, 0.0454088, 0.0416007, 0.0383446, 0.0356971, 0.0353548, 0.0370903, 0.0443115, 0.0549878, 0.0680183, 0.0753875, 0.0828112, 0.103032, 0.141383, 0.306853, 0.777128, 1, 1, 1, 1, 1, 1, 1, 1 };
+double PU_Rew[{PU_Rew_len}] = {{ {PU_Rew_str} }};
 
 // ******************************************
 
-// #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
-#include "HHBoostedAnalyzer_Armen/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
+// #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_{era}.txt"
+#include "HHBoostedAnalyzer_Armen/MyHisto/NanoAOD_V12/MC/parameters_{era}.txt"
 
-void Making_Histo_TTtoLNu2Q_PreBPix() {
+void Making_Histo_TTtoLNu2Q_{era}() {{
   gSystem->Load("libFWCoreFWLite.so");
 
   // ********************************************************* JEC
   std::string jec_path = getCMSSWBase() + "/src/JECs/";
   vector<JetCorrectorParameters> vPar;
   vPar.push_back(JetCorrectorParameters(
-      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23_V1_MC/"
-      jec_path + "Summer23Prompt23_V1_MC/Summer23Prompt23_V1_MC_L2Relative_AK4PFPuppi.txt"));
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23{extra_tag}_V1_MC/"
+      jec_path + "Summer23Prompt23{extra_tag}_V1_MC/Summer23Prompt23{extra_tag}_V1_MC_L2Relative_AK4PFPuppi.txt"));
   FactorizedJetCorrector *corrector = new FactorizedJetCorrector(vPar);
 
   vector<JetCorrectorParameters> vParAK8;
   vParAK8.push_back(JetCorrectorParameters(
-      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23_V1_MC/"
-      jec_path + "Summer23Prompt23_V1_MC/Summer23Prompt23_V1_MC_L2Relative_AK8PFPuppi.txt"));
+      // "/afs/cern.ch/user/t/tumasyan/public/2023/JECs/Summer23Prompt23{extra_tag}_V1_MC/"
+      jec_path + "Summer23Prompt23{extra_tag}_V1_MC/Summer23Prompt23{extra_tag}_V1_MC_L2Relative_AK8PFPuppi.txt"));
   FactorizedJetCorrector *corrector_AK8 = new FactorizedJetCorrector(vParAK8);
 
   /*
@@ -89,16 +129,16 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
   // *********************************************************
   */
 
-  TFile *f = new TFile("Histograms_TTtoLNu2Q_PreBPix.root", "RECREATE");
+  TFile *f = new TFile("Histograms_TTtoLNu2Q_{era}.root", "RECREATE");
 
   // Modification begin: New variables
-  Float_t Lower_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
-                         80, 100, 120, 150, 200, 250, 300, 350};
-  Float_t Lower_pt[46] = {0,   10,  20,  30,  40,  50,  60,  70,  80,  90,
+  Float_t Lower_m[16] = {{0,  5,   10,  20,  30,  40,  50,  60,
+                         80, 100, 120, 150, 200, 250, 300, 350}};
+  Float_t Lower_pt[46] = {{0,   10,  20,  30,  40,  50,  60,  70,  80,  90,
                           100, 110, 120, 130, 140, 150, 160, 170, 180, 190,
                           200, 210, 220, 230, 240, 250, 260, 270, 280, 290,
                           300, 320, 340, 360, 380, 400, 420, 440, 460, 480,
-                          500, 550, 600, 700, 800, 1000};
+                          500, 550, 600, 700, 800, 1000}};
 
   TH1D *_FatJet1_pt = new TH1D("FatJet1_pt", "FatJet1_pt", 200, 0, 1000);
   TH1D *_FatJet1_eta = new TH1D("FatJet1_eta", "FatJet1_eta", 100, -5, 5);
@@ -115,7 +155,7 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
                                       45, Lower_pt, 15, Lower_m);
 
   TFile *f1 =
-      new TFile("/eos/cms/store/group/phys_higgs/nonresonant_HH/bbbb/sixie/Run3Analysis/HH/HHTo4BNtupler/ArmenVersion_ICHEP2024/Data_2023/PreBPix/TTtoLNu2Q.root");
+      new TFile("{root_file_path}");
 
   TH1F *NEvents = (TH1F *)f1->Get("NEvents");
   double SumGenWeights = NEvents->GetBinContent(1);
@@ -270,7 +310,7 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_bit", Trigger_Object_bit);
 
   // Events Loop
-  for (int i = 0; i < InputTree->GetEntries(); i++) {
+  for (int i = 0; i < InputTree->GetEntries(); i++) {{
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
 
@@ -284,7 +324,7 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
     // ********************************************************** FatJets
     // correction and selection
 
-    if (FatJet1_pt > 0) {
+    if (FatJet1_pt > 0) {{
       double Raw_FatJet1_pt = FatJet1_pt * (1.0 - FatJet1_rawFactor);
       corrector_AK8->setJetPt(Raw_FatJet1_pt);
       corrector_AK8->setJetEta(FatJet1_eta);
@@ -293,8 +333,8 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
       FatJet1_pt = Raw_FatJet1_pt * This_correction;
       FatJet1_MassSD =
           FatJet1_MassSD * (1.0 - FatJet1_rawFactor) * This_correction;
-    }
-    if (FatJet2_pt > 0) {
+    }}
+    if (FatJet2_pt > 0) {{
       double Raw_FatJet2_pt = FatJet2_pt * (1.0 - FatJet2_rawFactor);
       corrector_AK8->setJetPt(Raw_FatJet2_pt);
       corrector_AK8->setJetEta(FatJet2_eta);
@@ -303,14 +343,14 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
       FatJet2_pt = Raw_FatJet2_pt * This_correction;
       FatJet2_MassSD =
           FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * This_correction;
-    }
+    }}
 
     /*
        // Jet Smearing
        double res_pt_1;
        double res_pt_sf_1;
-       JME::JetParameters JerPARAM_1 = {{JME::Binning::JetPt, FatJet1_pt},
-    {JME::Binning::JetEta, FatJet1_eta},{JME::Binning::Rho, rho}};
+       JME::JetParameters JerPARAM_1 = {{{{JME::Binning::JetPt, FatJet1_pt}},
+    {{JME::Binning::JetEta, FatJet1_eta}},{{JME::Binning::Rho, rho}}}};
        JME::JetParameters JerSFPARAM_1;
        JerSFPARAM_1.set(JME::Binning::JetPt,  FatJet1_pt);
        JerSFPARAM_1.set(JME::Binning::JetEta, FatJet1_eta);
@@ -320,8 +360,8 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
 
        double res_pt_2;
        double res_pt_sf_2;
-       JME::JetParameters JerPARAM_2 = {{JME::Binning::JetPt, FatJet2_pt},
-    {JME::Binning::JetEta, FatJet2_eta},{JME::Binning::Rho, rho}};
+       JME::JetParameters JerPARAM_2 = {{{{JME::Binning::JetPt, FatJet2_pt}},
+    {{JME::Binning::JetEta, FatJet2_eta}},{{JME::Binning::Rho, rho}}}};
        JME::JetParameters JerSFPARAM_2;
        JerSFPARAM_2.set(JME::Binning::JetPt,  FatJet2_pt);
        JerSFPARAM_2.set(JME::Binning::JetEta, FatJet2_eta);
@@ -335,29 +375,29 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
        bool   GenJetMatched_2 = false;
 
        for(int nGJAK8=0;nGJAK8<nGenJetAK8; nGJAK8++)
-         {
+         {{
            if(!GenJetMatched_1 &&  sqrt(pow(FatJet1_eta-GenJetAK8_eta[nGJAK8],2)
     + pow(phi_dist(FatJet1_phi,GenJetAK8_phi[nGJAK8]),2)) < 0.2 &&
     (fabs(FatJet1_pt - GenJetAK8_pt[nGJAK8])/FatJet1_pt < 3*res_pt_1) )
-             {
+             {{
                SmearFactor_1 = 1.0 + (res_pt_sf_1 - 1.0) * (FatJet1_pt -
     GenJetAK8_pt[nGJAK8]) / FatJet1_pt; GenJetMatched_1 = true;
-             }
+             }}
            if(!GenJetMatched_2 &&  sqrt(pow(FatJet2_eta-GenJetAK8_eta[nGJAK8],2)
     + pow(phi_dist(FatJet2_phi,GenJetAK8_phi[nGJAK8]),2)) < 0.2 &&
     (fabs(FatJet2_pt - GenJetAK8_pt[nGJAK8])/FatJet2_pt < 3*res_pt_2) )
-             {
+             {{
                SmearFactor_2 = 1.0 + (res_pt_sf_2 - 1.0) * (FatJet2_pt -
     GenJetAK8_pt[nGJAK8]) / FatJet2_pt; GenJetMatched_2 = true;
-             }
-         }
+             }}
+         }}
 
     //     if(!GenJetMatched && res_pt_sf[nJ] > 1.0)
-    //       {
+    //       {{
     //        double sigma = res_pt[nJ] * sqrt(res_pt_sf[nJ]*res_pt_sf[nJ] - 1);
     //        normal_distribution<> d(0, sigma);
     //        SmearFactor = 1.0 + d(m_random_generator);
-    //       }
+    //       }}
 
          // Smear
          FatJet1_pt     = FatJet1_pt * SmearFactor_1;
@@ -384,29 +424,29 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
 
     double Dr_J1FJ = -1;
     double Dr_J1L = 10;
-    if (Jet1_Pt > 40) {
+    if (Jet1_Pt > 40) {{
       Dr_J1FJ = sqrt(pow(Jet1_Eta - FatJet1_eta, 2) +
                      pow(phi_dist(Jet1_Phi, FatJet1_phi), 2));
       Dr_J1L = sqrt(pow(Jet1_Eta - lep1_Eta, 2) +
                     pow(phi_dist(Jet1_Phi, lep1_Phi), 2));
-    }
+    }}
     double Dr_J2FJ = -1;
     double Dr_J2L = 10;
-    if (Jet2_Pt > 40) {
+    if (Jet2_Pt > 40) {{
       Dr_J2FJ = sqrt(pow(Jet2_Eta - FatJet1_eta, 2) +
                      pow(phi_dist(Jet2_Phi, FatJet1_phi), 2));
       Dr_J2L = sqrt(pow(Jet2_Eta - lep1_Eta, 2) +
                     pow(phi_dist(Jet2_Phi, lep1_Phi), 2));
-    }
+    }}
 
     double Dr_JFJ_Max = Dr_J1FJ;
     double Dr_JFJ_Min = Dr_J2FJ;
     double Dr_JmaxL = Dr_J1L;
-    if (Dr_J2FJ > Dr_J1FJ) {
+    if (Dr_J2FJ > Dr_J1FJ) {{
       Dr_JFJ_Max = Dr_J2FJ;
       Dr_JFJ_Min = Dr_J1FJ;
       Dr_JmaxL = Dr_J2L;
-    }
+    }}
 
     if (Dr_JFJ_Max < 0)
       continue;
@@ -434,10 +474,10 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
         if (sqrt(pow((FatJet1_eta - Trigger_Object_eta[itrg]), 2) +
                  pow(phi_dist(FatJet1_phi, Trigger_Object_phi[itrg]), 2)) <
                 0.4 &&
-            Trigger_Object_pt[itrg] > 100) {
+            Trigger_Object_pt[itrg] > 100) {{
           matched_to_AK8PFJet230_SoftDropMass40 = true;
           break;
-        }
+        }}
 
     if (matched_to_AK8PFJet230_SoftDropMass40)
       Probe_Matched = true;
@@ -457,13 +497,24 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
     _FatJet1_MassSD->Fill(FatJet1_MassSD, weight);
     _FatJet1_Pt_Mass->Fill(FatJet1_pt, FatJet1_MassSD, weight);
 
-    if (Probe_Matched) {
+    if (Probe_Matched) {{
       _FatJet2_Pt_Mass_M->Fill(FatJet1_pt, FatJet1_MassSD, weight);
-    }
+    }}
 
-  } // end event loop
+  }} // end event loop
 
   f->Write();
   
-  std::cout << "Done with Making_Histo_TTtoLNu2Q_PreBPix.C" << std::endl;
-}
+  std::cout << "Done with {filename}" << std::endl;
+}}
+"""
+    script = script.strip() + "\n"
+    return script, filename
+
+if __name__ == "__main__":
+    for era in ERAS_2023:
+        script, filename = gen_script(era)
+        file_path = SCRIPT_DIR / filename
+        with open(file_path, "w") as f:
+            f.write(script)
+        print(f"Generated {file_path}")
