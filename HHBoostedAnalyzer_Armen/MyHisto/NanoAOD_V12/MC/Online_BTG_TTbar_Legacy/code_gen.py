@@ -731,10 +731,9 @@ void Making_Histo_TTtoLNu2Q_{era}() {{
   f->Write();
   
   std::cout << "Done with {filename}" << std::endl;
-}}
- 
-    
+}}  
 """
+    script = script.strip() + "\n"
     return script, filename
 
 if __name__ == "__main__":

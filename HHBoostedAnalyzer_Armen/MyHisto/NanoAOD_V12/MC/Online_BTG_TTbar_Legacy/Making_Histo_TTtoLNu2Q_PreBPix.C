@@ -1,4 +1,3 @@
-
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
@@ -696,5 +695,3 @@ void Making_Histo_TTtoLNu2Q_PreBPix() {
   
   std::cout << "Done with Making_Histo_TTtoLNu2Q_PreBPix.C" << std::endl;
 }
- 
-    
