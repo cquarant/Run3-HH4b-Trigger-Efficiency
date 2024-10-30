@@ -1,3 +1,34 @@
+from pathlib import Path
+
+EOS_DATA_BASE = Path(
+    "/eos/cms/store/group/phys_higgs/nonresonant_HH/bbbb/sixie/Run3Analysis/HH/HHTo4BNtupler/ArmenVersion_ICHEP2024/Data_2023"
+)
+
+SCRIPT_DIR = Path(__file__).parent
+
+QCD_HT_BINS = [
+    ("100", "200"),
+    ("200", "400"),
+    ("400", "600"),
+    ("600", "800"),
+    ("800", "1000"),
+    ("1000", "1200"),
+    ("1200", "1500"),
+    ("1500", "2000"),
+    ("2000", "Inf"),
+]
+
+
+def get_root_file_path(HT_low: str, HT_high: str) -> str:
+    # TODO: Update this if needed
+    # file_path = EOS_DATA_BASE / f"PreBPix/QCD_HT_{{HT_low}}to{{HT_high}}.root"
+    file_path = EOS_DATA_BASE / f"PostBPix/QCD_HT_{HT_low}to{HT_high}.root"
+    return str(file_path)
+
+def gen_QCD_script(HT_low: str, HT_high: str) -> str:
+    root_file_path = get_root_file_path(HT_low=HT_low, HT_high=HT_high)
+    filename = f"Making_Histo_QCD_HT_{HT_low}to{HT_high}.C"
+    script = f"""
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
@@ -20,26 +51,26 @@
 #include <string>
 #include <vector>
 
-std::string getCMSSWBase() {
+std::string getCMSSWBase() {{
   const char *cmssw_base = std::getenv("CMSSW_BASE");
-  if (!cmssw_base) {
+  if (!cmssw_base) {{
     throw std::runtime_error("CMSSW_BASE environment variable not set! Did you "
                              "forget to run 'cmsenv'?");
-  }
+  }}
   return std::string(cmssw_base);
-}
+}}
 
 // D-phi
-double phi_dist(double a, double b) {
-  if (fabs(a - b) > 3.14159265) {
+double phi_dist(double a, double b) {{
+  if (fabs(a - b) > 3.14159265) {{
     return 6.2831853 - fabs(a - b);
-  }
+  }}
   return fabs(a - b);
-}
+}}
 
-bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
+bool inRange(int low, int high, int x) {{ return (low <= x && x <= high); }}
 
-double PU_Rew[100] = {
+double PU_Rew[100] = {{
     0.750156,  1.89753,   1.16218,    1.17185,    1.24144,   1.24093,
     1.21528,   1.24569,   1.22439,    1.13186,    1.268,     1.22833,
     0.898481,  1.72457,   2.50901,    3.71031,    3.94382,   2.84716,
@@ -56,13 +87,13 @@ double PU_Rew[100] = {
     0.0180967, 0.0183505, 0.0211177,  0.0249506,  0.023001,  0.022844,
     0.0209544, 0.018289,  0.0155916,  0.0123924,  0.0101449, 0.010468,
     0.006118,  0.0044397, 0.00357126, 0.00463679, 0.0842234, 0.0488443,
-    0.0560634, 1,         1,          1};
+    0.0560634, 1,         1,          1}};
 
 // ******************************************
 
 #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PostBPix.txt"
 
-void Making_Histo_QCD_HT_800to1000() {
+void Making_Histo_QCD_HT_{HT_low}to{HT_high}() {{
   gSystem->Load("libFWCoreFWLite.so");
 
   // ********************************************************* JEC
@@ -98,16 +129,16 @@ void Making_Histo_QCD_HT_800to1000() {
 
   // *********************************************************
   */
-  TFile *f = new TFile("Histograms_QCD_HT_800to1000.root", "RECREATE");
+  TFile *f = new TFile("Histograms_QCD_HT_{HT_low}to{HT_high}.root", "RECREATE");
 
   // Modification begin: New variables
-  Float_t Lower_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
-                         80, 100, 120, 150, 200, 250, 300, 350};
-  Float_t Lower_pt[46] = {0,   10,  20,  30,  40,  50,  60,  70,  80,  90,
+  Float_t Lower_m[16] = {{0,  5,   10,  20,  30,  40,  50,  60,
+                         80, 100, 120, 150, 200, 250, 300, 350}};
+  Float_t Lower_pt[46] = {{0,   10,  20,  30,  40,  50,  60,  70,  80,  90,
                           100, 110, 120, 130, 140, 150, 160, 170, 180, 190,
                           200, 210, 220, 230, 240, 250, 260, 270, 280, 290,
                           300, 320, 340, 360, 380, 400, 420, 440, 460, 480,
-                          500, 550, 600, 700, 800, 1000};
+                          500, 550, 600, 700, 800, 1000}};
 
   TH1D *_FatJet1_pt = new TH1D("FatJet1_pt", "FatJet1_pt", 200, 0, 1000);
   TH1D *_FatJet1_eta = new TH1D("FatJet1_eta", "FatJet1_eta", 100, -5, 5);
@@ -133,13 +164,13 @@ void Making_Histo_QCD_HT_800to1000() {
   TH2D *_FatJet2_Pt_Mass_M = new TH2D("FatJet2_Pt_Mass_M", "FatJet2_Pt_Mass_M",
                                       45, Lower_pt, 15, Lower_m);
 
-  Float_t Lower_pt_N[9] = {230, 240, 250, 270, 300, 350, 500, 700, 1000};
+  Float_t Lower_pt_N[9] = {{230, 240, 250, 270, 300, 350, 500, 700, 1000}};
   TH2D *_FatJet2_Pt_MassN = new TH2D("FatJet2_Pt_MassN", "FatJet2_Pt_MassN", 8,
                                      Lower_pt_N, 15, Lower_m);
   TH2D *_FatJet2_Pt_MassN_M = new TH2D(
       "FatJet2_Pt_MassN_M", "FatJet2_Pt_MassN_M", 8, Lower_pt_N, 15, Lower_m);
-  // TFile *f1 = new TFile("/eos/home-t/tumasyan/HHTo4B/Data_2023/PostBPix/QCD_HT_800to1000.root");
-  TFile *f1 = new TFile("/eos/cms/store/group/phys_higgs/nonresonant_HH/bbbb/sixie/Run3Analysis/HH/HHTo4BNtupler/ArmenVersion_ICHEP2024/Data_2023/PostBPix/QCD_HT_800to1000.root");
+  // TFile *f1 = new TFile("/eos/home-t/tumasyan/HHTo4B/Data_2023/PostBPix/QCD_HT_{HT_low}to{HT_high}.root");
+  TFile *f1 = new TFile("{root_file_path}");
 
   TH1F *NEvents = (TH1F *)f1->Get("NEvents");
   double SumGenWeights = NEvents->GetBinContent(1);
@@ -293,7 +324,7 @@ void Making_Histo_QCD_HT_800to1000() {
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_bit", Trigger_Object_bit);
 
   // Events Loop
-  for (int i = 0; i < InputTree->GetEntries(); i++) {
+  for (int i = 0; i < InputTree->GetEntries(); i++) {{
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
 
@@ -305,7 +336,7 @@ void Making_Histo_QCD_HT_800to1000() {
 
     // ********************************************************** FatJets
     // correction and selection
-    if (FatJet1_pt > 0) {
+    if (FatJet1_pt > 0) {{
       double Raw_FatJet1_pt = FatJet1_pt * (1.0 - FatJet1_rawFactor);
       corrector_AK8->setJetPt(Raw_FatJet1_pt);
       corrector_AK8->setJetEta(FatJet1_eta);
@@ -314,8 +345,8 @@ void Making_Histo_QCD_HT_800to1000() {
       FatJet1_pt = Raw_FatJet1_pt * This_correction;
       FatJet1_MassSD =
           FatJet1_MassSD * (1.0 - FatJet1_rawFactor) * This_correction;
-    }
-    if (FatJet2_pt > 0) {
+    }}
+    if (FatJet2_pt > 0) {{
       double Raw_FatJet2_pt = FatJet2_pt * (1.0 - FatJet2_rawFactor);
       corrector_AK8->setJetPt(Raw_FatJet2_pt);
       corrector_AK8->setJetEta(FatJet2_eta);
@@ -324,13 +355,13 @@ void Making_Histo_QCD_HT_800to1000() {
       FatJet2_pt = Raw_FatJet2_pt * This_correction;
       FatJet2_MassSD =
           FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * This_correction;
-    }
+    }}
     /*
        // Jet Smearing
        double res_pt_1;
        double res_pt_sf_1;
-       JME::JetParameters JerPARAM_1 = {{JME::Binning::JetPt, FatJet1_pt},
-    {JME::Binning::JetEta, FatJet1_eta},{JME::Binning::Rho, rho}};
+       JME::JetParameters JerPARAM_1 = {{{{JME::Binning::JetPt, FatJet1_pt}},
+    {{JME::Binning::JetEta, FatJet1_eta}},{{JME::Binning::Rho, rho}}}};
        JME::JetParameters JerSFPARAM_1;
        JerSFPARAM_1.set(JME::Binning::JetPt,  FatJet1_pt);
        JerSFPARAM_1.set(JME::Binning::JetEta, FatJet1_eta);
@@ -340,8 +371,8 @@ void Making_Histo_QCD_HT_800to1000() {
 
        double res_pt_2;
        double res_pt_sf_2;
-       JME::JetParameters JerPARAM_2 = {{JME::Binning::JetPt, FatJet2_pt},
-    {JME::Binning::JetEta, FatJet2_eta},{JME::Binning::Rho, rho}};
+       JME::JetParameters JerPARAM_2 = {{{{JME::Binning::JetPt, FatJet2_pt}},
+    {{JME::Binning::JetEta, FatJet2_eta}},{{JME::Binning::Rho, rho}}}};
        JME::JetParameters JerSFPARAM_2;
        JerSFPARAM_2.set(JME::Binning::JetPt,  FatJet2_pt);
        JerSFPARAM_2.set(JME::Binning::JetEta, FatJet2_eta);
@@ -355,29 +386,29 @@ void Making_Histo_QCD_HT_800to1000() {
        bool   GenJetMatched_2 = false;
 
        for(int nGJAK8=0;nGJAK8<nGenJetAK8; nGJAK8++)
-         {
+         {{
            if(!GenJetMatched_1 &&  sqrt(pow(FatJet1_eta-GenJetAK8_eta[nGJAK8],2)
     + pow(phi_dist(FatJet1_phi,GenJetAK8_phi[nGJAK8]),2)) < 0.2 &&
     (fabs(FatJet1_pt - GenJetAK8_pt[nGJAK8])/FatJet1_pt < 3*res_pt_1) )
-             {
+             {{
                SmearFactor_1 = 1.0 + (res_pt_sf_1 - 1.0) * (FatJet1_pt -
     GenJetAK8_pt[nGJAK8]) / FatJet1_pt; GenJetMatched_1 = true;
-             }
+             }}
            if(!GenJetMatched_2 &&  sqrt(pow(FatJet2_eta-GenJetAK8_eta[nGJAK8],2)
     + pow(phi_dist(FatJet2_phi,GenJetAK8_phi[nGJAK8]),2)) < 0.2 &&
     (fabs(FatJet2_pt - GenJetAK8_pt[nGJAK8])/FatJet2_pt < 3*res_pt_2) )
-             {
+             {{
                SmearFactor_2 = 1.0 + (res_pt_sf_2 - 1.0) * (FatJet2_pt -
     GenJetAK8_pt[nGJAK8]) / FatJet2_pt; GenJetMatched_2 = true;
-             }
-         }
+             }}
+         }}
 
     //     if(!GenJetMatched && res_pt_sf[nJ] > 1.0)
-    //       {
+    //       {{
     //        double sigma = res_pt[nJ] * sqrt(res_pt_sf[nJ]*res_pt_sf[nJ] - 1);
     //        normal_distribution<> d(0, sigma);
     //        SmearFactor = 1.0 + d(m_random_generator);
-    //       }
+    //       }}
 
          // Smear
          FatJet1_pt     = FatJet1_pt * SmearFactor_1;
@@ -408,16 +439,16 @@ void Making_Histo_QCD_HT_800to1000() {
     bool Tag_Matched = false;
 
     for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
-      if ((Trigger_Object_bit[itrg] & 4) == 4) {
+      if ((Trigger_Object_bit[itrg] & 4) == 4) {{
         if (sqrt(pow((FatJet1_eta - Trigger_Object_eta[itrg]), 2) +
                  pow(phi_dist(FatJet1_phi, Trigger_Object_phi[itrg]), 2)) <
                 0.4 &&
-            Trigger_Object_pt[itrg] > 100) {
+            Trigger_Object_pt[itrg] > 100) {{
           Tag_Matched = true;
           break;
-        } else
+        }} else
           break;
-      }
+      }}
     if (!Tag_Matched)
       continue;
 
@@ -430,17 +461,17 @@ void Making_Histo_QCD_HT_800to1000() {
         if (sqrt(pow((FatJet2_eta - Trigger_Object_eta[itrg]), 2) +
                  pow(phi_dist(FatJet2_phi, Trigger_Object_phi[itrg]), 2)) <
                 0.4 &&
-            Trigger_Object_pt[itrg] > 100) {
+            Trigger_Object_pt[itrg] > 100) {{
           matched_to_AK8PFJet230_SoftDropMass40 = true;
           break;
-        }
+        }}
 
     if (matched_to_AK8PFJet230_SoftDropMass40)
       Probe_Matched = true;
 
     // ********************************************************** weight
 
-    weight = (weight / SumGenWeights) * XSec_QCD_HT_800to1000 * Lumi;
+    weight = (weight / SumGenWeights) * XSec_QCD_HT_{HT_low}to{HT_high} * Lumi;
     double PU_weight = PU_Rew[(int)npu];
     weight = weight * PU_weight;
 
@@ -464,12 +495,26 @@ void Making_Histo_QCD_HT_800to1000() {
     _FatJet2_Pt_Mass->Fill(FatJet2_pt, FatJet2_MassSD, weight);
     _FatJet2_Pt_MassN->Fill(FatJet2_pt, FatJet2_MassSD, weight);
 
-    if (Probe_Matched) {
+    if (Probe_Matched) {{
       _FatJet2_Pt_Mass_M->Fill(FatJet2_pt, FatJet2_MassSD, weight);
       _FatJet2_Pt_MassN_M->Fill(FatJet2_pt, FatJet2_MassSD, weight);
-    }
+    }}
 
-  } // end event loop
+  }} // end event loop
 
   f->Write();
-}
+}}
+ 
+"""
+
+    script = script.strip()
+    script += "\n"
+    return script, filename
+
+if __name__ == "__main__":
+    for HT_low, HT_high in QCD_HT_BINS:
+        script, filename = gen_QCD_script(HT_low=HT_low, HT_high=HT_high)
+        script_path = SCRIPT_DIR / filename
+        with open(script_path, "w") as f:
+            f.write(script)
+        print(f"Generated {script_path}")
