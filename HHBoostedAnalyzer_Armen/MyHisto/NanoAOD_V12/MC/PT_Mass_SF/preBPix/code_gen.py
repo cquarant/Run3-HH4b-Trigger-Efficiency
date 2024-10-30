@@ -23,10 +23,10 @@ def get_root_file_path(HT_low: str, HT_high: str) -> str:
     return str(file_path)
 
 
-def gen_QCD_script(
+def gen_script(
     HT_low: str, 
     HT_high: str,
-) -> str:
+) -> tuple[str, str]:
     root_file_path = get_root_file_path(HT_low=HT_low, HT_high=HT_high)
     filename = f"Making_Histo_QCD_HT_{HT_low}to{HT_high}.C"
     script = f"""
@@ -516,7 +516,7 @@ void Making_Histo_QCD_HT_{HT_low}to{HT_high}() {{
 
 if __name__ == "__main__":
     for HT_low, HT_high in QCD_HT_BINS:
-        script, filename = gen_QCD_script(HT_low=HT_low, HT_high=HT_high)
+        script, filename = gen_script(HT_low=HT_low, HT_high=HT_high)
         script_path = SCRIPT_DIR / filename
         with open(script_path, "w") as f:
             f.write(script)
