@@ -472,4 +472,6 @@ void Making_Histo_QCD_HT_600to800() {
   } // end event loop
 
   f->Write();
+  
+  std::cout << "Done with QCD_HT_600to800" << std::endl;
 }

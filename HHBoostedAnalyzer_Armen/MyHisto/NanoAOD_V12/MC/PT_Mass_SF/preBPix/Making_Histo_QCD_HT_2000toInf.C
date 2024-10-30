@@ -472,4 +472,6 @@ void Making_Histo_QCD_HT_2000toInf() {
   } // end event loop
 
   f->Write();
+  
+  std::cout << "Done with QCD_HT_2000toInf" << std::endl;
 }

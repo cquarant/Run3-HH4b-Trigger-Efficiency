@@ -506,6 +506,8 @@ void Making_Histo_QCD_HT_{HT_low}to{HT_high}() {{
   }} // end event loop
 
   f->Write();
+  
+  std::cout << "Done with QCD_HT_{HT_low}to{HT_high}" << std::endl;
 }}
 
 """
