@@ -729,6 +729,8 @@ void Making_Histo_TTtoLNu2Q_{era}() {{
   }} // end event loop
 
   f->Write();
+  
+  std::cout << "Done with {filename}" << std::endl;
 }}
  
     
