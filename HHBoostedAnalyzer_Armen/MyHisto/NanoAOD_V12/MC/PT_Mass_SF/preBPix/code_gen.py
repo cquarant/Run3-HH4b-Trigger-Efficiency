@@ -2,7 +2,6 @@ from pathlib import Path
 EOS_DATA_BASE = Path(
     "/eos/cms/store/group/phys_higgs/nonresonant_HH/bbbb/sixie/Run3Analysis/HH/HHTo4BNtupler/ArmenVersion_ICHEP2024/Data_2023"
 )
-RUN = "PreBPix"
 
 SCRIPT_DIR = Path(__file__).parent
 
@@ -18,18 +17,17 @@ QCD_HT_BINS = [
     ("2000", "Inf"),
 ]
 
-def get_root_file_path(HT_low: str, HT_high: str, run: str) -> str:
+def get_root_file_path(HT_low: str, HT_high: str) -> str:
     # TODO: Update this if needed
-    file_path = EOS_DATA_BASE / f"{run}/QCD_HT_{HT_low}to{HT_high}.root"
+    file_path = EOS_DATA_BASE / f"PreBPix/QCD_HT_{HT_low}to{HT_high}.root"
     return str(file_path)
 
 
 def gen_QCD_script(
     HT_low: str, 
     HT_high: str,
-    run: str,
 ) -> str:
-    root_file_path = get_root_file_path(HT_low=HT_low, HT_high=HT_high, run=run)
+    root_file_path = get_root_file_path(HT_low=HT_low, HT_high=HT_high)
     filename = f"Making_Histo_QCD_HT_{HT_low}to{HT_high}.C"
     script = f"""
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
@@ -92,8 +90,8 @@ double PU_Rew[100] = {{
 
 // ******************************************
 
-// #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_{run}.txt"
-#include "HHBoostedAnalyzer_Armen/MyHisto/NanoAOD_V12/MC/parameters_{run}.txt"
+// #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
+#include "HHBoostedAnalyzer_Armen/MyHisto/NanoAOD_V12/MC/parameters_PreBPix.txt"
 
 void Making_Histo_QCD_HT_{HT_low}to{HT_high}() {{
   gSystem->Load("libFWCoreFWLite.so");
@@ -518,7 +516,7 @@ void Making_Histo_QCD_HT_{HT_low}to{HT_high}() {{
 
 if __name__ == "__main__":
     for HT_low, HT_high in QCD_HT_BINS:
-        script, filename = gen_QCD_script(HT_low=HT_low, HT_high=HT_high, run=RUN)
+        script, filename = gen_QCD_script(HT_low=HT_low, HT_high=HT_high)
         script_path = SCRIPT_DIR / filename
         with open(script_path, "w") as f:
             f.write(script)
