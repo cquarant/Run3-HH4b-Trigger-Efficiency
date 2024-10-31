@@ -60,7 +60,8 @@ double PU_Rew[100] = {
 
 // ******************************************
 
-#include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PostBPix.txt"
+// #include "/afs/cern.ch/work/t/tumasyan/HHTo4B/2023/CMSSW_13_1_0/src/HHBoostedAnalyzer/MyHisto/NanoAOD_V12/MC/parameters_PostBPix.txt"
+#include HHBoostedAnalyzer_Armen/MyHisto/NanoAOD_V12/MC/parameters_PostBPix.txt
 
 void Making_Histo_QCD_HT_2000toInf() {
   gSystem->Load("libFWCoreFWLite.so");
