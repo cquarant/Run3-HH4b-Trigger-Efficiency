@@ -22,7 +22,7 @@ QCD_HT_BINS = [
 def get_root_file_path(HT_low: str, HT_high: str) -> str:
     # TODO: Update this if needed
     # "/eos/home-t/tumasyan/HHTo4B/Data_2023/Legacy/PreBPix/QCD_HT_{HT_low}to{HT_high}.root"
-    file_path = EOS_DATA_BASE / f"Legacy/QCD_HT_{HT_low}to{HT_high}.root"
+    file_path = EOS_DATA_BASE / f"Legacy/PreBPix/QCD_HT_{HT_low}to{HT_high}.root"
     return str(file_path)
 
 
