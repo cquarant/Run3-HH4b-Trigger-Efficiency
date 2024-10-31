@@ -2,4 +2,5 @@
 *.png
 .__*
 *.o
-!Trigger_SFs/*/*.root
+!Trigger_SFs/**/*.root
+*.pyc
