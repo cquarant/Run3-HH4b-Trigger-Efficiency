@@ -35,72 +35,74 @@ struct ParamDict {
   double XSec_QCD_HT_2000toInf;
 };
 
-// Function to load parameters from file
-ParamDict loadParamDict(const std::string &parameters_file) {
-  ParamDict param_dict;
-  std::ifstream file(parameters_file);
+void loadParamDict(ParamDict* param_dict, const std::string &param_path) {
+  std::ifstream file(param_path);
   if (!file.is_open()) {
-    throw std::runtime_error("Could not open parameters file: " +
-                             parameters_file);
+    throw std::runtime_error("Could not open parameters file: " + param_path);
   }
 
   std::string line;
   while (std::getline(file, line)) {
-    if (line.empty() || line[0] == '#') {
-      continue; // Skip empty lines and comments
-    }
-
-    std::istringstream iss(line);
-    std::string param_name;
-    double value;
-
-    iss >> param_name >> value;
-
-    if (param_name == "Lumi") {
-      param_dict.Lumi = value;
-    } else if (param_name == "XSec_QCD_HT_100to200") {
-      param_dict.XSec_QCD_HT_100to200 = value;
-    } else if (param_name == "XSec_QCD_HT_200to400") {
-      param_dict.XSec_QCD_HT_200to400 = value;
-    } else if (param_name == "XSec_QCD_HT_400to600") {
-      param_dict.XSec_QCD_HT_400to600 = value;
-    } else if (param_name == "XSec_QCD_HT_600to800") {
-      param_dict.XSec_QCD_HT_600to800 = value;
-    } else if (param_name == "XSec_QCD_HT_800to1000") {
-      param_dict.XSec_QCD_HT_800to1000 = value;
-    } else if (param_name == "XSec_QCD_HT_1000to1200") {
-      param_dict.XSec_QCD_HT_1000to1200 = value;
-    } else if (param_name == "XSec_QCD_HT_1200to1500") {
-      param_dict.XSec_QCD_HT_1200to1500 = value;
-    } else if (param_name == "XSec_QCD_HT_1500to2000") {
-      param_dict.XSec_QCD_HT_1500to2000 = value;
-    } else if (param_name == "XSec_QCD_HT_2000toInf") {
-      param_dict.XSec_QCD_HT_2000toInf = value;
+    if (line.empty() || line[0] == '/') continue;
+    
+    // Look for double declarations
+    if (line.find("double") != std::string::npos) {
+      std::istringstream iss(line);
+      std::string type, name, equals;
+      double value;
+      
+      // Parse line of format: double XSec_QCD_HT_100to200    =  25220000.00;
+      if (!(iss >> type >> name >> equals >> value)) {
+        continue;
+      }
+      
+      // Remove semicolon if present
+      if (name.back() == ';') name = name.substr(0, name.size()-1);
+      
+      if (name == "Lumi") {
+        param_dict->Lumi = value;
+      } else if (name == "XSec_QCD_HT_100to200") {
+        param_dict->XSec_QCD_HT_100to200 = value;
+      } else if (name == "XSec_QCD_HT_200to400") {
+        param_dict->XSec_QCD_HT_200to400 = value;
+      } else if (name == "XSec_QCD_HT_400to600") {
+        param_dict->XSec_QCD_HT_400to600 = value;
+      } else if (name == "XSec_QCD_HT_600to800") {
+        param_dict->XSec_QCD_HT_600to800 = value;
+      } else if (name == "XSec_QCD_HT_800to1000") {
+        param_dict->XSec_QCD_HT_800to1000 = value;
+      } else if (name == "XSec_QCD_HT_1000to1200") {
+        param_dict->XSec_QCD_HT_1000to1200 = value;
+      } else if (name == "XSec_QCD_HT_1200to1500") {
+        param_dict->XSec_QCD_HT_1200to1500 = value;
+      } else if (name == "XSec_QCD_HT_1500to2000") {
+        param_dict->XSec_QCD_HT_1500to2000 = value;
+      } else if (name == "XSec_QCD_HT_2000toInf") {
+        param_dict->XSec_QCD_HT_2000toInf = value;
+      }
     }
   }
-
-  return param_dict;
 }
 
-double getXSec(ParamDict param_dict, std::string ht_bin) {
+double getXSec(ParamDict *param_dict, std::string ht_bin) {
   if (ht_bin == "100to200") {
-    return param_dict.XSec_QCD_HT_100to200;
+    return param_dict->XSec_QCD_HT_100to200;
   } else if (ht_bin == "200to400") {
-    return param_dict.XSec_QCD_HT_200to400;
+    return param_dict->XSec_QCD_HT_200to400;
   } else if (ht_bin == "400to600") {
-    return param_dict.XSec_QCD_HT_400to600;
+    return param_dict->XSec_QCD_HT_400to600;
   } else if (ht_bin == "600to800") {
-    return param_dict.XSec_QCD_HT_600to800;
+    return param_dict->XSec_QCD_HT_600to800;
   } else if (ht_bin == "800to1000") {
-    return param_dict.XSec_QCD_HT_800to1000;
+    return param_dict->XSec_QCD_HT_800to1000;
   } else if (ht_bin == "1000to1200") {
-    return param_dict.XSec_QCD_HT_1000to1200;
+    return param_dict->XSec_QCD_HT_1000to1200;
   } else if (ht_bin == "1200to1500") {
-    return param_dict.XSec_QCD_HT_1200to1500;
+    return param_dict->XSec_QCD_HT_1200to1500;
   } else if (ht_bin == "1500to2000") {
-    return param_dict.XSec_QCD_HT_1500to2000;
+    return param_dict->XSec_QCD_HT_1500to2000;
   } else if (ht_bin == "2000toInf") {
-    return param_dict.XSec_QCD_HT_2000toInf;
+    return param_dict->XSec_QCD_HT_2000toInf;
   } else {
     throw std::runtime_error("Invalid HT bin: " + ht_bin);
   }
@@ -126,15 +128,6 @@ std::vector<double> loadPUReweighting(const std::string &pu_file) {
   return values;
 }
 
-std::string getCMSSWBase() {
-  const char *cmssw_base = std::getenv("CMSSW_BASE");
-  if (!cmssw_base) {
-    throw std::runtime_error("CMSSW_BASE environment variable not set! Did you "
-                             "forget to run 'cmsenv'?");
-  }
-  return std::string(cmssw_base);
-}
-
 // D-phi
 double phi_dist(double a, double b) {
   if (fabs(a - b) > 3.14159265) {
@@ -154,29 +147,37 @@ bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 void Making_Histo_QCD(const std::string &ht_bin,
                       const std::string &sample_path,
                       const std::string &output_path,
-                      const std::string &pu_reweighting_file,
-                      const std::string &parameters_file,
+                      const std::string &pu_path,
+                      const std::string &pf_path,
+                      const std::string &param_path,
                       const std::string &jec_path_ak4,
                       const std::string &jec_path_ak8) {
   gSystem->Load("libFWCoreFWLite.so");
 
+  // PT-Mass-SFs
+  TFile *f_PT_Mass_SF = new TFile(pf_path.c_str());
+  TH2D *_Eff_Data = (TH2D *)f_PT_Mass_SF->Get("Eff_Data_ETA0");
+  TH2D *_Eff_MC = (TH2D *)f_PT_Mass_SF->Get("Eff_MC_ETA0");
+
   // parse ParamDict
-  ParamDict param_dict = loadParamDict(parameters_file);
-  double xsec = getXSec(param_dict, ht_bin);
+  ParamDict param_dict;
+  loadParamDict(&param_dict, param_path);
+  double xsec = getXSec(&param_dict, ht_bin);
 
   // pu weight
-  std::vector<double> PU_Rew = loadPUReweighting(pu_reweighting_file);
+  std::vector<double> PU_Rew = loadPUReweighting(pu_path);
 
-  // ********************************************************* JEC
+  // JEC
   vector<JetCorrectorParameters> vPar;
-  vPar.push_back(JetCorrectorParameters(jec_path_ak4));
+  vPar.push_back(JetCorrectorParameters(jec_path_ak4.c_str()));
   FactorizedJetCorrector *corrector = new FactorizedJetCorrector(vPar);
 
   vector<JetCorrectorParameters> vParAK8;
-  vParAK8.push_back(JetCorrectorParameters(jec_path_ak8));
+  vParAK8.push_back(JetCorrectorParameters(jec_path_ak8.c_str()));
   FactorizedJetCorrector *corrector_AK8 = new FactorizedJetCorrector(vParAK8);
-
-  /* JER   (should be added when available)
+  
+  /* (should be added when available)
+  // JER 
   std::string resptstr =
   "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_PtResolution_AK4PFPuppi.txt";
   std::string resptstr_sf =
@@ -193,7 +194,8 @@ void Making_Histo_QCD(const std::string &ht_bin,
   JME::JetResolution(resptstr_AK8.c_str()); JME::JetResolutionScaleFactor
   resolution_pt_sf_AK8 = JME::JetResolutionScaleFactor(resptstr_sf_AK8.c_str());
   */
-  TFile *f = new TFile(output_path.c_str(), "RECREATE");
+
+  TFile *f = new TFile("Histograms_QCD_HT_100to200.root", "RECREATE");
 
   // Modification begin: New variables
   Float_t Lower_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
@@ -214,6 +216,23 @@ void Making_Histo_QCD(const std::string &ht_bin,
       new TH1D("FatJet1_MassSD", "FatJet1_MassSD", 500, 0, 500);
   TH2D *_FatJet1_Pt_Mass =
       new TH2D("FatJet1_Pt_Mass", "FatJet1_Pt_Mass", 45, Lower_pt, 15, Lower_m);
+  TH1D *_FatJet1PNetMD_Xbb =
+      new TH1D("FatJet1PNetMD_Xbb", "FatJet1PNetMD_Xbb", 100, 0, 1.0);
+  TH1D *_FatJet1PNetMD_Xbb_UDSG =
+      new TH1D("FatJet1PNetMD_Xbb_UDSG", "FatJet1PNetMD_Xbb_UDSG", 100, 0, 1.0);
+  TH1D *_FatJet1PNetMD_Xbb_C =
+      new TH1D("FatJet1PNetMD_Xbb_C", "FatJet1PNetMD_Xbb_C", 100, 0, 1.0);
+  TH1D *_FatJet1PNetMD_Xbb_B =
+      new TH1D("FatJet1PNetMD_Xbb_B", "FatJet1PNetMD_Xbb_B", 100, 0, 1.0);
+  TH1D *_FatJet1PNetMD_Xbb_B_1 =
+      new TH1D("FatJet1PNetMD_Xbb_B_1", "FatJet1PNetMD_Xbb_B_1", 100, 0, 1.0);
+  TH1D *_FatJet1PNetMD_Xbb_B_2 =
+      new TH1D("FatJet1PNetMD_Xbb_B_2", "FatJet1PNetMD_Xbb_B_2", 100, 0, 1.0);
+  TH1D *_FatJet1PNetMD_Xbb_Legacy = new TH1D(
+      "FatJet1PNetMD_Xbb_Legacy", "FatJet1PNetMD_Xbb_Legacy", 100, 0, 1.0);
+  TH1D *_FatJet1PNetMD_Xbb_Legacy_AN =
+      new TH1D("FatJet1PNetMD_Xbb_Legacy_AN", "FatJet1PNetMD_Xbb_Legacy_AN",
+               100, 0, 1.0);
 
   TH1D *_FatJet2_pt = new TH1D("FatJet2_pt", "FatJet2_pt", 200, 0, 1000);
   TH1D *_FatJet2_eta = new TH1D("FatJet2_eta", "FatJet2_eta", 100, -5, 5);
@@ -225,14 +244,24 @@ void Making_Histo_QCD(const std::string &ht_bin,
       new TH1D("FatJet2_MassSD", "FatJet2_MassSD", 500, 0, 500);
   TH2D *_FatJet2_Pt_Mass =
       new TH2D("FatJet2_Pt_Mass", "FatJet2_Pt_Mass", 45, Lower_pt, 15, Lower_m);
-  TH2D *_FatJet2_Pt_Mass_M = new TH2D("FatJet2_Pt_Mass_M", "FatJet2_Pt_Mass_M",
-                                      45, Lower_pt, 15, Lower_m);
+  TH1D *_FatJet2PNetMD_Xbb =
+      new TH1D("FatJet2PNetMD_Xbb", "FatJet2PNetMD_Xbb", 100, 0, 1.0);
+  TH1D *_FatJet2PNetMD_Xbb_UDSG =
+      new TH1D("FatJet2PNetMD_Xbb_UDSG", "FatJet2PNetMD_Xbb_UDSG", 100, 0, 1.0);
+  TH1D *_FatJet2PNetMD_Xbb_C =
+      new TH1D("FatJet2PNetMD_Xbb_C", "FatJet2PNetMD_Xbb_C", 100, 0, 1.0);
+  TH1D *_FatJet2PNetMD_Xbb_B =
+      new TH1D("FatJet2PNetMD_Xbb_B", "FatJet2PNetMD_Xbb_B", 100, 0, 1.0);
+  TH1D *_FatJet2PNetMD_Xbb_B_1 =
+      new TH1D("FatJet2PNetMD_Xbb_B_1", "FatJet2PNetMD_Xbb_B_1", 100, 0, 1.0);
+  TH1D *_FatJet2PNetMD_Xbb_B_2 =
+      new TH1D("FatJet2PNetMD_Xbb_B_2", "FatJet2PNetMD_Xbb_B_2", 100, 0, 1.0);
+  TH1D *_FatJet2PNetMD_Xbb_Legacy = new TH1D(
+      "FatJet2PNetMD_Xbb_Legacy", "FatJet2PNetMD_Xbb_Legacy", 100, 0, 1.0);
+  TH1D *_FatJet2PNetMD_Xbb_Legacy_AN =
+      new TH1D("FatJet2PNetMD_Xbb_Legacy_AN", "FatJet2PNetMD_Xbb_Legacy_AN",
+               100, 0, 1.0);
 
-  Float_t Lower_pt_N[9] = {230, 240, 250, 270, 300, 350, 500, 700, 1000};
-  TH2D *_FatJet2_Pt_MassN = new TH2D("FatJet2_Pt_MassN", "FatJet2_Pt_MassN", 8,
-                                     Lower_pt_N, 15, Lower_m);
-  TH2D *_FatJet2_Pt_MassN_M = new TH2D(
-      "FatJet2_Pt_MassN_M", "FatJet2_Pt_MassN_M", 8, Lower_pt_N, 15, Lower_m);
   TFile *f1 = new TFile(sample_path.c_str());
 
   TH1F *NEvents = (TH1F *)f1->Get("NEvents");
@@ -282,6 +311,11 @@ void Making_Histo_QCD(const std::string &ht_bin,
   Float_t FatJet1PNet_mass;
   Float_t FatJet1Tau3OverTau2;
   Float_t FatJet1_rawFactor;
+  Int_t FatJet1_hadronFlavour;
+  Int_t FatJet1_nBHadrons;
+  Int_t FatJet1_nCHadrons;
+  Float_t FatJet1PNetMD_Xbb_Legacy;
+  Float_t FatJet1PNetMD_QCD_Legacy;
 
   Float_t FatJet2_pt;
   Float_t FatJet2_eta;
@@ -301,6 +335,11 @@ void Making_Histo_QCD(const std::string &ht_bin,
   Float_t FatJet2PNet_mass;
   Float_t FatJet2Tau3OverTau2;
   Float_t FatJet2_rawFactor;
+  Int_t FatJet2_hadronFlavour;
+  Int_t FatJet2_nBHadrons;
+  Int_t FatJet2_nCHadrons;
+  Float_t FatJet2PNetMD_Xbb_Legacy;
+  Float_t FatJet2PNetMD_QCD_Legacy;
 
   Float_t FatJet3_pt;
   Float_t FatJet3_rawFactor;
@@ -353,6 +392,15 @@ void Making_Histo_QCD(const std::string &ht_bin,
   InputTree->SetBranchAddress("fatJet1_mass", &FatJet1_Mass);
   InputTree->SetBranchAddress("fatJet1_msoftdrop", &FatJet1_MassSD);
   InputTree->SetBranchAddress("fatJet1_rawFactor", &FatJet1_rawFactor);
+  InputTree->SetBranchAddress("fatJet1_particleNet_XbbVsQCD",
+                              &FatJet1PNetMD_Xbb);
+  InputTree->SetBranchAddress("fatJet1_hadronFlavour", &FatJet1_hadronFlavour);
+  InputTree->SetBranchAddress("fatJet1_nBHadrons", &FatJet1_nBHadrons);
+  InputTree->SetBranchAddress("fatJet1_nCHadrons", &FatJet1_nCHadrons);
+  InputTree->SetBranchAddress("fatJet1_particleNetLegacy_Xbb",
+                              &FatJet1PNetMD_Xbb_Legacy);
+  InputTree->SetBranchAddress("fatJet1_particleNetLegacy_QCD",
+                              &FatJet1PNetMD_QCD_Legacy);
 
   InputTree->SetBranchAddress("fatJet2_pt", &FatJet2_pt);
   InputTree->SetBranchAddress("fatJet2_eta", &FatJet2_eta);
@@ -360,6 +408,15 @@ void Making_Histo_QCD(const std::string &ht_bin,
   InputTree->SetBranchAddress("fatJet2_mass", &FatJet2_Mass);
   InputTree->SetBranchAddress("fatJet2_msoftdrop", &FatJet2_MassSD);
   InputTree->SetBranchAddress("fatJet2_rawFactor", &FatJet2_rawFactor);
+  InputTree->SetBranchAddress("fatJet2_particleNet_XbbVsQCD",
+                              &FatJet2PNetMD_Xbb);
+  InputTree->SetBranchAddress("fatJet2_hadronFlavour", &FatJet2_hadronFlavour);
+  InputTree->SetBranchAddress("fatJet2_nBHadrons", &FatJet2_nBHadrons);
+  InputTree->SetBranchAddress("fatJet2_nCHadrons", &FatJet2_nCHadrons);
+  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_Xbb",
+                              &FatJet2PNetMD_Xbb_Legacy);
+  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCD",
+                              &FatJet2PNetMD_QCD_Legacy);
 
   InputTree->SetBranchAddress("fatJet3_pt", &FatJet3_pt);
   InputTree->SetBranchAddress("fatJet3_rawFactor", &FatJet3_rawFactor);
@@ -392,8 +449,6 @@ void Making_Histo_QCD(const std::string &ht_bin,
     InputTree_TrgObj->GetEntry(i);
 
     // ********************************************************** HLT Selection
-    //   if(HLT_AK8PFJet250_SoftDropMass40_PNetBB0p06==0) continue;
-    //   if(HLT_Ele32_WPTight_Gsf==0) continue;
     if (HLT_AK8PFJet230_SoftDropMass40 == 0)
       continue;
 
@@ -486,77 +541,105 @@ void Making_Histo_QCD(const std::string &ht_bin,
     FatJet2_MassSD = FatJet2_MassSD * SmearFactor_2;
     */
 
-    // ********************************************************** FatJets
-    // Selection
-    if (FatJet3_pt > 150) {
-      continue;
-    }
-    if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 2.5 || FatJet1_MassSD < 80) {
-      continue;
-    }
-    if (FatJet2_pt < 160) {
-      continue;
-    }
-    if (phi_dist(FatJet1_phi, FatJet2_phi) < 2.5) {
+    // FatJets Selection
+    if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
       continue;
     }
 
-    // ********************************************************** VBFTag veto
-    //   if(isVBFtag) continue;
+    /*
+    // VBFTag veto
+    if (isVBFtag) {
+      continue;
+    }
+    */
 
-    // ********************************************************** Lepton
-    // Selection or Veto
-    //   if (fabs(lep1_Id) !=11 ) continue;
+    // Lepton selection or Veto
+    if (lep1_Pt > 20.0) {
+      continue;
+    }
 
     // ********************************************************** Trigger
     // Objects and Matchings
-    bool tag_matched = false;
 
-    for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
-
-      if ((Trigger_Object_bit[itrg] & 4) == 4) {
-        double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
-                           Trigger_Object_phi[itrg]);
-        if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
-          tag_matched = true;
-          break;
-        } else {
-          break;
-        }
-      }
-
-    if (!tag_matched) {
-      continue;
-    }
-
-    // Probe Matched
-    bool probe_matched = false;
+    // Matching 1st
+    bool matched_TRG_1 = false;
 
     bool matched_to_AK8PFJet230_SoftDropMass40 = false;
-    for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
-      if ((Trigger_Object_bit[itrg] & 4) == 4) {
-        double dR = get_dR(FatJet2_eta, FatJet2_phi, Trigger_Object_eta[itrg],
-                           Trigger_Object_phi[itrg]);
-        if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
+    for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+      if ((Trigger_Object_bit[itrg] & 4) == 4)
+        if (sqrt(pow((FatJet1_eta - Trigger_Object_eta[itrg]), 2) +
+                 pow(phi_dist(FatJet1_phi, Trigger_Object_phi[itrg]), 2)) <
+                0.4 &&
+            Trigger_Object_pt[itrg] > 100) {
           matched_to_AK8PFJet230_SoftDropMass40 = true;
           break;
         }
-      }
-    }
 
-    if (matched_to_AK8PFJet230_SoftDropMass40) {
-      probe_matched = true;
-    }
+    if (matched_to_AK8PFJet230_SoftDropMass40)
+      matched_TRG_1 = true;
+    else
+      continue;
+
+    bool matched_to_AK8PFJet230_SoftDropMass40_fJ2 = false;
+    for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+      if ((Trigger_Object_bit[itrg] & 4) == 4)
+        if (sqrt(pow((FatJet2_eta - Trigger_Object_eta[itrg]), 2) +
+                 pow(phi_dist(FatJet2_phi, Trigger_Object_phi[itrg]), 2)) <
+                0.4 &&
+            Trigger_Object_pt[itrg] > 100) {
+          matched_to_AK8PFJet230_SoftDropMass40_fJ2 = true;
+          break;
+        }
+
+    if (matched_to_AK8PFJet230_SoftDropMass40_fJ2)
+      continue;
+    if (FatJet3_pt > 200)
+      continue;
+
+    // Matching 2nd
+    bool matched_TRG_2 = false;
+    if (HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06)
+      matched_TRG_2 = true;
 
     // ********************************************************** weight
-
+    // std::cout << "====================================" << std::endl;
+    // std::cout << "weight: " << weight << std::endl;
     weight = (weight / SumGenWeights) * xsec * param_dict.Lumi;
     double PU_weight = PU_Rew[(int)npu];
-    weight = weight * PU_weight;
+    if (PU_weight < 20.0) {
+      weight = weight * PU_weight;
+    }
+    // std::cout << "SumGenWeights: " << SumGenWeights << std::endl;
+    // std::cout << "xsec: " << xsec << std::endl;
+    // std::cout << "Lumi: " << param_dict.Lumi << std::endl;
+    // std::cout << "PU_weight: " << PU_weight << std::endl;
+    // std::cout << "weight: " << weight << std::endl;
+    // std::cout << "====================================" << std::endl;
+
+    // Add Trigger PT_Mass and PNet Scale Factors
+    double Eff_Data_1 = 0;
+    double Eff_MC_1 = 0;
+
+    if (matched_TRG_1) {
+      Int_t bin_PT_1 = _Eff_Data->GetXaxis()->FindBin(FatJet1_pt);
+      Int_t bin_Mass_1 = _Eff_Data->GetYaxis()->FindBin(FatJet1_MassSD);
+      Eff_Data_1 = 1.0;
+      if (_Eff_Data->GetBinContent(bin_PT_1, bin_Mass_1) > 0)
+        Eff_Data_1 = _Eff_Data->GetBinContent(bin_PT_1, bin_Mass_1);
+      Eff_MC_1 = 1.0;
+      if (_Eff_MC->GetBinContent(bin_PT_1, bin_Mass_1) > 0)
+        Eff_MC_1 = _Eff_MC->GetBinContent(bin_PT_1, bin_Mass_1);
+    }
+
+    double Tot_Data = 1 - (1 - Eff_Data_1);
+    double Tot_MC = 1 - (1 - Eff_MC_1);
+    double PT_Mass_BTG_SF = Tot_Data / Tot_MC;
+
+    if (PT_Mass_BTG_SF > 0)
+      weight = weight * PT_Mass_BTG_SF;
 
     // ********************************************************** Fill
     // Histograms
-
     _FatJet1_pt->Fill(FatJet1_pt, weight);
     _FatJet1_eta->Fill(FatJet1_eta, weight);
     _FatJet1_phi->Fill(FatJet1_phi, weight);
@@ -564,22 +647,53 @@ void Making_Histo_QCD(const std::string &ht_bin,
     _FatJet1_Mass->Fill(FatJet1_Mass, weight);
     _FatJet1_MassSD->Fill(FatJet1_MassSD, weight);
     _FatJet1_Pt_Mass->Fill(FatJet1_pt, FatJet1_MassSD, weight);
+    _FatJet1PNetMD_Xbb->Fill(FatJet1PNetMD_Xbb, weight);
+    _FatJet1PNetMD_Xbb_Legacy->Fill(FatJet1PNetMD_Xbb_Legacy, weight);
+    double FatJet1PNetMD_Xbb_Legacy_AN =
+        FatJet1PNetMD_Xbb_Legacy /
+        (FatJet1PNetMD_Xbb_Legacy + FatJet1PNetMD_QCD_Legacy);
+    _FatJet1PNetMD_Xbb_Legacy_AN->Fill(FatJet1PNetMD_Xbb_Legacy_AN, weight);
 
-    _FatJet2_pt->Fill(FatJet2_pt, weight);
-    _FatJet2_eta->Fill(FatJet2_eta, weight);
-    _FatJet2_phi->Fill(FatJet2_phi, weight);
-    _FatJet2_eta_phi->Fill(FatJet2_eta, FatJet2_phi, weight);
-    _FatJet2_Mass->Fill(FatJet2_Mass, weight);
-    _FatJet2_MassSD->Fill(FatJet2_MassSD, weight);
-    _FatJet2_Pt_Mass->Fill(FatJet2_pt, FatJet2_MassSD, weight);
-    _FatJet2_Pt_MassN->Fill(FatJet2_pt, FatJet2_MassSD, weight);
+    if (FatJet1_hadronFlavour == 0)
+      _FatJet1PNetMD_Xbb_UDSG->Fill(FatJet1PNetMD_Xbb, weight);
+    if (FatJet1_hadronFlavour == 4)
+      _FatJet1PNetMD_Xbb_C->Fill(FatJet1PNetMD_Xbb, weight);
+    if (FatJet1_hadronFlavour == 5) {
+      _FatJet1PNetMD_Xbb_B->Fill(FatJet1PNetMD_Xbb, weight);
+      if (FatJet1_nBHadrons <= 1)
+        _FatJet1PNetMD_Xbb_B_1->Fill(FatJet1PNetMD_Xbb, weight);
+      if (FatJet1_nBHadrons >= 2)
+        _FatJet1PNetMD_Xbb_B_2->Fill(FatJet1PNetMD_Xbb, weight);
+    }
 
-    if (probe_matched) {
-      _FatJet2_Pt_Mass_M->Fill(FatJet2_pt, FatJet2_MassSD, weight);
-      _FatJet2_Pt_MassN_M->Fill(FatJet2_pt, FatJet2_MassSD, weight);
+    if (matched_TRG_2) {
+      _FatJet2_pt->Fill(FatJet1_pt, weight);
+      _FatJet2_eta->Fill(FatJet1_eta, weight);
+      _FatJet2_phi->Fill(FatJet1_phi, weight);
+      _FatJet2_eta_phi->Fill(FatJet1_eta, FatJet1_phi, weight);
+      _FatJet2_Mass->Fill(FatJet1_Mass, weight);
+      _FatJet2_MassSD->Fill(FatJet1_MassSD, weight);
+      _FatJet2_Pt_Mass->Fill(FatJet1_pt, FatJet1_MassSD, weight);
+      _FatJet2PNetMD_Xbb->Fill(FatJet1PNetMD_Xbb, weight);
+      _FatJet2PNetMD_Xbb_Legacy->Fill(FatJet1PNetMD_Xbb_Legacy, weight);
+      _FatJet2PNetMD_Xbb_Legacy_AN->Fill(FatJet1PNetMD_Xbb_Legacy_AN, weight);
+
+      if (FatJet1_hadronFlavour == 0)
+        _FatJet2PNetMD_Xbb_UDSG->Fill(FatJet1PNetMD_Xbb, weight);
+      if (FatJet1_hadronFlavour == 4)
+        _FatJet2PNetMD_Xbb_C->Fill(FatJet1PNetMD_Xbb, weight);
+      if (FatJet1_hadronFlavour == 5) {
+        _FatJet2PNetMD_Xbb_B->Fill(FatJet1PNetMD_Xbb, weight);
+        if (FatJet1_nBHadrons <= 1)
+          _FatJet2PNetMD_Xbb_B_1->Fill(FatJet1PNetMD_Xbb, weight);
+        if (FatJet1_nBHadrons >= 2)
+          _FatJet2PNetMD_Xbb_B_2->Fill(FatJet1PNetMD_Xbb, weight);
+      }
     }
 
   } // end event loop
 
   f->Write();
+  
+  std::cout << "Done with Making_Histo_QCD_HT_100to200.C" << std::endl;
 }
