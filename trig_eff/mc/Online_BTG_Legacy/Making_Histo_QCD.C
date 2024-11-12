@@ -34,7 +34,7 @@ struct ParamDict {
   double XSec_QCD_HT_2000toInf;
 };
 
-void loadParamDict(ParamDict* param_dict, const std::string &param_path) {
+void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
   std::ifstream file(param_path);
   if (!file.is_open()) {
     throw std::runtime_error("Could not open parameters file: " + param_path);
@@ -42,22 +42,24 @@ void loadParamDict(ParamDict* param_dict, const std::string &param_path) {
 
   std::string line;
   while (std::getline(file, line)) {
-    if (line.empty() || line[0] == '/') continue;
-    
+    if (line.empty() || line[0] == '/')
+      continue;
+
     // Look for double declarations
     if (line.find("double") != std::string::npos) {
       std::istringstream iss(line);
       std::string type, name, equals;
       double value;
-      
+
       // Parse line of format: double XSec_QCD_HT_100to200    =  25220000.00;
       if (!(iss >> type >> name >> equals >> value)) {
         continue;
       }
-      
+
       // Remove semicolon if present
-      if (name.back() == ';') name = name.substr(0, name.size()-1);
-      
+      if (name.back() == ';')
+        name = name.substr(0, name.size() - 1);
+
       if (name == "Lumi") {
         param_dict->Lumi = value;
       } else if (name == "XSec_QCD_HT_100to200") {
@@ -143,11 +145,9 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
-void Making_Histo_QCD(const std::string &ht_bin,
-                      const std::string &sample_path,
+void Making_Histo_QCD(const std::string &ht_bin, const std::string &sample_path,
                       const std::string &output_path,
-                      const std::string &pu_path,
-                      const std::string &pf_path,
+                      const std::string &pu_path, const std::string &pf_path,
                       const std::string &param_path,
                       const std::string &jec_path_ak4,
                       const std::string &jec_path_ak8) {
@@ -174,9 +174,9 @@ void Making_Histo_QCD(const std::string &ht_bin,
   vector<JetCorrectorParameters> vParAK8;
   vParAK8.push_back(JetCorrectorParameters(jec_path_ak8.c_str()));
   FactorizedJetCorrector *corrector_AK8 = new FactorizedJetCorrector(vParAK8);
-  
+
   /* (should be added when available)
-  // JER 
+  // JER
   std::string resptstr =
   "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_PtResolution_AK4PFPuppi.txt";
   std::string resptstr_sf =
@@ -194,7 +194,7 @@ void Making_Histo_QCD(const std::string &ht_bin,
   resolution_pt_sf_AK8 = JME::JetResolutionScaleFactor(resptstr_sf_AK8.c_str());
   */
 
-  TFile *f = new TFile(output_path, "RECREATE");
+  TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
   // Modification begin: New variables
   Float_t Lower_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
@@ -687,6 +687,6 @@ void Making_Histo_QCD(const std::string &ht_bin,
   } // end event loop
 
   f->Write();
-  
+
   std::cout << "Done with QCD HT Bin: " << ht_bin << std::endl;
 }
