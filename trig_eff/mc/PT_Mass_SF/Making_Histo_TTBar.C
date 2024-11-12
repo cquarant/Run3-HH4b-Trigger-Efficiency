@@ -503,13 +503,12 @@ void Making_Histo_TTBar(
     if (matched_to_AK8PFJet230_SoftDropMass40)
       Probe_Matched = true;
 
-    // ********************************************************** weight
+    // weight
     weight = (weight / SumGenWeights) * xsec * param_dict.Lumi;
     double PU_weight = PU_Rew[(int)npu];
     weight = weight * PU_weight;
 
-    // ********************************************************** Fill
-    // Histograms
+    // Fill hsistograms
     _FatJet1_pt->Fill(FatJet1_pt, weight);
     _FatJet1_eta->Fill(FatJet1_eta, weight);
     _FatJet1_phi->Fill(FatJet1_phi, weight);
@@ -519,7 +518,7 @@ void Making_Histo_TTBar(
     _FatJet1_Pt_Mass->Fill(FatJet1_pt, FatJet1_MassSD, weight);
 
     if (Probe_Matched) {
-      _FatJet2_Pt_Mass_M->Fill(FatJet1_pt, FatJet1_MassSD, weight);
+      _FatJet2_Pt_Mass_M->Fill(FatJet2_pt, FatJet2_MassSD, weight);
     }
 
   } // end event loop
