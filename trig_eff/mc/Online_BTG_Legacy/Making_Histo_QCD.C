@@ -774,6 +774,7 @@ void Making_Histo_QCD(
       _FatJet2_Pt_Mass->Fill(FatJet2_pt, FatJet2_MassSD, weight);
       _FatJet2PNetMD_Xbb->Fill(FatJet2PNetMD_Xbb, weight);
       _FatJet2PNetMD_Xbb_Legacy->Fill(FatJet2PNetMD_Xbb_Legacy, weight);
+      double FatJet2PNetMD_Xbb_Legacy_AN = FatJet2PNetMD_Xbb_Legacy / (FatJet2PNetMD_Xbb_Legacy + FatJet2PNetMD_QCD_Legacy);
       _FatJet2PNetMD_Xbb_Legacy_AN->Fill(FatJet2PNetMD_Xbb_Legacy_AN, weight);
 
       if (FatJet2_hadronFlavour == 0)
