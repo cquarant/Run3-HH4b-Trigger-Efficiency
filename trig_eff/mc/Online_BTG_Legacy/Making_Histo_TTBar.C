@@ -164,7 +164,7 @@ void Making_Histo_TTBar(
   resolution_pt_sf_AK8 = JME::JetResolutionScaleFactor(resptstr_sf_AK8.c_str());
   */
 
-  TFile *f = new TFile(output_path, "RECREATE");
+  TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
   // Modification begin: New variables
   Float_t Lower_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
