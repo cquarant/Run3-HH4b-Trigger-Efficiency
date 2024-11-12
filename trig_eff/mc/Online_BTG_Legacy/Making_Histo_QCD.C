@@ -451,7 +451,6 @@ void Making_Histo_QCD(
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_phi", Trigger_Object_phi);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_bit", Trigger_Object_bit);
 
-  // Events Loop
   for (int i = 0; i < InputTree->GetEntries(); i++) {
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
@@ -549,26 +548,20 @@ void Making_Histo_QCD(
     FatJet2_MassSD = FatJet2_MassSD * SmearFactor_2;
     */
 
-    // FatJets Selection
+    // FatJets selection
     if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
       continue;
     }
 
-    /*
     // VBFTag veto
-    if (isVBFtag) {
-      continue;
-    }
-    */
+    //   if(isVBFtag) continue;
 
-    // Lepton selection or Veto
+    // Lepton Selection or Veto
     if (lep1_Pt > 20.0) {
       continue;
     }
 
-    // ********************************************************** Trigger
-    // Objects and Matchings
-
+    // Trigger Objects and Matchings
     // Matching 1st
     bool matched_TRG_1 = false;
 
@@ -592,7 +585,7 @@ void Making_Histo_QCD(
     bool matched_to_AK8PFJet230_SoftDropMass40_fJ2 = false;
     for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
       if ((Trigger_Object_bit[itrg] & 4) == 4) {
-        double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
+        double dR = get_dR(FatJet2_eta, FatJet2_phi, Trigger_Object_eta[itrg],
                            Trigger_Object_phi[itrg]);
         if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
           matched_to_AK8PFJet230_SoftDropMass40_fJ2 = true;
@@ -697,5 +690,5 @@ void Making_Histo_QCD(
 
   f->Write();
 
-  std::cout << "Done with QCD HT Bin: " << ht_bin << std::endl;
+  std::cout << "Done with QCD HT " << ht_bin << std::endl;
 }
