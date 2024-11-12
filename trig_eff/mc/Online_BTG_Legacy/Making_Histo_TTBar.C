@@ -93,11 +93,6 @@ std::vector<double> loadPUReweighting(const std::string &pu_file) {
     values.push_back(value);
   }
 
-  if (values.size() != 100) { // Typically expecting 100 bins
-    throw std::runtime_error("Expected 100 PU reweighting values, got " +
-                             std::to_string(values.size()));
-  }
-
   return values;
 }
 
