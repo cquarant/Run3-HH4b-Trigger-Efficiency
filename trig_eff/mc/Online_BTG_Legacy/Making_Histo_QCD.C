@@ -21,6 +21,8 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 
+#define ARR_SIZE 10000
+
 struct ParamDict {
   double Lumi;
   double XSec_QCD_HT_100to200;
@@ -145,16 +147,20 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
-void Making_Histo_QCD(const std::string &ht_bin, const std::string &sample_path,
-                      const std::string &output_path,
-                      const std::string &pu_path, const std::string &pf_path,
-                      const std::string &param_path,
-                      const std::string &jec_path_ak4,
-                      const std::string &jec_path_ak8) {
+void Making_Histo_QCD(
+    const std::string &ht_bin,       // QCD HT bin, e.g. "100to200"
+    const std::string &sample_path,  // path to the root file
+    const std::string &output_path,  // path to the output root file
+    const std::string &pu_path,      // path to the pileup reweighting file
+    const std::string &sf_path,      // path to the PT-Mass-SFs root file
+    const std::string &param_path,   // path to the parameters file
+    const std::string &jec_path_ak4, // path to the AK4 JEC txt file
+    const std::string &jec_path_ak8  // path to the AK8 JEC txt file
+) {
   gSystem->Load("libFWCoreFWLite.so");
 
   // PT-Mass-SFs
-  TFile *f_PT_Mass_SF = new TFile(pf_path.c_str());
+  TFile *f_PT_Mass_SF = new TFile(sf_path.c_str());
   TH2D *_Eff_Data = (TH2D *)f_PT_Mass_SF->Get("Eff_Data_ETA0");
   TH2D *_Eff_MC = (TH2D *)f_PT_Mass_SF->Get("Eff_MC_ETA0");
 
@@ -164,7 +170,10 @@ void Making_Histo_QCD(const std::string &ht_bin, const std::string &sample_path,
   double xsec = getXSec(&param_dict, ht_bin);
 
   // pu weight
-  std::vector<double> PU_Rew = loadPUReweighting(pu_path);
+  // std::vector<double> PU_Rew = loadPUReweighting(pu_path);
+  std::vector<double> PU_Rew_vec = loadPUReweighting(pu_path);
+  double PU_Rew[100];
+  std::copy(PU_Rew_vec.begin(), PU_Rew_vec.end(), PU_Rew);
 
   // JEC
   vector<JetCorrectorParameters> vPar;
@@ -344,13 +353,13 @@ void Making_Histo_QCD(const std::string &ht_bin, const std::string &sample_path,
   Float_t FatJet3_rawFactor;
 
   Int_t nGenJet;
-  Float_t GenJet_eta[20];
-  Float_t GenJet_phi[20];
-  Float_t GenJet_pt[20];
+  Float_t GenJet_eta[ARR_SIZE];
+  Float_t GenJet_phi[ARR_SIZE];
+  Float_t GenJet_pt[ARR_SIZE];
   Int_t nGenJetAK8;
-  Float_t GenJetAK8_eta[20];
-  Float_t GenJetAK8_phi[20];
-  Float_t GenJetAK8_pt[20];
+  Float_t GenJetAK8_eta[ARR_SIZE];
+  Float_t GenJetAK8_phi[ARR_SIZE];
+  Float_t GenJetAK8_pt[ARR_SIZE];
 
   InputTree->SetBranchAddress("weight", &weight);
   InputTree->SetBranchAddress("run", &run);
@@ -432,10 +441,10 @@ void Making_Histo_QCD(const std::string &ht_bin, const std::string &sample_path,
   // Trigger Objects
   TTree *InputTree_TrgObj = (TTree *)f1->Get("tree_TrgObj");
   Int_t NTrigger_Objects;
-  Float_t Trigger_Object_pt[20];
-  Float_t Trigger_Object_eta[20];
-  Float_t Trigger_Object_phi[20];
-  Int_t Trigger_Object_bit[20];
+  Float_t Trigger_Object_pt[ARR_SIZE];
+  Float_t Trigger_Object_eta[ARR_SIZE];
+  Float_t Trigger_Object_phi[ARR_SIZE];
+  Int_t Trigger_Object_bit[ARR_SIZE];
   InputTree_TrgObj->SetBranchAddress("NTrigger_Objects", &NTrigger_Objects);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_pt", Trigger_Object_pt);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_eta", Trigger_Object_eta);

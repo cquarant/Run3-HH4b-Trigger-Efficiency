@@ -21,6 +21,8 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 
+#define ARR_SIZE 10000
+
 struct ParamDict {
   double Lumi;
   double XSec_TTto4Q;
@@ -116,15 +118,19 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
 void Making_Histo_TTBar(
-    const std::string &ttbar_type, // default: TTtoLNu2Q
-    const std::string &sample_path, const std::string &output_path,
-    const std::string &pu_path, const std::string &pf_path,
-    const std::string &param_path, const std::string &jec_path_ak4,
-    const std::string &jec_path_ak8) {
+    const std::string &ttbar_type,   // default: TTtoLNu2Q
+    const std::string &sample_path,  // path to the root file
+    const std::string &output_path,  // path to the output root file
+    const std::string &pu_path,      // path to the pileup reweighting file
+    const std::string &sf_path,      // path to the PT-Mass-SFs root file
+    const std::string &param_path,   // path to the parameters file
+    const std::string &jec_path_ak4, // path to the AK4 JEC txt file
+    const std::string &jec_path_ak8  // path to the AK8 JEC txt file
+) {
   gSystem->Load("libFWCoreFWLite.so");
 
   // PT-Mass-SFs
-  TFile *f_PT_Mass_SF = new TFile(pf_path.c_str());
+  TFile *f_PT_Mass_SF = new TFile(sf_path.c_str());
   TH2D *_Eff_Data = (TH2D *)f_PT_Mass_SF->Get("Eff_Data_ETA0");
   TH2D *_Eff_MC = (TH2D *)f_PT_Mass_SF->Get("Eff_MC_ETA0");
 
@@ -361,13 +367,13 @@ void Making_Histo_TTBar(
   Float_t FatJet3_rawFactor;
 
   Int_t nGenJet;
-  Float_t GenJet_eta[20];
-  Float_t GenJet_phi[20];
-  Float_t GenJet_pt[20];
+  Float_t GenJet_eta[ARR_SIZE];
+  Float_t GenJet_phi[ARR_SIZE];
+  Float_t GenJet_pt[ARR_SIZE];
   Int_t nGenJetAK8;
-  Float_t GenJetAK8_eta[20];
-  Float_t GenJetAK8_phi[20];
-  Float_t GenJetAK8_pt[20];
+  Float_t GenJetAK8_eta[ARR_SIZE];
+  Float_t GenJetAK8_phi[ARR_SIZE];
+  Float_t GenJetAK8_pt[ARR_SIZE];
 
   InputTree->SetBranchAddress("weight", &weight);
   InputTree->SetBranchAddress("run", &run);
@@ -461,10 +467,10 @@ void Making_Histo_TTBar(
   // Trigger Objects
   TTree *InputTree_TrgObj = (TTree *)f1->Get("tree_TrgObj");
   Int_t NTrigger_Objects;
-  Float_t Trigger_Object_pt[20];
-  Float_t Trigger_Object_eta[20];
-  Float_t Trigger_Object_phi[20];
-  Int_t Trigger_Object_bit[20];
+  Float_t Trigger_Object_pt[ARR_SIZE];
+  Float_t Trigger_Object_eta[ARR_SIZE];
+  Float_t Trigger_Object_phi[ARR_SIZE];
+  Int_t Trigger_Object_bit[ARR_SIZE];
   InputTree_TrgObj->SetBranchAddress("NTrigger_Objects", &NTrigger_Objects);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_pt", Trigger_Object_pt);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_eta", Trigger_Object_eta);
@@ -585,7 +591,6 @@ void Making_Histo_TTBar(
     */
 
     // Lepton selection or Veto
-
     if (lep1_Pt < 50) {
       continue;
     }
@@ -598,7 +603,7 @@ void Making_Histo_TTBar(
 
     // double dR_LFJ = sqrt(pow(lep1_Eta - FatJet1_eta, 2) +
     //                      pow(phi_dist(lep1_Phi, FatJet1_phi), 2));
-    double dR_LJ1 = get_dR(lep1_Eta, lep1_Phi, Jet1_Eta, Jet1_Phi);
+    double dR_LFJ = get_dR(lep1_Eta, lep1_Phi, Jet1_Eta, Jet1_Phi);
     if (dR_LFJ < 1.5) {
       continue;
     }
@@ -649,8 +654,7 @@ void Making_Histo_TTBar(
       continue;
     }
 
-    // ********************************************************** Trigger
-    // Objects and Matchings Matching 1st
+    // Trigger Objects and Matchings Matching 1st
     bool matched_TRG_1 = false;
 
     bool matched_to_AK8PFJet230_SoftDropMass40 = false;
