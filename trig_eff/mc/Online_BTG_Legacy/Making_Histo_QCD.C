@@ -200,7 +200,6 @@ void Making_Histo_QCD(
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
-  // Modification begin: New variables
   Float_t Lower_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
                          80, 100, 120, 150, 200, 250, 300, 350};
   Float_t Lower_pt[46] = {0,   10,  20,  30,  40,  50,  60,  70,  80,  90,
