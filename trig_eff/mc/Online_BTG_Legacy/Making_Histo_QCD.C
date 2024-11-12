@@ -235,6 +235,21 @@ void Making_Histo_QCD(
   TH1D *_FatJet1PNetMD_Xbb_Legacy_AN =
       new TH1D("FatJet1PNetMD_Xbb_Legacy_AN", "FatJet1PNetMD_Xbb_Legacy_AN",
                100, 0, 1.0);
+  // GloParT histograms for FatJet1
+  TH1D *_FatJet1GloParT_QCD0HF =
+      new TH1D("FatJet1GloParT_QCD0HF", "FatJet1GloParT_QCD0HF", 100, 0, 1.0);
+  TH1D *_FatJet1GloParT_QCD1HF =
+      new TH1D("FatJet1GloParT_QCD1HF", "FatJet1GloParT_QCD1HF", 100, 0, 1.0);
+  TH1D *_FatJet1GloParT_QCD2HF =
+      new TH1D("FatJet1GloParT_QCD2HF", "FatJet1GloParT_QCD2HF", 100, 0, 1.0);
+  TH1D *_FatJet1GloParT_Xbb =
+      new TH1D("FatJet1GloParT_Xbb", "FatJet1GloParT_Xbb", 100, 0, 1.0);
+  TH1D *_FatJet1GloParT_Xcc =
+      new TH1D("FatJet1GloParT_Xcc", "FatJet1GloParT_Xcc", 100, 0, 1.0);
+  TH1D *_FatJet1GloParT_Xqq =
+      new TH1D("FatJet1GloParT_Xqq", "FatJet1GloParT_Xqq", 100, 0, 1.0);
+  TH1D *_FatJet1GloParT_XbbVsQCD = new TH1D(
+      "FatJet1GloParT_XbbVsQCD", "FatJet1GloParT_XbbVsQCD", 100, 0, 1.0);
 
   TH1D *_FatJet2_pt = new TH1D("FatJet2_pt", "FatJet2_pt", 200, 0, 1000);
   TH1D *_FatJet2_eta = new TH1D("FatJet2_eta", "FatJet2_eta", 100, -5, 5);
@@ -263,6 +278,20 @@ void Making_Histo_QCD(
   TH1D *_FatJet2PNetMD_Xbb_Legacy_AN =
       new TH1D("FatJet2PNetMD_Xbb_Legacy_AN", "FatJet2PNetMD_Xbb_Legacy_AN",
                100, 0, 1.0);
+  TH1D *_FatJet2GloParT_QCD0HF =
+      new TH1D("FatJet2GloParT_QCD0HF", "FatJet2GloParT_QCD0HF", 100, 0, 1.0);
+  TH1D *_FatJet2GloParT_QCD1HF =
+      new TH1D("FatJet2GloParT_QCD1HF", "FatJet2GloParT_QCD1HF", 100, 0, 1.0);
+  TH1D *_FatJet2GloParT_QCD2HF =
+      new TH1D("FatJet2GloParT_QCD2HF", "FatJet2GloParT_QCD2HF", 100, 0, 1.0);
+  TH1D *_FatJet2GloParT_Xbb =
+      new TH1D("FatJet2GloParT_Xbb", "FatJet2GloParT_Xbb", 100, 0, 1.0);
+  TH1D *_FatJet2GloParT_Xcc =
+      new TH1D("FatJet2GloParT_Xcc", "FatJet2GloParT_Xcc", 100, 0, 1.0);
+  TH1D *_FatJet2GloParT_Xqq =
+      new TH1D("FatJet2GloParT_Xqq", "FatJet2GloParT_Xqq", 100, 0, 1.0);
+  TH1D *_FatJet2GloParT_XbbVsQCD = new TH1D(
+      "FatJet2GloParT_XbbVsQCD", "FatJet2GloParT_XbbVsQCD", 100, 0, 1.0);
 
   TFile *f1 = new TFile(sample_path.c_str());
 
@@ -301,6 +330,12 @@ void Making_Histo_QCD(
   Float_t FatJet1_Mass;
   Float_t FatJet1_MassSD;
   Float_t FatJet1DDBTaggerV2;
+  Float_t FatJet1Tau3OverTau2;
+  Float_t FatJet1_rawFactor;
+  Int_t FatJet1_hadronFlavour;
+  Int_t FatJet1_nBHadrons;
+  Int_t FatJet1_nCHadrons;
+  // ParticleNet scores
   Float_t FatJet1PNetMD_QCD;
   Float_t FatJet1PNetMD_Xbb;
   Float_t FatJet1PNetMD_Xcc;
@@ -311,13 +346,18 @@ void Making_Histo_QCD(
   Float_t FatJet1PNet_WvsQCD;
   Float_t FatJet1PNet_ZvsQCD;
   Float_t FatJet1PNet_mass;
-  Float_t FatJet1Tau3OverTau2;
-  Float_t FatJet1_rawFactor;
-  Int_t FatJet1_hadronFlavour;
-  Int_t FatJet1_nBHadrons;
-  Int_t FatJet1_nCHadrons;
   Float_t FatJet1PNetMD_Xbb_Legacy;
   Float_t FatJet1PNetMD_QCD_Legacy;
+  // GloParT scores
+  Float_t FatJet1GloParT_QCD0HF;
+  Float_t FatJet1GloParT_QCD1HF;
+  Float_t FatJet1GloParT_QCD2HF;
+  Float_t FatJet1GloParT_Xbb;
+  Float_t FatJet1GloParT_Xcc;
+  Float_t FatJet1GloParT_Xqq;
+  Float_t FatJet1GloParT_XbbVsQCD;
+  Float_t FatJet1GloParT_massRes;
+  Float_t FatJet1GloParT_massVis;
 
   Float_t FatJet2_pt;
   Float_t FatJet2_eta;
@@ -325,6 +365,12 @@ void Making_Histo_QCD(
   Float_t FatJet2_Mass;
   Float_t FatJet2_MassSD;
   Float_t FatJet2DDBTaggerV2;
+  Float_t FatJet2Tau3OverTau2;
+  Float_t FatJet2_rawFactor;
+  Int_t FatJet2_hadronFlavour;
+  Int_t FatJet2_nBHadrons;
+  Int_t FatJet2_nCHadrons;
+  // ParticleNet scores
   Float_t FatJet2PNetMD_QCD;
   Float_t FatJet2PNetMD_Xbb;
   Float_t FatJet2PNetMD_Xcc;
@@ -335,16 +381,31 @@ void Making_Histo_QCD(
   Float_t FatJet2PNet_WvsQCD;
   Float_t FatJet2PNet_ZvsQCD;
   Float_t FatJet2PNet_mass;
-  Float_t FatJet2Tau3OverTau2;
-  Float_t FatJet2_rawFactor;
-  Int_t FatJet2_hadronFlavour;
-  Int_t FatJet2_nBHadrons;
-  Int_t FatJet2_nCHadrons;
   Float_t FatJet2PNetMD_Xbb_Legacy;
   Float_t FatJet2PNetMD_QCD_Legacy;
+  // GloParT scores
+  Float_t FatJet2GloParT_QCD0HF;
+  Float_t FatJet2GloParT_QCD1HF;
+  Float_t FatJet2GloParT_QCD2HF;
+  Float_t FatJet2GloParT_Xbb;
+  Float_t FatJet2GloParT_Xcc;
+  Float_t FatJet2GloParT_Xqq;
+  Float_t FatJet2GloParT_XbbVsQCD;
+  Float_t FatJet2GloParT_massRes;
+  Float_t FatJet2GloParT_massVis;
 
   Float_t FatJet3_pt;
   Float_t FatJet3_rawFactor;
+  // GloParT scores
+  Float_t FatJet3GloParT_QCD0HF;
+  Float_t FatJet3GloParT_QCD1HF;
+  Float_t FatJet3GloParT_QCD2HF;
+  Float_t FatJet3GloParT_Xbb;
+  Float_t FatJet3GloParT_Xcc;
+  Float_t FatJet3GloParT_Xqq;
+  Float_t FatJet3GloParT_XbbVsQCD;
+  Float_t FatJet3GloParT_massRes;
+  Float_t FatJet3GloParT_massVis;
 
   Int_t nGenJet;
   Float_t GenJet_eta[ARR_SIZE];
@@ -394,15 +455,32 @@ void Making_Histo_QCD(
   InputTree->SetBranchAddress("fatJet1_mass", &FatJet1_Mass);
   InputTree->SetBranchAddress("fatJet1_msoftdrop", &FatJet1_MassSD);
   InputTree->SetBranchAddress("fatJet1_rawFactor", &FatJet1_rawFactor);
-  InputTree->SetBranchAddress("fatJet1_particleNet_XbbVsQCD",
-                              &FatJet1PNetMD_Xbb);
   InputTree->SetBranchAddress("fatJet1_hadronFlavour", &FatJet1_hadronFlavour);
   InputTree->SetBranchAddress("fatJet1_nBHadrons", &FatJet1_nBHadrons);
   InputTree->SetBranchAddress("fatJet1_nCHadrons", &FatJet1_nCHadrons);
+  // ParticleNet scores
+  InputTree->SetBranchAddress("fatJet1_particleNet_XbbVsQCD",
+                              &FatJet1PNetMD_Xbb);
   InputTree->SetBranchAddress("fatJet1_particleNetLegacy_Xbb",
                               &FatJet1PNetMD_Xbb_Legacy);
   InputTree->SetBranchAddress("fatJet1_particleNetLegacy_QCD",
                               &FatJet1PNetMD_QCD_Legacy);
+  // GloParT scores
+  InputTree->SetBranchAddress("fatJet1_globalParT_QCD0HF",
+                              &FatJet1GloParT_QCD0HF);
+  InputTree->SetBranchAddress("fatJet1_globalParT_QCD1HF",
+                              &FatJet1GloParT_QCD1HF);
+  InputTree->SetBranchAddress("fatJet1_globalParT_QCD2HF",
+                              &FatJet1GloParT_QCD2HF);
+  InputTree->SetBranchAddress("fatJet1_globalParT_Xbb", &FatJet1GloParT_Xbb);
+  InputTree->SetBranchAddress("fatJet1_globalParT_Xcc", &FatJet1GloParT_Xcc);
+  InputTree->SetBranchAddress("fatJet1_globalParT_Xqq", &FatJet1GloParT_Xqq);
+  InputTree->SetBranchAddress("fatJet1_globalParT_XbbVsQCD",
+                              &FatJet1GloParT_XbbVsQCD);
+  InputTree->SetBranchAddress("fatJet1_globalParT_massRes",
+                              &FatJet1GloParT_massRes);
+  InputTree->SetBranchAddress("fatJet1_globalParT_massVis",
+                              &FatJet1GloParT_massVis);
 
   InputTree->SetBranchAddress("fatJet2_pt", &FatJet2_pt);
   InputTree->SetBranchAddress("fatJet2_eta", &FatJet2_eta);
@@ -419,9 +497,31 @@ void Making_Histo_QCD(
                               &FatJet2PNetMD_Xbb_Legacy);
   InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCD",
                               &FatJet2PNetMD_QCD_Legacy);
+  InputTree->SetBranchAddress("fatJet2_globalParT_QCD0HF",
+                              &FatJet2GloParT_QCD0HF);
+  InputTree->SetBranchAddress("fatJet2_globalParT_QCD1HF",
+                              &FatJet2GloParT_QCD1HF);
+  InputTree->SetBranchAddress("fatJet2_globalParT_QCD2HF",
+                              &FatJet2GloParT_QCD2HF);
+  InputTree->SetBranchAddress("fatJet2_globalParT_Xbb", &FatJet2GloParT_Xbb);
+  InputTree->SetBranchAddress("fatJet2_globalParT_Xcc", &FatJet2GloParT_Xcc);
+  InputTree->SetBranchAddress("fatJet2_globalParT_Xqq", &FatJet2GloParT_Xqq);
+  InputTree->SetBranchAddress("fatJet2_globalParT_XbbVsQCD",
+                              &FatJet2GloParT_XbbVsQCD);
 
   InputTree->SetBranchAddress("fatJet3_pt", &FatJet3_pt);
   InputTree->SetBranchAddress("fatJet3_rawFactor", &FatJet3_rawFactor);
+  InputTree->SetBranchAddress("fatJet3_globalParT_QCD0HF",
+                              &FatJet3GloParT_QCD0HF);
+  InputTree->SetBranchAddress("fatJet3_globalParT_QCD1HF",
+                              &FatJet3GloParT_QCD1HF);
+  InputTree->SetBranchAddress("fatJet3_globalParT_QCD2HF",
+                              &FatJet3GloParT_QCD2HF);
+  InputTree->SetBranchAddress("fatJet3_globalParT_Xbb", &FatJet3GloParT_Xbb);
+  InputTree->SetBranchAddress("fatJet3_globalParT_Xcc", &FatJet3GloParT_Xcc);
+  InputTree->SetBranchAddress("fatJet3_globalParT_Xqq", &FatJet3GloParT_Xqq);
+  InputTree->SetBranchAddress("fatJet3_globalParT_XbbVsQCD",
+                              &FatJet3GloParT_XbbVsQCD);
 
   InputTree->SetBranchAddress("nGenJet", &nGenJet);
   InputTree->SetBranchAddress("GenJet_eta", GenJet_eta);
@@ -654,30 +754,48 @@ void Making_Histo_QCD(
       if (FatJet1_nBHadrons >= 2)
         _FatJet1PNetMD_Xbb_B_2->Fill(FatJet1PNetMD_Xbb, weight);
     }
+    
+    // GloParT
+    _FatJet1GloParT_QCD0HF->Fill(FatJet1GloParT_QCD0HF, weight);
+    _FatJet1GloParT_QCD1HF->Fill(FatJet1GloParT_QCD1HF, weight);
+    _FatJet1GloParT_QCD2HF->Fill(FatJet1GloParT_QCD2HF, weight);
+    _FatJet1GloParT_Xbb->Fill(FatJet1GloParT_Xbb, weight);
+    _FatJet1GloParT_Xcc->Fill(FatJet1GloParT_Xcc, weight);
+    _FatJet1GloParT_Xqq->Fill(FatJet1GloParT_Xqq, weight);
+    _FatJet1GloParT_XbbVsQCD->Fill(FatJet1GloParT_XbbVsQCD, weight);
 
     if (matched_TRG_2) {
-      _FatJet2_pt->Fill(FatJet1_pt, weight);
-      _FatJet2_eta->Fill(FatJet1_eta, weight);
-      _FatJet2_phi->Fill(FatJet1_phi, weight);
-      _FatJet2_eta_phi->Fill(FatJet1_eta, FatJet1_phi, weight);
-      _FatJet2_Mass->Fill(FatJet1_Mass, weight);
-      _FatJet2_MassSD->Fill(FatJet1_MassSD, weight);
-      _FatJet2_Pt_Mass->Fill(FatJet1_pt, FatJet1_MassSD, weight);
-      _FatJet2PNetMD_Xbb->Fill(FatJet1PNetMD_Xbb, weight);
-      _FatJet2PNetMD_Xbb_Legacy->Fill(FatJet1PNetMD_Xbb_Legacy, weight);
-      _FatJet2PNetMD_Xbb_Legacy_AN->Fill(FatJet1PNetMD_Xbb_Legacy_AN, weight);
+      _FatJet2_pt->Fill(FatJet2_pt, weight);
+      _FatJet2_eta->Fill(FatJet2_eta, weight);
+      _FatJet2_phi->Fill(FatJet2_phi, weight);
+      _FatJet2_eta_phi->Fill(FatJet2_eta, FatJet2_phi, weight);
+      _FatJet2_Mass->Fill(FatJet2_Mass, weight);
+      _FatJet2_MassSD->Fill(FatJet2_MassSD, weight);
+      _FatJet2_Pt_Mass->Fill(FatJet2_pt, FatJet2_MassSD, weight);
+      _FatJet2PNetMD_Xbb->Fill(FatJet2PNetMD_Xbb, weight);
+      _FatJet2PNetMD_Xbb_Legacy->Fill(FatJet2PNetMD_Xbb_Legacy, weight);
+      _FatJet2PNetMD_Xbb_Legacy_AN->Fill(FatJet2PNetMD_Xbb_Legacy_AN, weight);
 
-      if (FatJet1_hadronFlavour == 0)
-        _FatJet2PNetMD_Xbb_UDSG->Fill(FatJet1PNetMD_Xbb, weight);
-      if (FatJet1_hadronFlavour == 4)
-        _FatJet2PNetMD_Xbb_C->Fill(FatJet1PNetMD_Xbb, weight);
-      if (FatJet1_hadronFlavour == 5) {
-        _FatJet2PNetMD_Xbb_B->Fill(FatJet1PNetMD_Xbb, weight);
-        if (FatJet1_nBHadrons <= 1)
-          _FatJet2PNetMD_Xbb_B_1->Fill(FatJet1PNetMD_Xbb, weight);
-        if (FatJet1_nBHadrons >= 2)
-          _FatJet2PNetMD_Xbb_B_2->Fill(FatJet1PNetMD_Xbb, weight);
+      if (FatJet2_hadronFlavour == 0)
+        _FatJet2PNetMD_Xbb_UDSG->Fill(FatJet2PNetMD_Xbb, weight);
+      if (FatJet2_hadronFlavour == 4)
+        _FatJet2PNetMD_Xbb_C->Fill(FatJet2PNetMD_Xbb, weight);
+      if (FatJet2_hadronFlavour == 5) {
+        _FatJet2PNetMD_Xbb_B->Fill(FatJet2PNetMD_Xbb, weight);
+        if (FatJet2_nBHadrons <= 1)
+          _FatJet2PNetMD_Xbb_B_1->Fill(FatJet2PNetMD_Xbb, weight);
+        if (FatJet2_nBHadrons >= 2)
+          _FatJet2PNetMD_Xbb_B_2->Fill(FatJet2PNetMD_Xbb, weight);
       }
+
+      // GloParT
+      _FatJet2GloParT_QCD0HF->Fill(FatJet2GloParT_QCD0HF, weight);
+      _FatJet2GloParT_QCD1HF->Fill(FatJet2GloParT_QCD1HF, weight);
+      _FatJet2GloParT_QCD2HF->Fill(FatJet2GloParT_QCD2HF, weight);
+      _FatJet2GloParT_Xbb->Fill(FatJet2GloParT_Xbb, weight);
+      _FatJet2GloParT_Xcc->Fill(FatJet2GloParT_Xcc, weight);
+      _FatJet2GloParT_Xqq->Fill(FatJet2GloParT_Xqq, weight);
+      _FatJet2GloParT_XbbVsQCD->Fill(FatJet2GloParT_XbbVsQCD, weight);
     }
 
   } // end event loop
