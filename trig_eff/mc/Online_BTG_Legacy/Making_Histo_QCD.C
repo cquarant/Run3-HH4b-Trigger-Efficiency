@@ -9,7 +9,6 @@
 #include <TF1.h>
 #include <TF2.h>
 #include <TH1D.h>
-#include <cstdlib> // for std::getenv
 #include <iostream>
 #include <map>
 #include <math.h>
@@ -195,7 +194,7 @@ void Making_Histo_QCD(const std::string &ht_bin,
   resolution_pt_sf_AK8 = JME::JetResolutionScaleFactor(resptstr_sf_AK8.c_str());
   */
 
-  TFile *f = new TFile("Histograms_QCD_HT_100to200.root", "RECREATE");
+  TFile *f = new TFile(output_path, "RECREATE");
 
   // Modification begin: New variables
   Float_t Lower_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
@@ -448,12 +447,12 @@ void Making_Histo_QCD(const std::string &ht_bin,
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
 
-    // ********************************************************** HLT Selection
-    if (HLT_AK8PFJet230_SoftDropMass40 == 0)
+    // HLT Selection
+    if (HLT_AK8PFJet230_SoftDropMass40 == 0) {
       continue;
+    }
 
-    // ********************************************************** FatJets
-    // correction and selection
+    // FatJets correction and selection
     if (FatJet1_pt > 0) {
       double Raw_FatJet1_pt = FatJet1_pt * (1.0 - FatJet1_rawFactor);
       corrector_AK8->setJetPt(Raw_FatJet1_pt);
@@ -565,15 +564,16 @@ void Making_Histo_QCD(const std::string &ht_bin,
     bool matched_TRG_1 = false;
 
     bool matched_to_AK8PFJet230_SoftDropMass40 = false;
-    for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
-      if ((Trigger_Object_bit[itrg] & 4) == 4)
-        if (sqrt(pow((FatJet1_eta - Trigger_Object_eta[itrg]), 2) +
-                 pow(phi_dist(FatJet1_phi, Trigger_Object_phi[itrg]), 2)) <
-                0.4 &&
-            Trigger_Object_pt[itrg] > 100) {
+    for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
+      if ((Trigger_Object_bit[itrg] & 4) == 4) {
+        double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
+                           Trigger_Object_phi[itrg]);
+        if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
           matched_to_AK8PFJet230_SoftDropMass40 = true;
           break;
         }
+      }
+    }
 
     if (matched_to_AK8PFJet230_SoftDropMass40)
       matched_TRG_1 = true;
@@ -581,15 +581,16 @@ void Making_Histo_QCD(const std::string &ht_bin,
       continue;
 
     bool matched_to_AK8PFJet230_SoftDropMass40_fJ2 = false;
-    for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
-      if ((Trigger_Object_bit[itrg] & 4) == 4)
-        if (sqrt(pow((FatJet2_eta - Trigger_Object_eta[itrg]), 2) +
-                 pow(phi_dist(FatJet2_phi, Trigger_Object_phi[itrg]), 2)) <
-                0.4 &&
-            Trigger_Object_pt[itrg] > 100) {
+    for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
+      if ((Trigger_Object_bit[itrg] & 4) == 4) {
+        double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
+                           Trigger_Object_phi[itrg]);
+        if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
           matched_to_AK8PFJet230_SoftDropMass40_fJ2 = true;
           break;
         }
+      }
+    }
 
     if (matched_to_AK8PFJet230_SoftDropMass40_fJ2)
       continue;
@@ -601,20 +602,12 @@ void Making_Histo_QCD(const std::string &ht_bin,
     if (HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06)
       matched_TRG_2 = true;
 
-    // ********************************************************** weight
-    // std::cout << "====================================" << std::endl;
-    // std::cout << "weight: " << weight << std::endl;
+    // weight
     weight = (weight / SumGenWeights) * xsec * param_dict.Lumi;
     double PU_weight = PU_Rew[(int)npu];
     if (PU_weight < 20.0) {
       weight = weight * PU_weight;
     }
-    // std::cout << "SumGenWeights: " << SumGenWeights << std::endl;
-    // std::cout << "xsec: " << xsec << std::endl;
-    // std::cout << "Lumi: " << param_dict.Lumi << std::endl;
-    // std::cout << "PU_weight: " << PU_weight << std::endl;
-    // std::cout << "weight: " << weight << std::endl;
-    // std::cout << "====================================" << std::endl;
 
     // Add Trigger PT_Mass and PNet Scale Factors
     double Eff_Data_1 = 0;
@@ -635,11 +628,11 @@ void Making_Histo_QCD(const std::string &ht_bin,
     double Tot_MC = 1 - (1 - Eff_MC_1);
     double PT_Mass_BTG_SF = Tot_Data / Tot_MC;
 
-    if (PT_Mass_BTG_SF > 0)
+    if (PT_Mass_BTG_SF > 0) {
       weight = weight * PT_Mass_BTG_SF;
+    }
 
-    // ********************************************************** Fill
-    // Histograms
+    // Fill histograms
     _FatJet1_pt->Fill(FatJet1_pt, weight);
     _FatJet1_eta->Fill(FatJet1_eta, weight);
     _FatJet1_phi->Fill(FatJet1_phi, weight);
@@ -695,5 +688,5 @@ void Making_Histo_QCD(const std::string &ht_bin,
 
   f->Write();
   
-  std::cout << "Done with Making_Histo_QCD_HT_100to200.C" << std::endl;
+  std::cout << "Done with QCD HT Bin: " << ht_bin << std::endl;
 }
