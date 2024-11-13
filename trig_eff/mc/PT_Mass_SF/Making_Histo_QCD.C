@@ -271,16 +271,6 @@ void Making_Histo_QCD(
   Float_t FatJet1_Mass;
   Float_t FatJet1_MassSD;
   Float_t FatJet1DDBTaggerV2;
-  Float_t FatJet1PNetMD_QCD;
-  Float_t FatJet1PNetMD_Xbb;
-  Float_t FatJet1PNetMD_Xcc;
-  Float_t FatJet1PNetMD_Xqq;
-  Float_t FatJet1PNetHbbvsQCD;
-  Float_t FatJet1PNet_QCD;
-  Float_t FatJet1PNet_TvsQCD;
-  Float_t FatJet1PNet_WvsQCD;
-  Float_t FatJet1PNet_ZvsQCD;
-  Float_t FatJet1PNet_mass;
   Float_t FatJet1Tau3OverTau2;
   Float_t FatJet1_rawFactor;
 
@@ -290,16 +280,7 @@ void Making_Histo_QCD(
   Float_t FatJet2_Mass;
   Float_t FatJet2_MassSD;
   Float_t FatJet2DDBTaggerV2;
-  Float_t FatJet2PNetMD_QCD;
-  Float_t FatJet2PNetMD_Xbb;
-  Float_t FatJet2PNetMD_Xcc;
-  Float_t FatJet2PNetMD_Xqq;
-  Float_t FatJet2PNetHbbvsQCD;
-  Float_t FatJet2PNet_QCD;
-  Float_t FatJet2PNet_TvsQCD;
-  Float_t FatJet2PNet_WvsQCD;
-  Float_t FatJet2PNet_ZvsQCD;
-  Float_t FatJet2PNet_mass;
+
   Float_t FatJet2Tau3OverTau2;
   Float_t FatJet2_rawFactor;
 
