@@ -21,15 +21,6 @@
 
 #define ARR_SIZE 10000
 
-std::string getCMSSWBase() {
-  const char *cmssw_base = std::getenv("CMSSW_BASE");
-  if (!cmssw_base) {
-    throw std::runtime_error("CMSSW_BASE environment variable not set! Did you "
-                             "forget to run 'cmsenv'?");
-  }
-  return std::string(cmssw_base);
-}
-
 // D-phi
 double phi_dist(double a, double b) {
   if (fabs(a - b) > 3.14159265) {
@@ -47,8 +38,9 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
 
-void Making_Histo_EGamma(
+void Making_Histo_Leptonic(
     const std::string &run_tag,              // e.g. 2023C, 2023D
+    const std::string &channel,              // e.g. Muon, EGamma
     const std::string &sample_path,          // path to the root file
     const std::string &output_path,          // path to the output root file
     const std::string &jec_path_L2Relative,  // path to the AK4 JEC txt file
@@ -243,6 +235,7 @@ void Making_Histo_EGamma(
   Float_t Jet2_Eta;
   Float_t Jet2_Phi;
 
+  // FatJet 1 kinematics
   Float_t FatJet1_pt;
   Float_t FatJet1_eta;
   Float_t FatJet1_phi;
@@ -251,7 +244,7 @@ void Making_Histo_EGamma(
   Float_t FatJet1DDBTaggerV2;
   Float_t FatJet1Tau3OverTau2;
   Float_t FatJet1_rawFactor;
-  // ParticleNet scores
+  // FatJet 1 ParticleNet scores
   Float_t FatJet1PNet_QCD;
   Float_t FatJet1PNet_QCD0HF;
   Float_t FatJet1PNet_QCD1HF;
@@ -260,7 +253,7 @@ void Making_Histo_EGamma(
   Float_t FatJet1PNet_XccVsQCD;
   Float_t FatJet1PNet_XggVsQCD;
   Float_t FatJet1PNet_XqqVsQCD;
-  // GloParT scores
+  // FatJet 1 GloParT scores
   Float_t FatJet1GloParT_QCD0HF;
   Float_t FatJet1GloParT_QCD1HF;
   Float_t FatJet1GloParT_QCD2HF;
@@ -269,6 +262,7 @@ void Making_Histo_EGamma(
   Float_t FatJet1GloParT_Xqq;
   Float_t FatJet1GloParT_XbbVsQCD;
 
+  // FatJet 2 kinematics
   Float_t FatJet2_pt;
   Float_t FatJet2_eta;
   Float_t FatJet2_phi;
@@ -277,7 +271,7 @@ void Making_Histo_EGamma(
   Float_t FatJet2DDBTaggerV2;
   Float_t FatJet2Tau3OverTau2;
   Float_t FatJet2_rawFactor;
-  // ParticleNet scores
+  // FatJet 2 ParticleNet scores
   Float_t FatJet2PNet_QCD;
   Float_t FatJet2PNet_QCD0HF;
   Float_t FatJet2PNet_QCD1HF;
@@ -286,7 +280,7 @@ void Making_Histo_EGamma(
   Float_t FatJet2PNet_XccVsQCD;
   Float_t FatJet2PNet_XggVsQCD;
   Float_t FatJet2PNet_XqqVsQCD;
-  // GloParT scores
+  // FatJet 2 GloParT scores
   Float_t FatJet2GloParT_QCD0HF;
   Float_t FatJet2GloParT_QCD1HF;
   Float_t FatJet2GloParT_QCD2HF;
@@ -295,6 +289,7 @@ void Making_Histo_EGamma(
   Float_t FatJet2GloParT_Xqq;
   Float_t FatJet2GloParT_XbbVsQCD;
 
+  // FatJet 3 kinematics
   Float_t FatJet3_pt;
   Float_t FatJet3_eta;
   Float_t FatJet3_phi;
@@ -303,7 +298,7 @@ void Making_Histo_EGamma(
   Float_t FatJet3DDBTaggerV2;
   Float_t FatJet3Tau3OverTau2;
   Float_t FatJet3_rawFactor;
-  // ParticleNet scores
+  // FatJet 3 ParticleNet scores
   Float_t FatJet3PNet_QCD;
   Float_t FatJet3PNet_QCD0HF;
   Float_t FatJet3PNet_QCD1HF;
@@ -312,7 +307,7 @@ void Making_Histo_EGamma(
   Float_t FatJet3PNet_XccVsQCD;
   Float_t FatJet3PNet_XggVsQCD;
   Float_t FatJet3PNet_XqqVsQCD;
-  // GloParT scores
+  // FatJet 3 GloParT scores
   Float_t FatJet3GloParT_QCD0HF;
   Float_t FatJet3GloParT_QCD1HF;
   Float_t FatJet3GloParT_QCD2HF;
@@ -468,8 +463,18 @@ void Making_Histo_EGamma(
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
     // HLT Selection
-    if (!(HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11))
-      continue;
+    if (channel == "EGamma") {
+      if (!(HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11)) {
+            continue;
+      }
+    } else if (channel == "Muon") {
+      if (!(HLT_IsoMu27 && fabs(lep1_Id) == 13)) {
+        continue;
+      }
+    } else {
+      throw std::invalid_argument("Invalid channel");
+    }
+    
 
     // JSON certification
     bool Certified = false;
@@ -512,7 +517,7 @@ void Making_Histo_EGamma(
     // VBFTag veto
     //   if(isVBFtag) continue;
 
-    // Lepton selection or Veto
+    // Lepton selection or veto
     if (lep1_Pt < 50)
       continue;
     if (lep2_Pt > 30)
@@ -556,7 +561,8 @@ void Making_Histo_EGamma(
     if (dR_JmaxL > 3.5)
       continue;
 
-    // Trigger Objects and Matchings Matching 1st
+    // Trigger Objects and Matchings
+    // Matching 1st
     bool matched_TRG_1 = false;
 
     bool matched_to_AK8PFJet230_SoftDropMass40 = false;
