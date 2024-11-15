@@ -18,8 +18,14 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <bits/stdc++.h>
 
 #define ARR_SIZE 10000
+
+std::string to_lower(std::string str) {
+  std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+  return str;
+}
 
 // D-phi
 double phi_dist(double a, double b) {
@@ -62,6 +68,14 @@ void Making_Histo_Data(
   }
 
   gSystem->Load("libFWCoreFWLite.so");
+
+  std::string channel_lower = to_lower(channel);
+  std::cout << "Run tag: " << run_tag << std::endl;
+  std::cout << "Channel: " << channel << std::endl;
+  std::cout << "Sample Path: " << sample_path << std::endl;
+  std::cout << "Output Path: " << output_path << std::endl;
+  std::cout << "L2Relative JEC Path: " << jec_path_L2Relative << std::endl;
+  std::cout << "L2L3Residual JEC Path: " << jec_path_L2L3Residual << std::endl;
 
   // JEC
   vector<JetCorrectorParameters> vPar_AK8;
@@ -385,16 +399,16 @@ void Making_Histo_Data(
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
     // HLT Selection
-    if (channel == "EGamma") {
+    if (channel_lower == "egamma") {
       if (!(HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11)) {
             continue;
       }
-    } else if (channel == "Muon") {
+    } else if (channel_lower == "muon") {
       if (!(HLT_IsoMu27 && fabs(lep1_Id) == 13)) {
         continue;
       }
     } else {
-      throw std::invalid_argument("Invalid channel");
+      throw std::invalid_argument("Invalid channel: " + channel);
     }
     
 
@@ -519,11 +533,11 @@ void Making_Histo_Data(
     // if (HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06) {
     //   matched_TRG_2=true;
     // }
-    if (channel == "EGamma") {
+    if (channel_lower == "egamma") {
       if ((HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 11)) {
         matched_TRG_2 = true;
       }
-    } else if (channel == "Muon") {
+    } else if (channel_lower == "muon") {
       if ((HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 13)) {
         matched_TRG_2 = true;
       }

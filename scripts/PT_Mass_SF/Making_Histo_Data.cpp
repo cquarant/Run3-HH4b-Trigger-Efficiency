@@ -21,6 +21,11 @@
 
 #define ARR_SIZE 10000
 
+std::string to_lower(std::string str) {
+  std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+  return str;
+}
+
 // D-phi
 double phi_dist(double a, double b) {
   if (fabs(a - b) > 3.14159265) {
@@ -61,6 +66,14 @@ void Making_Histo_Data(
   }
 
   gSystem->Load("libFWCoreFWLite.so");
+
+  std::string channel_lower = to_lower(channel);
+  std::cout << "Run tag: " << run_tag << std::endl;
+  std::cout << "Channel: " << channel << std::endl;
+  std::cout << "Sample Path: " << sample_path << std::endl;
+  std::cout << "Output Path: " << output_path << std::endl;
+  std::cout << "L2Relative JEC Path: " << jec_path_L2Relative << std::endl;
+  std::cout << "L2L3Residual JEC Path: " << jec_path_L2L3Residual << std::endl;
 
   // JEC
   vector<JetCorrectorParameters> vPar_AK8;
@@ -248,15 +261,15 @@ void Making_Histo_Data(
     InputTree_TrgObj->GetEntry(i);
 
     // HLT Selection
-    if (channel == "EGamma") {
+    if (channel_lower == "egamma") {
       if (!(HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11)) {
         continue;
       }
-    } else if (channel == "Muon") {
+    } else if (channel_lower == "muon") {
       if (!(HLT_IsoMu27 && fabs(lep1_Id) == 13)) {
         continue;
       }
-    } else if (channel == "JetMET") {
+    } else if (channel_lower == "jetmet") {
       if (HLT_AK8PFJet230_SoftDropMass40 == 0) {
         continue;
       }
@@ -301,7 +314,7 @@ void Making_Histo_Data(
     }
 
     bool Probe_Matched = false;
-    if (channel == "JetMET") {
+    if (channel_lower == "JetMET") {
       // FatJets selection
       if (FatJet3_pt > 150)
         continue;
