@@ -42,7 +42,7 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
-void Making_Histo_Data(
+void histo_data(
     const std::string &run_tag,              // e.g. 2023C, 2023D
     const std::string &channel,              // e.g. Muon, EGamma
     const std::string &sample_path,          // path to the root file
@@ -94,28 +94,37 @@ void Making_Histo_Data(
   Float_t Lower_pt_N[9] = {230, 240, 250, 270, 300, 350, 500, 700, 1000};
 
   // probe FatJet 1 histograms
-  TH1D *_FatJet1_probe_pt = new TH1D("FatJet1_probe_pt", "FatJet1_probe_pt", 200, 0, 1000);
-  TH1D *_FatJet1_probe_eta = new TH1D("FatJet1_probe_eta", "FatJet1_probe_eta", 100, -5, 5);
-  TH1D *_FatJet1_probe_phi = new TH1D("FatJet1_probe_phi", "FatJet1_probe_phi", 100, -5, 5);
-  TH2D *_FatJet1_probe_eta_phi =
-      new TH2D("FatJet1_probe_eta_phi", "FatJet1_probe_eta_phi", 100, -5, 5, 100, -5, 5);
-  TH1D *_FatJet1_probe_Mass = new TH1D("FatJet1_probe_Mass", "FatJet1_probe_Mass", 500, 0, 500);
+  TH1D *_FatJet1_probe_pt =
+      new TH1D("FatJet1_probe_pt", "FatJet1_probe_pt", 200, 0, 1000);
+  TH1D *_FatJet1_probe_eta =
+      new TH1D("FatJet1_probe_eta", "FatJet1_probe_eta", 100, -5, 5);
+  TH1D *_FatJet1_probe_phi =
+      new TH1D("FatJet1_probe_phi", "FatJet1_probe_phi", 100, -5, 5);
+  TH2D *_FatJet1_probe_eta_phi = new TH2D(
+      "FatJet1_probe_eta_phi", "FatJet1_probe_eta_phi", 100, -5, 5, 100, -5, 5);
+  TH1D *_FatJet1_probe_Mass =
+      new TH1D("FatJet1_probe_Mass", "FatJet1_probe_Mass", 500, 0, 500);
   TH1D *_FatJet1_probe_MassSD =
       new TH1D("FatJet1_probe_MassSD", "FatJet1_probe_MassSD", 500, 0, 500);
   TH2D *_FatJet1_probe_Pt_Mass =
-      new TH2D("FatJet1_probe_Pt_Mass", "FatJet1_probe_Pt_Mass", 45, Lower_pt, 15, Lower_m);
+      new TH2D("FatJet1_probe_Pt_Mass", "FatJet1_probe_Pt_Mass", 45, Lower_pt,
+               15, Lower_m);
 
   // tag FatJet 1 histograms
-  TH1D *_FatJet1_tag_pt = new TH1D("FatJet1_tag_pt", "FatJet1_tag_pt", 200, 0, 1000);
-  TH1D *_FatJet1_tag_eta = new TH1D("FatJet1_tag_eta", "FatJet1_tag_eta", 100, -5, 5);
-  TH1D *_FatJet1_tag_phi = new TH1D("FatJet1_tag_phi", "FatJet1_tag_phi", 100, -5, 5);
-  TH2D *_FatJet1_tag_eta_phi =
-      new TH2D("FatJet1_tag_eta_phi", "FatJet1_tag_eta_phi", 100, -5, 5, 100, -5, 5);
-  TH1D *_FatJet1_tag_Mass = new TH1D("FatJet1_tag_Mass", "FatJet1_tag_Mass", 500, 0, 500);
+  TH1D *_FatJet1_tag_pt =
+      new TH1D("FatJet1_tag_pt", "FatJet1_tag_pt", 200, 0, 1000);
+  TH1D *_FatJet1_tag_eta =
+      new TH1D("FatJet1_tag_eta", "FatJet1_tag_eta", 100, -5, 5);
+  TH1D *_FatJet1_tag_phi =
+      new TH1D("FatJet1_tag_phi", "FatJet1_tag_phi", 100, -5, 5);
+  TH2D *_FatJet1_tag_eta_phi = new TH2D(
+      "FatJet1_tag_eta_phi", "FatJet1_tag_eta_phi", 100, -5, 5, 100, -5, 5);
+  TH1D *_FatJet1_tag_Mass =
+      new TH1D("FatJet1_tag_Mass", "FatJet1_tag_Mass", 500, 0, 500);
   TH1D *_FatJet1_tag_MassSD =
       new TH1D("FatJet1_tag_MassSD", "FatJet1_tag_MassSD", 500, 0, 500);
-  TH2D *_FatJet1_tag_Pt_Mass =
-      new TH2D("FatJet1_tag_Pt_Mass", "FatJet1_tag_Pt_Mass", 45, Lower_pt, 15, Lower_m);
+  TH2D *_FatJet1_tag_Pt_Mass = new TH2D(
+      "FatJet1_tag_Pt_Mass", "FatJet1_tag_Pt_Mass", 45, Lower_pt, 15, Lower_m);
 
   TFile *f1 = new TFile(sample_path.c_str());
 
@@ -407,15 +416,15 @@ void Making_Histo_Data(
         dR_JmaxL = dR_J2L;
       }
 
-    if (dR_JFJ_Max < 0) {
-      continue;
-    }
-    if (dR_J1L <= 0.4 || dR_J2L <= 0.4) {
-      continue;
-    }
-    if (dR_JmaxL > 3.5) {
-      continue;
-    }
+      if (dR_JFJ_Max < 0) {
+        continue;
+      }
+      if (dR_J1L <= 0.4 || dR_J2L <= 0.4) {
+        continue;
+      }
+      if (dR_JmaxL > 3.5) {
+        continue;
+      }
 
       // VBFTag veto
       // if(isVBFtag) continue;
@@ -449,7 +458,6 @@ void Making_Histo_Data(
     _FatJet1_probe_Mass->Fill(FatJet1_Mass);
     _FatJet1_probe_MassSD->Fill(FatJet1_MassSD);
     _FatJet1_probe_Pt_Mass->Fill(FatJet1_pt, FatJet1_MassSD);
-
 
     if (Probe_Matched) {
       _FatJet1_tag_pt->Fill(FatJet1_pt);

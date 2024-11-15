@@ -29,5 +29,5 @@ for channel in ${channels[@]}; do
     sf_path=${PROJ_ROOT}/Trigger_SFs/PT_Mass_SF_TTbar/PT_Mass_2dSF_2023.root
 
 
-    root -l -b -q "Making_Histo_MC.cpp(\"${ttbar_type}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${pu_path}\", \"${sf_path}\", \"${param_path}\", \"${jec_path_ak4}\", \"${jec_path_ak8}\")"
+    root -l -b -q "histo_mc.cpp(\"${ttbar_type}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${pu_path}\", \"${sf_path}\", \"${param_path}\", \"${jec_path_ak4}\", \"${jec_path_ak8}\")"
 done

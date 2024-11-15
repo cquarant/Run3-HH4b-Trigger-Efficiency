@@ -9,6 +9,7 @@
 #include <TF1.h>
 #include <TF2.h>
 #include <TH1D.h>
+#include <bits/stdc++.h>
 #include <iostream>
 #include <map>
 #include <math.h>
@@ -16,7 +17,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <bits/stdc++.h>
 
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
@@ -118,16 +118,16 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
-void Making_Histo_MC(
-    const std::string &ttbar_type,   // default: TTtoLNu2Q
-    const std::string &channel,      // Muon, EGamma, leptonic
-    const std::string &sample_path,  // path to the root file
-    const std::string &output_path,  // path to the output root file
-    const std::string &pu_path,      // path to the pileup reweighting file
-    const std::string &sf_path,      // path to the PT-Mass-SFs root file (not needed for this method)
-    const std::string &param_path,   // path to the parameters file
-    const std::string &jec_path_ak4, // path to the AK4 JEC txt file
-    const std::string &jec_path_ak8  // path to the AK8 JEC txt file
+void histo_mc(const std::string &ttbar_type,  // default: TTtoLNu2Q
+              const std::string &channel,     // Muon, EGamma, leptonic
+              const std::string &sample_path, // path to the root file
+              const std::string &output_path, // path to the output root file
+              const std::string &pu_path, // path to the pileup reweighting file
+              const std::string &sf_path, // path to the PT-Mass-SFs root file
+                                          // (not needed for this method)
+              const std::string &param_path,   // path to the parameters file
+              const std::string &jec_path_ak4, // path to the AK4 JEC txt file
+              const std::string &jec_path_ak8  // path to the AK8 JEC txt file
 ) {
   gSystem->Load("libFWCoreFWLite.so");
 
@@ -190,28 +190,37 @@ void Making_Histo_MC(
   Float_t Lower_pt_N[9] = {230, 240, 250, 270, 300, 350, 500, 700, 1000};
 
   // probe histograms
-  TH1D *_FatJet1_probe_pt = new TH1D("FatJet1_probe_pt", "FatJet1_probe_pt", 200, 0, 1000);
-  TH1D *_FatJet1_probe_eta = new TH1D("FatJet1_probe_eta", "FatJet1_probe_eta", 100, -5, 5);
-  TH1D *_FatJet1_probe_phi = new TH1D("FatJet1_probe_phi", "FatJet1_probe_phi", 100, -5, 5);
-  TH2D *_FatJet1_probe_eta_phi =
-      new TH2D("FatJet1_probe_eta_phi", "FatJet1_probe_eta_phi", 100, -5, 5, 100, -5, 5);
-  TH1D *_FatJet1_probe_Mass = new TH1D("FatJet1_probe_Mass", "FatJet1_probe_Mass", 500, 0, 500);
+  TH1D *_FatJet1_probe_pt =
+      new TH1D("FatJet1_probe_pt", "FatJet1_probe_pt", 200, 0, 1000);
+  TH1D *_FatJet1_probe_eta =
+      new TH1D("FatJet1_probe_eta", "FatJet1_probe_eta", 100, -5, 5);
+  TH1D *_FatJet1_probe_phi =
+      new TH1D("FatJet1_probe_phi", "FatJet1_probe_phi", 100, -5, 5);
+  TH2D *_FatJet1_probe_eta_phi = new TH2D(
+      "FatJet1_probe_eta_phi", "FatJet1_probe_eta_phi", 100, -5, 5, 100, -5, 5);
+  TH1D *_FatJet1_probe_Mass =
+      new TH1D("FatJet1_probe_Mass", "FatJet1_probe_Mass", 500, 0, 500);
   TH1D *_FatJet1_probe_MassSD =
       new TH1D("FatJet1_probe_MassSD", "FatJet1_probe_MassSD", 500, 0, 500);
   TH2D *_FatJet1_probe_Pt_Mass =
-      new TH2D("FatJet1_probe_Pt_Mass", "FatJet1_probe_Pt_Mass", 45, Lower_pt, 15, Lower_m);
+      new TH2D("FatJet1_probe_Pt_Mass", "FatJet1_probe_Pt_Mass", 45, Lower_pt,
+               15, Lower_m);
 
   // tag histograms
-  TH1D *_FatJet1_tag_pt = new TH1D("FatJet1_tag_pt", "FatJet1_tag_pt", 200, 0, 1000);
-  TH1D *_FatJet1_tag_eta = new TH1D("FatJet1_tag_eta", "FatJet1_tag_eta", 100, -5, 5);
-  TH1D *_FatJet1_tag_phi = new TH1D("FatJet1_tag_phi", "FatJet1_tag_phi", 100, -5, 5);
-  TH2D *_FatJet1_tag_eta_phi =
-      new TH2D("FatJet1_tag_eta_phi", "FatJet1_tag_eta_phi", 100, -5, 5, 100, -5, 5);
-  TH1D *_FatJet1_tag_Mass = new TH1D("FatJet1_tag_Mass", "FatJet1_tag_Mass", 500, 0, 500);
+  TH1D *_FatJet1_tag_pt =
+      new TH1D("FatJet1_tag_pt", "FatJet1_tag_pt", 200, 0, 1000);
+  TH1D *_FatJet1_tag_eta =
+      new TH1D("FatJet1_tag_eta", "FatJet1_tag_eta", 100, -5, 5);
+  TH1D *_FatJet1_tag_phi =
+      new TH1D("FatJet1_tag_phi", "FatJet1_tag_phi", 100, -5, 5);
+  TH2D *_FatJet1_tag_eta_phi = new TH2D(
+      "FatJet1_tag_eta_phi", "FatJet1_tag_eta_phi", 100, -5, 5, 100, -5, 5);
+  TH1D *_FatJet1_tag_Mass =
+      new TH1D("FatJet1_tag_Mass", "FatJet1_tag_Mass", 500, 0, 500);
   TH1D *_FatJet1_tag_MassSD =
       new TH1D("FatJet1_tag_MassSD", "FatJet1_tag_MassSD", 500, 0, 500);
-  TH2D *_FatJet1_tag_Pt_Mass =
-      new TH2D("FatJet1_tag_Pt_Mass", "FatJet1_tag_Pt_Mass", 45, Lower_pt, 15, Lower_m);
+  TH2D *_FatJet1_tag_Pt_Mass = new TH2D(
+      "FatJet1_tag_Pt_Mass", "FatJet1_tag_Pt_Mass", 45, Lower_pt, 15, Lower_m);
 
   TFile *f1 = new TFile(sample_path.c_str());
 
@@ -570,6 +579,6 @@ void Making_Histo_MC(
   } // end event loop
 
   f->Write();
-  
+
   std::cout << "Done. Written to " << output_path << std::endl;
 }
