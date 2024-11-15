@@ -44,12 +44,12 @@ for channel in "${channels[@]}"; do
     root -l -b -q "histo_data.cpp(\"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\")"
 
     # Hadd
-    target_path=${OUTPUT_DIR}/Histograms_Data_${channel}_${era_tag}.root
+    target_path=${OUTPUT_DIR}/Histograms_Data_${era_tag}_${channel}.root
     echo "Hadd into one file: ${target_path}"
     hadd -f ${target_path} ${TMP_DIR}/Histograms_Data_${channel}_${run_tag}_v*.root
 done
 
 # Hadd into leptonic channel
-target_path=${OUTPUT_DIR}/Histograms_Data_Leptonic_${era_tag}.root
+target_path=${OUTPUT_DIR}/Histograms_Data_${era_tag}_Leptonic.root
 echo "Hadd into one file: ${target_path}"
-hadd -f ${target_path} ${OUTPUT_DIR}/Histograms_Data_Muon_${era_tag}.root ${OUTPUT_DIR}/Histograms_Data_EGamma_${era_tag}.root
+hadd -f ${target_path} ${OUTPUT_DIR}/Histograms_Data_${era_tag}_Muon.root ${OUTPUT_DIR}/Histograms_Data_${era_tag}_EGamma.root

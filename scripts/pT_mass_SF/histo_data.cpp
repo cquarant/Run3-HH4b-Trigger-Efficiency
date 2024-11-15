@@ -270,7 +270,7 @@ void histo_data(
     InputTree_TrgObj->GetEntry(i);
 
     // HLT Selection
-    if (channel_lower == "egamma") {
+    if (channel_lower == "egamma" or channel_lower == "electron") {
       if (!(HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11)) {
         continue;
       }

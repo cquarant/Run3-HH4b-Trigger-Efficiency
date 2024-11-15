@@ -12,13 +12,13 @@ mkdir -p ${OUTPUT_DIR}
 
 ERA_TAG="2023"
 ttbar_type="TTtoLNu2Q"
-channels=("Muon" "Electron" "Leptonic")
+channels=("Muon" "EGamma" "Leptonic")
 
 for channel in ${channels[@]}; do
     sample_dir="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
     sample_path=${sample_dir}/${ERA_TAG}/TTtoLNu2Q_TuneCP5_13p6TeV_powheg-pythia8.root
 
-    output_path=${OUTPUT_DIR}/Histograms_MC_TTtoLNu2Q_${channel}_${ERA_TAG}.root
+    output_path=${OUTPUT_DIR}/Histograms_MC_TTtoLNu2Q_${ERA_TAG}_${channel}.root
 
     pu_path=${PROJ_ROOT}/pileups/pu_${ERA_TAG}.txt
     param_path=${PROJ_ROOT}/parameters/parameters_${ERA_TAG}.txt
