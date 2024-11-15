@@ -194,12 +194,12 @@ void Making_Histo_MC(
   TH1D *_FatJet1_probe_eta = new TH1D("FatJet1_probe_eta", "FatJet1_probe_eta", 100, -5, 5);
   TH1D *_FatJet1_probe_phi = new TH1D("FatJet1_probe_phi", "FatJet1_probe_phi", 100, -5, 5);
   TH2D *_FatJet1_probe_eta_phi =
-      new TH2D("FatJet1_probe_eta_phi", "_FatJet1_probe_eta_phi", 100, -5, 5, 100, -5, 5);
-  TH1D *_FatJet1_probe_Mass = new TH1D("_FatJet1_probe_Mass", "_FatJet1_probe_Mass", 500, 0, 500);
+      new TH2D("FatJet1_probe_eta_phi", "FatJet1_probe_eta_phi", 100, -5, 5, 100, -5, 5);
+  TH1D *_FatJet1_probe_Mass = new TH1D("FatJet1_probe_Mass", "FatJet1_probe_Mass", 500, 0, 500);
   TH1D *_FatJet1_probe_MassSD =
-      new TH1D("_FatJet1_probe_MassSD", "_FatJet1_probe_MassSD", 500, 0, 500);
+      new TH1D("FatJet1_probe_MassSD", "FatJet1_probe_MassSD", 500, 0, 500);
   TH2D *_FatJet1_probe_Pt_Mass =
-      new TH2D("_FatJet1_probe_Pt_Mass", "_FatJet1_probe_Pt_Mass", 45, Lower_pt, 15, Lower_m);
+      new TH2D("FatJet1_probe_Pt_Mass", "FatJet1_probe_Pt_Mass", 45, Lower_pt, 15, Lower_m);
 
   // tag histograms
   TH1D *_FatJet1_tag_pt = new TH1D("FatJet1_tag_pt", "FatJet1_tag_pt", 200, 0, 1000);
