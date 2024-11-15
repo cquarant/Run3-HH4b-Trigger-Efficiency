@@ -12,7 +12,7 @@ mkdir -p ${OUTPUT_DIR}
 
 ERA_TAG="2023"
 ttbar_type="TTtoLNu2Q"
-channels=("Muon" "Electron" "Leptonic")
+channels=("Muon" "EGamma" "Leptonic")
 
 for channel in ${channels[@]}; do
     sample_dir="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
