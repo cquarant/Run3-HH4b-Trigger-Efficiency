@@ -48,3 +48,8 @@ for channel in "${channels[@]}"; do
     echo "Hadd into one file: ${target_path}"
     hadd -f ${target_path} ${TMP_DIR}/Histograms_Data_${channel}_${run_tag}_v*.root
 done
+
+# Hadd into leptonic channel
+target_path=${OUTPUT_DIR}/Histograms_Data_Leptonic_${era_tag}.root
+echo "Hadd into one file: ${target_path}"
+hadd -f ${target_path} ${OUTPUT_DIR}/Histograms_Data_Muon_${era_tag}.root ${OUTPUT_DIR}/Histograms_Data_EGamma_${era_tag}.root
