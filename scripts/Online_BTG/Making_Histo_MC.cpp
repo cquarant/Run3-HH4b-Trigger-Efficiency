@@ -16,12 +16,18 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <bits/stdc++.h>
 
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 
 #define ARR_SIZE 10000
+
+std::string to_lower(std::string str) {
+  std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+  return str;
+}
 
 struct ParamDict {
   double Lumi;
@@ -77,7 +83,7 @@ double getXSec(ParamDict *param_dict, std::string ttbar_type) {
   } else if (ttbar_type == "TTto2L2Nu") {
     return param_dict->XSec_TTto2L2Nu;
   } else {
-    throw std::runtime_error("Invalid ttbar_type: " + ttbar_type);
+    throw std::invalid_argument("Invalid ttbar_type: " + ttbar_type);
   }
 }
 
@@ -114,6 +120,7 @@ bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
 void Making_Histo_MC(
     const std::string &ttbar_type,   // default: TTtoLNu2Q
+    const std::string &channel,      // Muon, EGamma, leptonic
     const std::string &sample_path,  // path to the root file
     const std::string &output_path,  // path to the output root file
     const std::string &pu_path,      // path to the pileup reweighting file
@@ -123,6 +130,17 @@ void Making_Histo_MC(
     const std::string &jec_path_ak8  // path to the AK8 JEC txt file
 ) {
   gSystem->Load("libFWCoreFWLite.so");
+
+  std::string channel_lower = to_lower(channel);
+  std::cout << "TTBar Type: " << ttbar_type << std::endl;
+  std::cout << "Channel: " << channel << std::endl;
+  std::cout << "Sample Path: " << sample_path << std::endl;
+  std::cout << "Output Path: " << output_path << std::endl;
+  std::cout << "PU Path: " << pu_path << std::endl;
+  std::cout << "SF Path" << sf_path << std::endl;
+  std::cout << "Param Path: " << param_path << std::endl;
+  std::cout << "AK4 JEC Path: " << jec_path_ak4 << std::endl;
+  std::cout << "AK8 JEC Path: " << jec_path_ak8 << std::endl;
 
   // PT-Mass-SFs
   TFile *f_PT_Mass_SF = new TFile(sf_path.c_str());
@@ -511,8 +529,20 @@ void Making_Histo_MC(
     // HLT Selection
     bool EGamma = (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11);
     bool Muon = (HLT_IsoMu27 && fabs(lep1_Id) == 13);
-    if (!EGamma && !Muon) {
-      continue;
+    if (channel_lower == "egamma" or channel_lower == "electron") {
+      if (!EGamma) {
+        continue;
+      }
+    } else if (channel_lower == "muon") {
+      if (!Muon) {
+        continue;
+      }
+    } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
+      if (!EGamma && !Muon) {
+        continue;
+      }
+    } else {
+      throw std::invalid_argument("Invalid channel: " + channel);
     }
 
     // FatJets correction and selection
@@ -843,5 +873,5 @@ void Making_Histo_MC(
 
   f->Write();
 
-  std::cout << "Done with " << ttbar_type << std::endl;
+  std::cout << "Done. Written to " << output_path << std::endl;
 }
