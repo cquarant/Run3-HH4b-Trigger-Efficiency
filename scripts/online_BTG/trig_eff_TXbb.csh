@@ -21,5 +21,6 @@ for channel in ${channels[@]}; do
     output_path="${OUTPUT_DIR}/efficiency_TXbb_${era_tag}_${channel}.root"
     figure_mc_path="${FIG_DIR}/efficiency_TXbb_mc_${era_tag}_${channel}.pdf"
     figure_data_path="${FIG_DIR}/efficiency_TXbb_data_${era_tag}_${channel}.pdf"
-    root -l -b -q "trig_eff_TXbb.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\")"
+    figure_sf_path="${FIG_DIR}/efficiency_TXbb_sf_${era_tag}_${channel}.pdf"
+    root -l -b -q "trig_eff_TXbb.cpp(\"${hist_data_path}\", \"${hist_mc_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\", \"${figure_sf_path}\")"
 done

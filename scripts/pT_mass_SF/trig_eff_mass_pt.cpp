@@ -9,24 +9,24 @@
 #include <iostream>
 #include <math.h>
 
-void set_histo_style(TH2D* hist, std::string plot_title) {
+void set_histo_style(TH2D* hist, std::string plot_title, const std::string& x_axis_title, const std::string& y_axis_title) {
   hist->SetMarkerStyle(23);
   hist->SetTitle(plot_title.c_str());
   // x axis
+  hist->GetXaxis()->SetTitle(x_axis_title.c_str());
   hist->GetXaxis()->SetLabelFont(42);
   hist->GetXaxis()->SetLabelOffset(0.02);
-  hist->GetXaxis()->SetTitle("FatJet p_{T} [GeV]");
   hist->GetXaxis()->SetTitleSize(0.045);
   hist->GetXaxis()->SetTitleOffset(1.2);
   hist->GetXaxis()->SetTitleFont(42);
-  hist->GetXaxis()->SetNdivisions(505);
+  // hist->GetXaxis()->SetNdivisions(505);
   // y axis
-  hist->GetYaxis()->SetNdivisions(510);
+  hist->GetYaxis()->SetTitle(y_axis_title.c_str());
+  // hist->GetYaxis()->SetNdivisions(510);
   hist->GetYaxis()->SetLabelFont(42);
   hist->GetYaxis()->SetLabelSize(0.04);
   hist->GetYaxis()->SetLabelOffset(0.01);
-  hist->GetYaxis()->SetTitle("FatJet m_{SD} [GeV]");
-  hist->GetYaxis()->SetTitleOffset(1.5);
+  hist->GetYaxis()->SetTitleOffset(1);
   hist->GetYaxis()->SetTitleSize(0.045);
   hist->GetYaxis()->SetTitleFont(42);
   // z axis
@@ -110,7 +110,9 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
 
 
   // Draw Data
-  set_histo_style(_data_tag, plot_title);
+  std::string x_axis_title = "FatJet m_{SD} [GeV]";
+  std::string y_axis_title = "FatJet p_{T} [GeV]";
+  set_histo_style(_data_tag, plot_title, x_axis_title, y_axis_title);
   _data_tag->SetMaximum(1.2);
   _data_tag->SetMinimum(0.0);
   c1->cd();
@@ -118,7 +120,7 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   c1->SaveAs(figure_data_path.c_str());
 
   // Draw MC
-  set_histo_style(_mc_tag, plot_title);
+  set_histo_style(_mc_tag, plot_title, x_axis_title, y_axis_title);
   _mc_tag->SetMaximum(1.2);
   _mc_tag->SetMinimum(0.0);
   c2->cd();

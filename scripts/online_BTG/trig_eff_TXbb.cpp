@@ -1,7 +1,6 @@
 #include "TGaxis.h"
 #include "TStyle.h"
 #include "TRandom.h"
-
 #include "TCanvas.h"
 #include <TF1.h>
 #include <TH1D.h>
@@ -26,18 +25,19 @@ void set_histo_style_1D(TH1D* hist, const std::string& x_axis_title, const std::
     hist->GetYaxis()->SetLabelSize(0.04);
     hist->GetYaxis()->SetLabelOffset(0.01);
     hist->GetYaxis()->SetTitleSize(0.045);
-    hist->GetYaxis()->SetTitleOffset(1.5);
+    hist->GetYaxis()->SetTitleOffset(1);
     hist->GetYaxis()->SetTitleFont(42);
-    hist->SetMaximum(1.4);
-    hist->SetMinimum(0.6);
+    hist->SetMaximum(1.2);
+    hist->SetMinimum(0.5);
 }
 
+
 void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
-                   const std::string& output_path, const std::string& figure_data_path,
-                   const std::string& figure_mc_path) {
+                   const std::string& output_root_path, const std::string& figure_mc_path,
+                   const std::string& figure_data_path, const std::string& figure_sf_path) {
     int reb = 4;
 
-    TFile* f = new TFile(output_path.c_str(), "RECREATE");
+    TFile* f = new TFile(output_root_path.c_str(), "RECREATE");
     TFile* fData = new TFile(data_path.c_str());
     TFile* fMC = new TFile(mc_path.c_str());
 
@@ -68,15 +68,35 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
 
     // Set styles and draw histograms
     TCanvas* c1 = new TCanvas("Data", "Data", 100, 52, 1200, 800);
-    set_histo_style_1D(_data_tag, "Probe - X_{bb}", "Efficiency");
+    TCanvas* c2 = new TCanvas("MC", "MC", 100, 52, 1200, 800);
+    TCanvas* c3 = new TCanvas("ScaleFactor", "ScaleFactor", 100, 52, 1200, 800);
+
+    for (auto c : {c1, c2, c3}) {
+        c->Range(0, 0, 1, 1);
+        c->SetFillColor(0);
+        c->SetBorderMode(0);
+        c->SetBorderSize(10);
+        c->SetTickx(1);
+        c->SetTicky(1);
+        c->SetFrameFillStyle(0);
+        c->SetFrameLineStyle(0);
+        c->SetFrameLineWidth(2);
+        c->SetFrameBorderMode(0);
+        c->SetFrameBorderSize(10);
+        c->SetBottomMargin(0.15);
+        c->SetLeftMargin(0.15);
+        c->SetRightMargin(0.15);
+    }
+
+
+    set_histo_style_1D(_data_tag, "Probe - T_{Xbb}", "Efficiency");
     c1->cd();
-    _data_tag->Draw("E1");
+    _data_tag->Draw("colz");
     c1->SaveAs(figure_data_path.c_str());
 
-    TCanvas* c2 = new TCanvas("MC", "MC", 100, 52, 1200, 800);
-    set_histo_style_1D(_mc_tag, "Probe - X_{bb}", "Efficiency");
+    set_histo_style_1D(_mc_tag, "Probe - T_{Xbb}", "Efficiency");
     c2->cd();
-    _mc_tag->Draw("E1");
+    _mc_tag->Draw("colz");
     c2->SaveAs(figure_mc_path.c_str());
 
     // Compute scale factors
@@ -84,15 +104,21 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     _SF_TXbb->Sumw2();
     _SF_TXbb->Divide(_mc_tag);
 
-    TCanvas* c3 = new TCanvas("ScaleFactor", "ScaleFactor", 100, 52, 1200, 800);
     set_histo_style_1D(_SF_TXbb, "Probe - T_{Xbb}", "Data / MC");
     c3->cd();
-    _SF_TXbb->Draw("E1");
-    c3->SaveAs(output_path.c_str());
+    _SF_TXbb->Draw("colz");
+    c3->SaveAs(figure_sf_path.c_str());
 
-    // Save histograms
+    // Save histograms to ROOT file
     f->cd();
     _SF_TXbb->Write();
     f->Write();
     f->Close();
+
+    // Clean up
+    delete fData;
+    delete fMC;
+    delete c1;
+    delete c2;
+    delete c3;
 }
