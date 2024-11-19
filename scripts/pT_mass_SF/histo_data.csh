@@ -11,6 +11,11 @@ TMP_DIR=${SCRIPT_DIR}/tmp
 mkdir -p ${OUTPUT_DIR}
 mkdir -p ${TMP_DIR}
 
+# 2022: 2022C, 2022D
+# 2022EE: 2022E, 2022F, 2022G
+# 2023: 2023C
+# 2023BPix: 2023D
+
 era_tag="2023"
 ttbar_type="TTtoLNu2Q"
 channels=("Muon" "EGamma")

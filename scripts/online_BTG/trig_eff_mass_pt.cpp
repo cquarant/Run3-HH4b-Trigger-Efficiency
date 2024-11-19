@@ -32,28 +32,27 @@ void set_histo_style(TH2D* hist, std::string plot_title) {
   // z axis
   hist->GetZaxis()->SetTitle("Efficiency");
 
-  hist->SetMaximum(1.2);
+  hist->SetMaximum(1.0);
   hist->SetMinimum(0.0);
 }
 
-void trig_eff(const std::string &hist_mc_path,
-              const std::string &hist_data_path,
-              const std::string &output_path,
-              const std::string &figure_mc_path,
-              const std::string &figure_data_path) {
+void trig_eff_mass_pt(const std::string &hist_mc_path,
+                      const std::string &hist_data_path,
+                      const std::string &output_path,
+                      const std::string &figure_mc_path,
+                      const std::string &figure_data_path) {
   int rebPT = 1;
   int rebM = 1;
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
-  Float_t Lower_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
-                         80, 100, 120, 150, 200, 250, 300, 350};
-  Float_t Lower_pt[46] = {0,   10,  20,  30,  40,  50,  60,  70,  80,  90,
-                          100, 110, 120, 130, 140, 150, 160, 170, 180, 190,
-                          200, 210, 220, 230, 240, 250, 260, 270, 280, 290,
-                          300, 320, 340, 360, 380, 400, 420, 440, 460, 480,
-                          500, 550, 600, 700, 800, 1000};
-  TH2D *_eff_data = new TH2D("Eff_Data", "Eff_Data", 45, Lower_pt, 15, Lower_m);
-  TH2D *_eff_mc = new TH2D("Eff_MC", "Eff_MC", 45, Lower_pt, 15, Lower_m);
+  
+  Float_t bins_m[13] = {0,   20,  40,  60,  80,  100, 120,
+                        140, 160, 180, 200, 220, 240};
+  int num_m_bins = 12;
+  Float_t bins_pt[10] = {250, 300, 350, 400, 450, 500, 550, 600, 650, 700};
+  int num_pt_bins = 9;
+  TH2D *_eff_data = new TH2D("Eff_Data", "Eff_Data", num_m_bins, bins_m, num_pt_bins, bins_pt);
+  TH2D *_eff_mc = new TH2D("Eff_MC", "Eff_MC", num_m_bins, bins_m, num_pt_bins, bins_pt);
 
   _eff_data->Rebin2D(rebPT, rebM);
   _eff_mc->Rebin2D(rebPT, rebM);
@@ -88,10 +87,10 @@ void trig_eff(const std::string &hist_mc_path,
   TFile *fData = new TFile(hist_data_path.c_str());
   TFile *fMC = new TFile(hist_mc_path.c_str());
 
-  TH2D *_mc_probe = (TH2D *)fMC->Get("FatJet1_probe_Pt_Mass");
-  TH2D *_mc_tag = (TH2D *)fMC->Get("FatJet1_tag_Pt_Mass");
-  TH2D *_data_probe = (TH2D *)fData->Get("FatJet1_probe_Pt_Mass");
-  TH2D *_data_tag = (TH2D *)fData->Get("FatJet1_tag_Pt_Mass");
+  TH2D *_mc_probe = (TH2D *)fMC->Get("FatJet1_probe_Mass_Pt");
+  TH2D *_mc_tag = (TH2D *)fMC->Get("FatJet1_tag_Mass_Pt");
+  TH2D *_data_probe = (TH2D *)fData->Get("FatJet1_probe_Mass_Pt");
+  TH2D *_data_tag = (TH2D *)fData->Get("FatJet1_tag_Mass_Pt");
 
   // check not null
   if (!_mc_probe || !_mc_tag || !_data_probe || !_data_tag) {

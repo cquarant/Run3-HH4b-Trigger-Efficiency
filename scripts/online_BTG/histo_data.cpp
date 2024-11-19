@@ -84,13 +84,18 @@ void histo_data(
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
-  Float_t Lower_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
-                         80, 100, 120, 150, 200, 250, 300, 350};
-  Float_t Lower_pt[46] = {0,   10,  20,  30,  40,  50,  60,  70,  80,  90,
-                          100, 110, 120, 130, 140, 150, 160, 170, 180, 190,
-                          200, 210, 220, 230, 240, 250, 260, 270, 280, 290,
-                          300, 320, 340, 360, 380, 400, 420, 440, 460, 480,
-                          500, 550, 600, 700, 800, 1000};
+  // Float_t bins_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
+  //                        80, 100, 120, 150, 200, 250, 300, 350};
+  // Float_t bins_pt[46] = {0,   10,  20,  30,  40,  50,  60,  70,  80,  90,
+  //                         100, 110, 120, 130, 140, 150, 160, 170, 180, 190,
+  //                         200, 210, 220, 230, 240, 250, 260, 270, 280, 290,
+  //                         300, 320, 340, 360, 380, 400, 420, 440, 460, 480,
+  //                         500, 550, 600, 700, 800, 1000};
+  Float_t bins_m[13] = {0,   20,  40,  60,  80,  100, 120,
+                        140, 160, 180, 200, 220, 240};
+  int num_m_bins = 12;
+  Float_t bins_pt[10] = {250, 300, 350, 400, 450, 500, 550, 600, 650, 700};
+  int num_pt_bins = 9;
 
   // probe FatJet 1 kinematics
   TH1D *_FatJet1_probe_pt =
@@ -105,9 +110,9 @@ void histo_data(
       new TH1D("FatJet1_probe_Mass", "FatJet1_probe_Mass", 500, 0, 500);
   TH1D *_FatJet1_probe_MassSD =
       new TH1D("FatJet1_probe_MassSD", "FatJet1_probe_MassSD", 500, 0, 500);
-  TH2D *_FatJet1_probe_Pt_Mass =
-      new TH2D("FatJet1_probe_Pt_Mass", "FatJet1_probe_Pt_Mass", 45, Lower_pt,
-               15, Lower_m);
+  TH2D *_FatJet1_probe_Mass_Pt =
+      new TH2D("FatJet1_probe_Mass_Pt", "FatJet1_probe_Mass_Pt", num_m_bins,
+               bins_m, num_pt_bins, bins_pt);
   // probe FatJet 1 ParticleNet scores
   TH1D *_FatJet1_probe_PNet_QCD =
       new TH1D("FatJet1_probe_PNet_QCD", "FatJet1_probe_PNet_QCD", 100, 0, 1.0);
@@ -184,8 +189,9 @@ void histo_data(
       new TH1D("FatJet1_tag_Mass", "FatJet1_tag_Mass", 500, 0, 500);
   TH1D *_FatJet1_tag_MassSD =
       new TH1D("FatJet1_tag_MassSD", "FatJet1_tag_MassSD", 500, 0, 500);
-  TH2D *_FatJet1_tag_Pt_Mass = new TH2D(
-      "FatJet1_tag_Pt_Mass", "FatJet1_tag_Pt_Mass", 45, Lower_pt, 15, Lower_m);
+  TH2D *_FatJet1_tag_Mass_Pt =
+      new TH2D("FatJet1_tag_Mass_Pt", "FatJet1_tag_Mass_Pt", num_m_bins, bins_m,
+               num_pt_bins, bins_pt);
   // tag FatJet 1 ParticleNet scores
   TH1D *_FatJet1_tag_PNet_QCD =
       new TH1D("FatJet1_tag_PNet_QCD", "FatJet1_tag_PNet_QCD", 100, 0, 1.0);
@@ -251,9 +257,9 @@ void histo_data(
       new TH1D("FatJet1_both_Mass", "FatJet1_both_Mass", 500, 0, 500);
   TH1D *_FatJet1_both_MassSD =
       new TH1D("FatJet1_both_MassSD", "FatJet1_both_MassSD", 500, 0, 500);
-  TH2D *_FatJet1_both_Pt_Mass =
-      new TH2D("FatJet1_both_Pt_Mass", "FatJet1_both_Pt_Mass", 45, Lower_pt, 15,
-               Lower_m);
+  TH2D *_FatJet1_both_Mass_Pt =
+      new TH2D("FatJet1_both_Mass_Pt", "FatJet1_both_Mass_Pt", num_m_bins,
+               bins_m, num_pt_bins, bins_pt);
   // "both" FatJet 1 ParticleNet scores
   TH1D *_FatJet1_both_PNet_QCD =
       new TH1D("FatJet1_both_PNet_QCD", "FatJet1_both_PNet_QCD", 100, 0, 1.0);
@@ -595,10 +601,7 @@ void histo_data(
     */
 
     // Lepton selection or veto
-    if (lep1_Pt < 50) {
-      continue;
-    }
-    if (lep2_Pt > 30) {
+    if (lep1_Pt < 50 || lep2_Pt > 30) {
       continue;
     }
     if (FatJet2_pt > 200 && FatJet2_MassSD > 50) {
@@ -670,14 +673,18 @@ void histo_data(
     // if (HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06) {
     //   matched_TRG_2=true;
     // }
+    bool match_egamma = HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 11;
+    bool match_muon = HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 13;
     if (channel_lower == "egamma") {
-      if ((HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 &&
-           abs(lep1_Id) == 11)) {
+      if (match_egamma) {
         matched_TRG_2 = true;
       }
     } else if (channel_lower == "muon") {
-      if ((HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 &&
-           abs(lep1_Id) == 13)) {
+      if (match_muon) {
+        matched_TRG_2 = true;
+      }
+    } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
+      if (match_egamma || match_muon) {
         matched_TRG_2 = true;
       }
     } else {
@@ -692,7 +699,7 @@ void histo_data(
     _FatJet1_probe_eta_phi->Fill(FatJet1_eta, FatJet1_phi);
     _FatJet1_probe_Mass->Fill(FatJet1_Mass);
     _FatJet1_probe_MassSD->Fill(FatJet1_MassSD);
-    _FatJet1_probe_Pt_Mass->Fill(FatJet1_pt, FatJet1_MassSD);
+    _FatJet1_probe_Mass_Pt->Fill(FatJet1_MassSD, FatJet1_pt);
     // ParticleNet
     _FatJet1_probe_PNet_QCD->Fill(FatJet1PNet_QCD);
     _FatJet1_probe_PNet_QCD0HF->Fill(FatJet1PNet_QCD0HF);
@@ -727,7 +734,7 @@ void histo_data(
       _FatJet1_tag_eta_phi->Fill(FatJet1_eta, FatJet1_phi);
       _FatJet1_tag_Mass->Fill(FatJet1_Mass);
       _FatJet1_tag_MassSD->Fill(FatJet1_MassSD);
-      _FatJet1_tag_Pt_Mass->Fill(FatJet1_pt, FatJet1_MassSD);
+      _FatJet1_tag_Mass_Pt->Fill(FatJet1_MassSD, FatJet1_pt);
       // ParticleNet
       _FatJet1_tag_PNet_QCD->Fill(FatJet1PNet_QCD);
       _FatJet1_tag_PNet_QCD0HF->Fill(FatJet1PNet_QCD0HF);
@@ -763,7 +770,7 @@ void histo_data(
       _FatJet1_both_eta_phi->Fill(FatJet1_eta, FatJet1_phi);
       _FatJet1_both_Mass->Fill(FatJet1_Mass);
       _FatJet1_both_MassSD->Fill(FatJet1_MassSD);
-      _FatJet1_both_Pt_Mass->Fill(FatJet1_pt, FatJet1_MassSD);
+      _FatJet1_both_Mass_Pt->Fill(FatJet1_MassSD, FatJet1_pt);
       // ParticleNet
       _FatJet1_both_PNet_QCD->Fill(FatJet1PNet_QCD);
       _FatJet1_both_PNet_QCD0HF->Fill(FatJet1PNet_QCD0HF);
