@@ -18,7 +18,7 @@ mkdir -p ${TMP_DIR}
 
 era_tag="2023"
 ttbar_type="TTtoLNu2Q"
-channels=("Muon" "EGamma")
+channels=("JetMET" "Muon" "EGamma")
 run_tag="2023C"
 
 sample_dir="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
@@ -35,7 +35,7 @@ for channel in "${channels[@]}"; do
         jec_path_L2Relative=${jec_path}/Summer23Prompt23_RunCv123_V1_DATA/Summer23Prompt23_RunCv123_V1_DATA_L2Relative_AK8PFPuppi.txt;
         jec_path_L2L3Residual=${jec_path}/Summer23Prompt23_RunCv123_V1_DATA/Summer23Prompt23_RunCv123_V1_DATA_L2L3Residual_AK8PFPuppi.txt;
 
-        root -l -b -q "histo_ttbar_data.cpp(\"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\")"
+        root -l -b -q "histo_data.cpp(\"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\")"
     done
 
     version="v4"
@@ -46,10 +46,10 @@ for channel in "${channels[@]}"; do
     jec_path_L2Relative=${jec_path}/Summer23Prompt23_RunCv4_V1_DATA/Summer23Prompt23_RunCv4_V1_DATA_L2Relative_AK8PFPuppi.txt;
     jec_path_L2L3Residual=${jec_path}/Summer23Prompt23_RunCv4_V1_DATA/Summer23Prompt23_RunCv4_V1_DATA_L2L3Residual_AK8PFPuppi.txt;
 
-    root -l -b -q "histo_ttbar_data.cpp(\"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\")"
+    root -l -b -q "histo_data.cpp(\"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\")"
 
     # Hadd
-    target_path=${OUTPUT_DIR}/Histograms_Data_${era_tag}_${channel}.root
+    target_path=${TMP_DIR}/Histograms_Data_${era_tag}_${channel}.root
     echo "Hadd into one file: ${target_path}"
     hadd -f ${target_path} ${TMP_DIR}/Histograms_Data_${channel}_${run_tag}_v*.root
 done
@@ -57,4 +57,9 @@ done
 # Hadd into leptonic channel
 target_path=${OUTPUT_DIR}/Histograms_Data_${era_tag}_Leptonic.root
 echo "Hadd into one file: ${target_path}"
-hadd -f ${target_path} ${OUTPUT_DIR}/Histograms_Data_${era_tag}_Muon.root ${OUTPUT_DIR}/Histograms_Data_${era_tag}_EGamma.root
+hadd -f ${target_path} ${TMP_DIR}/Histograms_Data_${era_tag}_Muon.root ${TMP_DIR}/Histograms_Data_${era_tag}_EGamma.root
+
+# Hadd into one file
+target_path=${OUTPUT_DIR}/Histograms_Data_${era_tag}.root
+echo "Hadd into one file: ${target_path}"
+hadd -f ${target_path} ${TMP_DIR}/Histograms_Data_${era_tag}_Leptonic.root ${TMP_DIR}/Histograms_Data_${era_tag}_JetMET.root

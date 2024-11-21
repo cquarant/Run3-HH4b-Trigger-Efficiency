@@ -34,6 +34,15 @@ struct ParamDict {
   double XSec_TTto4Q;
   double XSec_TTtoLNu2Q;
   double XSec_TTto2L2Nu;
+  double XSec_QCD_HT_100to200;
+  double XSec_QCD_HT_200to400;
+  double XSec_QCD_HT_400to600;
+  double XSec_QCD_HT_600to800;
+  double XSec_QCD_HT_800to1000;
+  double XSec_QCD_HT_1000to1200;
+  double XSec_QCD_HT_1200to1500;
+  double XSec_QCD_HT_1500to2000;
+  double XSec_QCD_HT_2000toInf;
 };
 
 void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
@@ -70,20 +79,59 @@ void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
         param_dict->XSec_TTto4Q = value;
       } else if (name == "XSec_TTto2L2Nu") {
         param_dict->XSec_TTto2L2Nu = value;
+      } else if (name == "XSec_QCD_HT_100to200") {
+        param_dict->XSec_QCD_HT_100to200 = value;
+      } else if (name == "XSec_QCD_HT_200to400") {
+        param_dict->XSec_QCD_HT_200to400 = value;
+      } else if (name == "XSec_QCD_HT_400to600") {
+        param_dict->XSec_QCD_HT_400to600 = value;
+      } else if (name == "XSec_QCD_HT_600to800") {
+        param_dict->XSec_QCD_HT_600to800 = value;
+      } else if (name == "XSec_QCD_HT_800to1000") {
+        param_dict->XSec_QCD_HT_800to1000 = value;
+      } else if (name == "XSec_QCD_HT_1000to1200") {
+        param_dict->XSec_QCD_HT_1000to1200 = value;
+      } else if (name == "XSec_QCD_HT_1200to1500") {
+        param_dict->XSec_QCD_HT_1200to1500 = value;
+      } else if (name == "XSec_QCD_HT_1500to2000") {
+        param_dict->XSec_QCD_HT_1500to2000 = value;
+      } else if (name == "XSec_QCD_HT_2000toInf") {
+        param_dict->XSec_QCD_HT_2000toInf = value;
+      } else {
+        // warn if unknown parameter
+        std::cerr << "Unknown parameter: " << name << std::endl;
       }
     }
   }
 }
 
-double getXSec(ParamDict *param_dict, std::string ttbar_type) {
-  if (ttbar_type == "TTtoLNu2Q") {
+double getXSec(ParamDict *param_dict, std::string data_type) {
+  if (data_type == "TTtoLNu2Q") {
     return param_dict->XSec_TTtoLNu2Q;
-  } else if (ttbar_type == "TTto4Q") {
+  } else if (data_type == "TTto4Q") {
     return param_dict->XSec_TTto4Q;
-  } else if (ttbar_type == "TTto2L2Nu") {
+  } else if (data_type == "TTto2L2Nu") {
     return param_dict->XSec_TTto2L2Nu;
+  } else if (data_type == "QCD_HT_100to200") {
+    return param_dict->XSec_QCD_HT_100to200;
+  } else if (data_type == "QCD_HT_200to400") {
+    return param_dict->XSec_QCD_HT_200to400;
+  } else if (data_type == "QCD_HT_400to600") {
+    return param_dict->XSec_QCD_HT_400to600;
+  } else if (data_type == "QCD_HT_600to800") {
+    return param_dict->XSec_QCD_HT_600to800;
+  } else if (data_type == "QCD_HT_800to1000") {
+    return param_dict->XSec_QCD_HT_800to1000;
+  } else if (data_type == "QCD_HT_1000to1200") {
+    return param_dict->XSec_QCD_HT_1000to1200;
+  } else if (data_type == "QCD_HT_1200to1500") {
+    return param_dict->XSec_QCD_HT_1200to1500;
+  } else if (data_type == "QCD_HT_1500to2000") {
+    return param_dict->XSec_QCD_HT_1500to2000;
+  } else if (data_type == "QCD_HT_2000toInf") {
+    return param_dict->XSec_QCD_HT_2000toInf;
   } else {
-    throw std::invalid_argument("Invalid ttbar_type: " + ttbar_type);
+    throw std::invalid_argument("Invalid data_type: " + data_type);
   }
 }
 
@@ -118,21 +166,21 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
-void histo_ttbar_mc(
-    const std::string &ttbar_type,  // default: TTtoLNu2Q
+void histo_mc(
+    const std::string &data_type,   // Example: TTtoLNu2Q, QCD_HT100to200
     const std::string &channel,     // Muon, EGamma, leptonic
     const std::string &sample_path, // path to the root file
     const std::string &output_path, // path to the output root file
-    const std::string &pu_path, // path to the pileup reweighting file
-    const std::string &sf_path, // path to the PT-Mass-SFs root file (not needed for this method)
-    const std::string &param_path,   // path to the parameters file
-    const std::string &jec_path_ak4, // path to the AK4 JEC txt file
-    const std::string &jec_path_ak8  // path to the AK8 JEC txt file
+    const std::string &pu_path,     // path to the pileup reweighting file
+    const std::string &sf_path,     // path to the PT-Mass-SFs root file (not needed for this method)
+    const std::string &param_path,  // path to the parameters file
+    const std::string &jec_path_ak4,// path to the AK4 JEC txt file
+    const std::string &jec_path_ak8 // path to the AK8 JEC txt file
 ) {
   gSystem->Load("libFWCoreFWLite.so");
 
   std::string channel_lower = to_lower(channel);
-  std::cout << "TTBar Type: " << ttbar_type << std::endl;
+  std::cout << "Data Type: " << data_type << std::endl;
   std::cout << "Channel: " << channel << std::endl;
   std::cout << "Sample Path: " << sample_path << std::endl;
   std::cout << "Output Path: " << output_path << std::endl;
@@ -144,7 +192,7 @@ void histo_ttbar_mc(
   // parse ParamDict
   ParamDict param_dict;
   loadParamDict(&param_dict, param_path);
-  double xsec = getXSec(&param_dict, ttbar_type);
+  double xsec = getXSec(&param_dict, data_type);
 
   // pu weight
   std::vector<double> PU_Rew = loadPUReweighting(pu_path);
@@ -563,6 +611,10 @@ void histo_ttbar_mc(
       }
     } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
       if (!EGamma && !Muon) {
+        continue;
+      }
+    } else if (channel_lower == "jetmet" or channel_lower == "qcd") {
+      if (HLT_AK8PFJet230_SoftDropMass40 == 0) {
         continue;
       }
     } else {

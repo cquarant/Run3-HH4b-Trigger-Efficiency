@@ -42,9 +42,9 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
-void histo_ttbar_data(
+void histo_data(
     const std::string &run_tag,              // e.g. 2023C, 2023D
-    const std::string &channel,              // e.g. Muon, EGamma
+    const std::string &channel,              // e.g. Muon, EGamma, JetMET
     const std::string &sample_path,          // path to the root file
     const std::string &output_path,          // path to the output root file
     const std::string &jec_path_L2Relative,  // path to the AK4 JEC txt file
@@ -475,7 +475,7 @@ void histo_ttbar_data(
       if (!(HLT_IsoMu27 && fabs(lep1_Id) == 13)) {
         continue;
       }
-    } else if (channel_lower == "jetmet") {
+    } else if (channel_lower == "jetmet" or channel_lower == "qcd") {
       if (HLT_AK8PFJet230_SoftDropMass40 == 0) {
         continue;
       }
@@ -520,23 +520,20 @@ void histo_ttbar_data(
     }
 
     bool probe_match = false;
-    if (channel_lower == "JetMET") {
+    if (channel_lower == "jetmet" or channel_lower == "qcd") {
       // FatJets selection
-      if (FatJet3_pt > 150)
+      if (FatJet1_pt <= 300 || fabs(FatJet1_eta) >= 2.5 || FatJet1_MassSD <= 80) {
         continue;
-      if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 2.5 || FatJet1_MassSD < 80)
+      }
+      if (FatJet2_pt <= 160 || fabs(FatJet2_eta) >= 2.5) {
         continue;
-      if (FatJet2_pt < 160)
+      }
+      if (phi_dist(FatJet1_phi, FatJet2_phi) <= 2.5) {
         continue;
-      if (phi_dist(FatJet1_phi, FatJet2_phi) < 2.5)
+      }
+      if (FatJet3_pt > 160) {
         continue;
-      // if(fabs(FatJet2_eta) > 1.4) continue;
-      // if(fabs(FatJet2_eta) > 2.5 || fabs(FatJet2_eta) < 1.4) continue;
-
-      // VBFTag veto
-      // if(isVBFtag) continue;
-      // Lepton selection or veto
-      // if (fabs(lep1_Id) !=11 ) continue;
+      }
 
       // Trigger objects and matchings
       bool tag_match = false;
