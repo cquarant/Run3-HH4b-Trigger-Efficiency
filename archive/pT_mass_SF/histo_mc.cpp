@@ -1,5 +1,3 @@
-#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
-#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TGaxis.h"
@@ -12,19 +10,96 @@
 #include <TF2.h>
 #include <TH1D.h>
 #include <bits/stdc++.h>
-#include <cstdlib>
 #include <iostream>
 #include <map>
 #include <math.h>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
 
 #define ARR_SIZE 10000
 
 std::string to_lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(), ::tolower);
   return str;
+}
+
+struct ParamDict {
+  double Lumi;
+  double XSec_TTto4Q;
+  double XSec_TTtoLNu2Q;
+  double XSec_TTto2L2Nu;
+};
+
+void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
+  std::ifstream file(param_path);
+  if (!file.is_open()) {
+    throw std::runtime_error("Could not open parameters file: " + param_path);
+  }
+
+  std::string line;
+  while (std::getline(file, line)) {
+    if (line.empty() || line[0] == '/')
+      continue;
+
+    // Look for double declarations
+    if (line.find("double") != std::string::npos) {
+      std::istringstream iss(line);
+      std::string type, name, equals;
+      double value;
+
+      // Parse line of format: double XSec_QCD_HT_100to200    =  25220000.00;
+      if (!(iss >> type >> name >> equals >> value)) {
+        continue;
+      }
+
+      // Remove semicolon if present
+      if (name.back() == ';')
+        name = name.substr(0, name.size() - 1);
+
+      if (name == "Lumi") {
+        param_dict->Lumi = value;
+      } else if (name == "XSec_TTtoLNu2Q") {
+        param_dict->XSec_TTtoLNu2Q = value;
+      } else if (name == "XSec_TTto4Q") {
+        param_dict->XSec_TTto4Q = value;
+      } else if (name == "XSec_TTto2L2Nu") {
+        param_dict->XSec_TTto2L2Nu = value;
+      }
+    }
+  }
+}
+
+double getXSec(ParamDict *param_dict, std::string ttbar_type) {
+  if (ttbar_type == "TTtoLNu2Q") {
+    return param_dict->XSec_TTtoLNu2Q;
+  } else if (ttbar_type == "TTto4Q") {
+    return param_dict->XSec_TTto4Q;
+  } else if (ttbar_type == "TTto2L2Nu") {
+    return param_dict->XSec_TTto2L2Nu;
+  } else {
+    throw std::invalid_argument("Invalid ttbar_type: " + ttbar_type);
+  }
+}
+
+std::vector<double> loadPUReweighting(const std::string &pu_file) {
+  std::vector<double> values;
+  std::ifstream file(pu_file);
+  if (!file.is_open()) {
+    throw std::runtime_error("Could not open PU reweighting file: " + pu_file);
+  }
+
+  double value;
+  while (file >> value) {
+    values.push_back(value);
+  }
+
+  return values;
 }
 
 // D-phi
@@ -43,44 +118,64 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
-void histo_data(
-    const std::string &run_tag,              // e.g. 2023C, 2023D
-    const std::string &channel,              // e.g. Muon, EGamma
-    const std::string &sample_path,          // path to the root file
-    const std::string &output_path,          // path to the output root file
-    const std::string &jec_path_L2Relative,  // path to the AK4 JEC txt file
-    const std::string &jec_path_L2L3Residual // path to the AK8 JEC txt file
+void histo_mc(const std::string &ttbar_type,  // default: TTtoLNu2Q
+              const std::string &channel,     // Muon, EGamma, leptonic
+              const std::string &sample_path, // path to the root file
+              const std::string &output_path, // path to the output root file
+              const std::string &pu_path, // path to the pileup reweighting file
+              const std::string &sf_path, // path to the PT-Mass-SFs root file
+                                          // (not needed for this method)
+              const std::string &param_path,   // path to the parameters file
+              const std::string &jec_path_ak4, // path to the AK4 JEC txt file
+              const std::string &jec_path_ak8  // path to the AK8 JEC txt file
 ) {
-  // Load appropriate Good Lumi List based on era
-  // TODO: add more eras if needed
-  map<int, vector<pair<int, int>>> Good_Lumis;
-  if (run_tag == "2023C") {
-    Good_Lumis = {
-#include "GoodLumiList/GoodLumiList_Map_2023C.txt"
-    };
-  } else if (run_tag == "2023D") {
-    Good_Lumis = {
-#include "GoodLumiList/GoodLumiList_Map_2023D.txt"
-    };
-  } else {
-    throw std::runtime_error("Unsupported era for lumi dict: " + run_tag);
-  }
-
   gSystem->Load("libFWCoreFWLite.so");
 
   std::string channel_lower = to_lower(channel);
-  std::cout << "Run tag: " << run_tag << std::endl;
+  std::cout << "TTBar Type: " << ttbar_type << std::endl;
   std::cout << "Channel: " << channel << std::endl;
   std::cout << "Sample Path: " << sample_path << std::endl;
   std::cout << "Output Path: " << output_path << std::endl;
-  std::cout << "L2Relative JEC Path: " << jec_path_L2Relative << std::endl;
-  std::cout << "L2L3Residual JEC Path: " << jec_path_L2L3Residual << std::endl;
+  std::cout << "PU Path: " << pu_path << std::endl;
+  std::cout << "Param Path: " << param_path << std::endl;
+  std::cout << "AK4 JEC Path: " << jec_path_ak4 << std::endl;
+  std::cout << "AK8 JEC Path: " << jec_path_ak8 << std::endl;
+
+  // parse ParamDict
+  ParamDict param_dict;
+  loadParamDict(&param_dict, param_path);
+  double xsec = getXSec(&param_dict, ttbar_type);
+
+  // pu weight
+  std::vector<double> PU_Rew = loadPUReweighting(pu_path);
 
   // JEC
-  vector<JetCorrectorParameters> vPar_AK8;
-  vPar_AK8.push_back(JetCorrectorParameters(jec_path_L2Relative.c_str()));
-  vPar_AK8.push_back(JetCorrectorParameters(jec_path_L2L3Residual.c_str()));
-  FactorizedJetCorrector *corrector_AK8 = new FactorizedJetCorrector(vPar_AK8);
+  vector<JetCorrectorParameters> vPar;
+  vPar.push_back(JetCorrectorParameters(jec_path_ak4.c_str()));
+  FactorizedJetCorrector *corrector = new FactorizedJetCorrector(vPar);
+
+  vector<JetCorrectorParameters> vParAK8;
+  vParAK8.push_back(JetCorrectorParameters(jec_path_ak8.c_str()));
+  FactorizedJetCorrector *corrector_AK8 = new FactorizedJetCorrector(vParAK8);
+
+  /* (should be added when available)
+  // JER
+  std::string resptstr =
+  "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_PtResolution_AK4PFPuppi.txt";
+  std::string resptstr_sf =
+  "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_SF_AK4PFPuppi.txt";
+  JME::JetResolution resolution_pt = JME::JetResolution(resptstr.c_str());
+  JME::JetResolutionScaleFactor resolution_pt_sf =
+  JME::JetResolutionScaleFactor(resptstr_sf.c_str());
+
+  std::string resptstr_AK8 =
+  "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_PtResolution_AK8PFPuppi.txt";
+  std::string resptstr_sf_AK8 =
+  "/afs/cern.ch/user/t/tumasyan/public/OldJEC_2022/JR_Winter22Run3_V1_MC/JR_Winter22Run3_V1_MC_SF_AK8PFPuppi.txt";
+  JME::JetResolution resolution_pt_AK8 =
+  JME::JetResolution(resptstr_AK8.c_str()); JME::JetResolutionScaleFactor
+  resolution_pt_sf_AK8 = JME::JetResolutionScaleFactor(resptstr_sf_AK8.c_str());
+  */
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
@@ -94,12 +189,12 @@ void histo_data(
   Float_t bins_m[13] = {0,   20,  40,  60,  80,  100, 120,
                         140, 160, 180, 200, 220, 240};
   int num_m_bins = 12;
-  Float_t bins_pt[10] = {250, 300, 350, 400, 450, 500, 550, 600, 650, 700};
-  int num_pt_bins = 9;
+  Float_t bins_pt[11] = {250, 275, 300, 325, 350, 375, 400, 450, 500, 600, 700};
+  int num_pt_bins = 10;
 
   // probe FatJet 1 kinematics
   TH1D *_FatJet1_probe_pt =
-      new TH1D("FatJet1_pt", "FatJet1_probe_pt", 200, 0, 1000);
+      new TH1D("FatJet1_probe_pt", "FatJet1_probe_pt", 200, 0, 1000);
   TH1D *_FatJet1_probe_eta =
       new TH1D("FatJet1_probe_eta", "FatJet1_probe_eta", 100, -5, 5);
   TH1D *_FatJet1_probe_phi =
@@ -111,8 +206,8 @@ void histo_data(
   TH1D *_FatJet1_probe_MassSD =
       new TH1D("FatJet1_probe_MassSD", "FatJet1_probe_MassSD", 500, 0, 500);
   TH2D *_FatJet1_probe_Mass_Pt =
-      new TH2D("FatJet1_probe_Mass_Pt", "FatJet1_probe_Mass_Pt", num_m_bins,
-               bins_m, num_pt_bins, bins_pt);
+      new TH2D("FatJet1_probe_Mass_Pt", "FatJet1_probe_Mass_Pt", num_m_bins, bins_m, 
+               num_pt_bins, bins_pt);
   // probe FatJet 1 ParticleNet scores
   TH1D *_FatJet1_probe_PNet_QCD =
       new TH1D("FatJet1_probe_PNet_QCD", "FatJet1_probe_PNet_QCD", 100, 0, 1.0);
@@ -190,11 +285,11 @@ void histo_data(
   TH1D *_FatJet1_tag_MassSD =
       new TH1D("FatJet1_tag_MassSD", "FatJet1_tag_MassSD", 500, 0, 500);
   TH2D *_FatJet1_tag_Mass_Pt =
-      new TH2D("FatJet1_tag_Mass_Pt", "FatJet1_tag_Mass_Pt", num_m_bins, bins_m,
+      new TH2D("FatJet1_tag_Mass_Pt", "FatJet1_tag_Mass_Pt", num_m_bins, bins_m, 
                num_pt_bins, bins_pt);
   // tag FatJet 1 ParticleNet scores
   TH1D *_FatJet1_tag_PNet_QCD =
-      new TH1D("FatJet1_tag_PNet_QCD", "FatJet1_tag_PNet_QCD", 100, 0, 1.0);
+      new TH1D("FatJet1_tag_PNet_QCD", "FatJet1_tagPNet_QCD", 100, 0, 1.0);
   TH1D *_FatJet1_tag_PNet_QCD0HF = new TH1D(
       "FatJet1_tag_PNet_QCD0HF", "FatJet1_tag_PNet_QCD0HF", 100, 0, 1.0);
   TH1D *_FatJet1_tag_PNet_QCD1HF = new TH1D(
@@ -244,97 +339,18 @@ void histo_data(
       new TH1D("FatJet1_tag_GloParT_XbbVsQCD", "FatJet1_tag_GloParT_XbbVsQCD",
                100, 0, 1.0);
 
-  // "both" FatJet Kinematics (missing ones)
-  TH1D *_FatJet1_both_pt =
-      new TH1D("FatJet1_both_pt", "FatJet1_both_pt", 200, 0, 1000);
-  TH1D *_FatJet1_both_eta =
-      new TH1D("FatJet1_both_eta", "FatJet1_both_eta", 100, -5, 5);
-  TH1D *_FatJet1_both_phi =
-      new TH1D("FatJet1_both_phi", "FatJet1_both_phi", 100, -5, 5);
-  TH2D *_FatJet1_both_eta_phi = new TH2D(
-      "FatJet1_both_eta_phi", "FatJet1_both_eta_phi", 100, -5, 5, 100, -5, 5);
-  TH1D *_FatJet1_both_Mass =
-      new TH1D("FatJet1_both_Mass", "FatJet1_both_Mass", 500, 0, 500);
-  TH1D *_FatJet1_both_MassSD =
-      new TH1D("FatJet1_both_MassSD", "FatJet1_both_MassSD", 500, 0, 500);
-  TH2D *_FatJet1_both_Mass_Pt =
-      new TH2D("FatJet1_both_Mass_Pt", "FatJet1_both_Mass_Pt", num_m_bins,
-               bins_m, num_pt_bins, bins_pt);
-  // "both" FatJet 1 ParticleNet scores
-  TH1D *_FatJet1_both_PNet_QCD =
-      new TH1D("FatJet1_both_PNet_QCD", "FatJet1_both_PNet_QCD", 100, 0, 1.0);
-  TH1D *_FatJet1_both_PNet_QCD0HF = new TH1D(
-      "FatJet1_both_PNet_QCD0HF", "FatJet1_both_PNet_QCD0HF", 100, 0, 1.0);
-  TH1D *_FatJet1_both_PNet_QCD1HF = new TH1D(
-      "FatJet1_both_PNet_QCD1HF", "FatJet1_both_PNet_QCD1HF", 100, 0, 1.0);
-  TH1D *_FatJet1_both_PNet_QCD2HF = new TH1D(
-      "FatJet1_both_PNet_QCD2HF", "FatJet1_both_PNet_QCD2HF", 100, 0, 1.0);
-  TH1D *_FatJet1_both_PNet_XbbVsQCD = new TH1D(
-      "FatJet1_both_PNet_XbbVsQCD", "FatJet1_both_PNet_XbbVsQCD", 100, 0, 1.0);
-  TH1D *_FatJet1_both_PNet_XccVsQCD = new TH1D(
-      "FatJet1_both_PNet_XccVsQCD", "FatJet1_both_PNet_XccVsQCD", 100, 0, 1.0);
-  TH1D *_FatJet1_both_PNet_XggVsQCD = new TH1D(
-      "FatJet1_both_PNet_XggVsQCD", "FatJet1_both_PNet_XggVsQCD", 100, 0, 1.0);
-  TH1D *_FatJet1_both_PNet_XqqVsQCD = new TH1D(
-      "FatJet1_both_PNet_XqqVsQCD", "FatJet1_both_PNet_XqqVsQCD", 100, 0, 1.0);
-  // tag FatJet 1 ParticleNetLegacy scores
-  TH1D *_FatJet1_both_PNetLegacy_Xbb =
-      new TH1D("FatJet1_both_PNetLegacy_Xbb", "FatJet1_both_PNetLegacy_Xbb",
-               100, 0, 1.0);
-  TH1D *_FatJet1_both_PNetLegacy_Xcc =
-      new TH1D("FatJet1_both_PNetLegacy_Xcc", "FatJet1_both_PNetLegacy_Xcc",
-               100, 0, 1.0);
-  TH1D *_FatJet1_both_PNetLegacy_Xqq =
-      new TH1D("FatJet1_both_PNetLegacy_Xqq", "FatJet1_both_PNetLegacy_Xqq",
-               100, 0, 1.0);
-  TH1D *_FatJet1_both_PNetLegacy_QCD =
-      new TH1D("FatJet1_both_PNetLegacy_QCD", "FatJet1_both_PNetLegacy_QCD",
-               100, 0, 1.0);
-  TH1D *_FatJet1_both_PNetLegacy_QCDb =
-      new TH1D("FatJet1_both_PNetLegacy_QCDb", "FatJet1_both_PNetLegacy_QCDb",
-               100, 0, 1.0);
-  TH1D *_FatJet1_both_PNetLegacy_QCDbb =
-      new TH1D("FatJet1_both_PNetLegacy_QCDbb", "FatJet1_both_PNetLegacy_QCDbb",
-               100, 0, 1.0);
-  TH1D *_FatJet1_both_PNetLegacy_QCDothers =
-      new TH1D("FatJet1_both_PNetLegacy_QCDothers",
-               "FatJet1_both_PNetLegacy_QCDothers", 100, 0, 1.0);
-  // "both" FatJet 1 GloParT scores
-  TH1D *_FatJet1_both_GloParT_QCD0HF =
-      new TH1D("FatJet1_both_GloParT_QCD0HF", "FatJet1_both_GloParT_QCD0HF",
-               100, 0, 1.0);
-  TH1D *_FatJet1_both_GloParT_QCD1HF =
-      new TH1D("FatJet1_both_GloParT_QCD1HF", "FatJet1_both_GloParT_QCD1HF",
-               100, 0, 1.0);
-  TH1D *_FatJet1_both_GloParT_QCD2HF =
-      new TH1D("FatJet1_both_GloParT_QCD2HF", "FatJet1_both_GloParT_QCD2HF",
-               100, 0, 1.0);
-  TH1D *_FatJet1_both_GloParT_Xbb = new TH1D(
-      "FatJet1_both_GloParT_Xbb", "FatJet1_both_GloParT_Xbb", 100, 0, 1.0);
-  TH1D *_FatJet1_both_GloParT_Xcc = new TH1D(
-      "FatJet1_both_GloParT_Xcc", "FatJet1_both_GloParT_Xcc", 100, 0, 1.0);
-  TH1D *_FatJet1_both_GloParT_Xqq = new TH1D(
-      "FatJet1_both_GloParT_Xqq", "FatJet1_both_GloParT_Xqq", 100, 0, 1.0);
-  TH1D *_FatJet1_both_GloParT_XbbVsQCD =
-      new TH1D("FatJet1_both_GloParT_XbbVsQCD", "FatJet1_both_GloParT_XbbVsQCD",
-               100, 0, 1.0);
-
-  TH1D *_MET = new TH1D("MET", "MET", 100, 0, 500);
-  TH1D *_Lep1_Pt = new TH1D("Lep1_Pt", "Lep1_Pt", 150, 0, 300);
-  TH1D *_dR_LFJ = new TH1D("dR_LFJ", "dR_LFJ", 100, -1.0, 9.0);
-  TH1D *_dR_J1FJ = new TH1D("dR_J1FJ", "dR_J1FJ", 100, -1.0, 9.0);
-  TH1D *_dR_J2FJ = new TH1D("dR_J2FJ", "dR_J2FJ", 100, -1.0, 9.0);
-  TH1D *_dR_JmaxL = new TH1D("dR_JmaxL", "dR_JmaxL", 100, -1.0, 9.0);
-
   TFile *f1 = new TFile(sample_path.c_str());
 
+  TH1F *NEvents = (TH1F *)f1->Get("NEvents");
+  double SumGenWeights = NEvents->GetBinContent(1);
   TTree *InputTree = (TTree *)f1->Get("tree");
-  TH1F *NEvents = (TH1F *)f1->Get("nPU_True");
-  double Tot_Events = NEvents->GetEntries();
 
+  Float_t weight;
   UInt_t run;
   UInt_t lumi;
+  Float_t npu;
   Int_t isVBFtag;
+  Float_t rho;
 
   Bool_t HLT_Ele32_WPTight_Gsf;
   Bool_t HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40;
@@ -374,9 +390,6 @@ void histo_data(
   Float_t FatJet1_Mass;
   Float_t FatJet1_MassSD;
   Float_t FatJet1_rawFactor;
-  Int_t FatJet1_hadronFlavour;
-  Int_t FatJet1_nBHadrons;
-  Int_t FatJet1_nCHadrons;
   // Fatjet 1 ParticleNet scores
   Float_t FatJet1PNet_QCD;
   Float_t FatJet1PNet_QCD0HF;
@@ -405,18 +418,31 @@ void histo_data(
   Float_t FatJet1GloParT_massRes;
   Float_t FatJet1GloParT_massVis;
 
-  // tag FatJet 1 kinematics
+  // FatJet 2 kinematics
   Float_t FatJet2_pt;
   Float_t FatJet2_eta;
   Float_t FatJet2_phi;
   Float_t FatJet2_Mass;
   Float_t FatJet2_MassSD;
   Float_t FatJet2_rawFactor;
-  Int_t FatJet2_nBHadrons;
-  Int_t FatJet2_nCHadrons;
 
+  Float_t FatJet3_pt;
+  Float_t FatJet3_rawFactor;
+
+  Int_t nGenJet;
+  Float_t GenJet_eta[ARR_SIZE];
+  Float_t GenJet_phi[ARR_SIZE];
+  Float_t GenJet_pt[ARR_SIZE];
+  Int_t nGenJetAK8;
+  Float_t GenJetAK8_eta[ARR_SIZE];
+  Float_t GenJetAK8_phi[ARR_SIZE];
+  Float_t GenJetAK8_pt[ARR_SIZE];
+
+  InputTree->SetBranchAddress("weight", &weight);
   InputTree->SetBranchAddress("run", &run);
   InputTree->SetBranchAddress("lumi", &lumi);
+  InputTree->SetBranchAddress("npu", &npu);
+  InputTree->SetBranchAddress("rho", &rho);
   InputTree->SetBranchAddress("isVBFtag", &isVBFtag);
 
   InputTree->SetBranchAddress("HLT_Ele32_WPTight_Gsf", &HLT_Ele32_WPTight_Gsf);
@@ -464,9 +490,6 @@ void histo_data(
   InputTree->SetBranchAddress("fatJet1_mass", &FatJet1_Mass);
   InputTree->SetBranchAddress("fatJet1_msoftdrop", &FatJet1_MassSD);
   InputTree->SetBranchAddress("fatJet1_rawFactor", &FatJet1_rawFactor);
-  InputTree->SetBranchAddress("fatJet1_hadronFlavour", &FatJet1_hadronFlavour);
-  InputTree->SetBranchAddress("fatJet1_nBHadrons", &FatJet1_nBHadrons);
-  InputTree->SetBranchAddress("fatJet1_nCHadrons", &FatJet1_nCHadrons);
   // FatJet 1 ParticleNet scores
   InputTree->SetBranchAddress("fatJet1_particleNet_QCD", &FatJet1PNet_QCD);
   InputTree->SetBranchAddress("fatJet1_particleNet_QCD0HF",
@@ -498,7 +521,7 @@ void histo_data(
                               &FatJet1PNetLegacy_QCDbb);
   InputTree->SetBranchAddress("fatJet1_particleNetLegacy_QCDothers",
                               &FatJet1PNetLegacy_QCDothers);
-  // GloParT scores
+  // FatJet 1 GloParT scores
   InputTree->SetBranchAddress("fatJet1_globalParT_QCD0HF",
                               &FatJet1GloParT_QCD0HF);
   InputTree->SetBranchAddress("fatJet1_globalParT_QCD1HF",
@@ -522,8 +545,18 @@ void histo_data(
   InputTree->SetBranchAddress("fatJet2_mass", &FatJet2_Mass);
   InputTree->SetBranchAddress("fatJet2_msoftdrop", &FatJet2_MassSD);
   InputTree->SetBranchAddress("fatJet2_rawFactor", &FatJet2_rawFactor);
-  InputTree->SetBranchAddress("fatJet2_nBHadrons", &FatJet2_nBHadrons);
-  InputTree->SetBranchAddress("fatJet2_nCHadrons", &FatJet2_nCHadrons);
+
+  InputTree->SetBranchAddress("fatJet3_pt", &FatJet3_pt);
+  InputTree->SetBranchAddress("fatJet3_rawFactor", &FatJet3_rawFactor);
+
+  InputTree->SetBranchAddress("nGenJet", &nGenJet);
+  InputTree->SetBranchAddress("GenJet_eta", GenJet_eta);
+  InputTree->SetBranchAddress("GenJet_phi", GenJet_phi);
+  InputTree->SetBranchAddress("GenJet_pt", GenJet_pt);
+  InputTree->SetBranchAddress("nGenJetAK8", &nGenJetAK8);
+  InputTree->SetBranchAddress("GenJetAK8_eta", GenJetAK8_eta);
+  InputTree->SetBranchAddress("GenJetAK8_phi", GenJetAK8_phi);
+  InputTree->SetBranchAddress("GenJetAK8_pt", GenJetAK8_pt);
 
   // Trigger Objects
   TTree *InputTree_TrgObj = (TTree *)f1->Get("tree_TrgObj");
@@ -542,33 +575,25 @@ void histo_data(
   for (int i = 0; i < InputTree->GetEntries(); i++) {
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
+
     // HLT Selection
+    bool EGamma = (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11);
+    bool Muon = (HLT_IsoMu27 && fabs(lep1_Id) == 13);
     if (channel_lower == "egamma" or channel_lower == "electron") {
-      if (!(HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11)) {
+      if (!EGamma) {
         continue;
       }
     } else if (channel_lower == "muon") {
-      if (!(HLT_IsoMu27 && fabs(lep1_Id) == 13)) {
+      if (!Muon) {
+        continue;
+      }
+    } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
+      if (!EGamma && !Muon) {
         continue;
       }
     } else {
       throw std::invalid_argument("Invalid channel: " + channel);
     }
-
-    // JSON certification
-    bool Certified = false;
-    for (pair<int, vector<pair<int, int>>> Run_Lumi : Good_Lumis) {
-      if (Run_Lumi.first > run)
-        break;
-      if (Run_Lumi.first == run)
-        for (auto LumiBlok : Run_Lumi.second)
-          if (inRange(LumiBlok.first, LumiBlok.second, lumi)) {
-            Certified = true;
-            break;
-          }
-    }
-    if (!Certified)
-      continue;
 
     // FatJets correction and selection
     if (FatJet1_pt > 0) {
@@ -590,34 +615,81 @@ void histo_data(
       FatJet2_MassSD = FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * corr;
     }
 
-    if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
-      continue;
-
     /*
-    // VBFTag veto
-    if (isVBFtag) {
-        continue;
-    }
+       // Jet Smearing
+       double res_pt_1;
+       double res_pt_sf_1;
+       JME::JetParameters JerPARAM_1 = {{JME::Binning::JetPt, FatJet1_pt},
+    {JME::Binning::JetEta, FatJet1_eta},{JME::Binning::Rho, rho}};
+       JME::JetParameters JerSFPARAM_1;
+       JerSFPARAM_1.set(JME::Binning::JetPt,  FatJet1_pt);
+       JerSFPARAM_1.set(JME::Binning::JetEta, FatJet1_eta);
+       JerSFPARAM_1.set(JME::Binning::Rho, rho);
+       res_pt_1 = resolution_pt_AK8.getResolution(JerPARAM_1);
+       res_pt_sf_1 = resolution_pt_sf_AK8.getScaleFactor(JerSFPARAM_1);
+
+       double res_pt_2;
+       double res_pt_sf_2;
+       JME::JetParameters JerPARAM_2 = {{JME::Binning::JetPt, FatJet2_pt},
+    {JME::Binning::JetEta, FatJet2_eta},{JME::Binning::Rho, rho}};
+       JME::JetParameters JerSFPARAM_2;
+       JerSFPARAM_2.set(JME::Binning::JetPt,  FatJet2_pt);
+       JerSFPARAM_2.set(JME::Binning::JetEta, FatJet2_eta);
+       JerSFPARAM_2.set(JME::Binning::Rho, rho);
+       res_pt_2 = resolution_pt_AK8.getResolution(JerPARAM_2);
+       res_pt_sf_2 = resolution_pt_sf_AK8.getScaleFactor(JerSFPARAM_2);
+
+       double SmearFactor_1   = 1;
+       bool   GenJetMatched_1 = false;
+       double SmearFactor_2   = 1;
+       bool   GenJetMatched_2 = false;
+
+       for(int nGJAK8=0;nGJAK8<nGenJetAK8; nGJAK8++)
+         {
+           if(!GenJetMatched_1 &&  sqrt(pow(FatJet1_eta-GenJetAK8_eta[nGJAK8],2)
+    + pow(phi_dist(FatJet1_phi,GenJetAK8_phi[nGJAK8]),2)) < 0.2 &&
+    (fabs(FatJet1_pt - GenJetAK8_pt[nGJAK8])/FatJet1_pt < 3*res_pt_1) )
+             {
+               SmearFactor_1 = 1.0 + (res_pt_sf_1 - 1.0) * (FatJet1_pt -
+    GenJetAK8_pt[nGJAK8]) / FatJet1_pt; GenJetMatched_1 = true;
+             }
+           if(!GenJetMatched_2 &&  sqrt(pow(FatJet2_eta-GenJetAK8_eta[nGJAK8],2)
+    + pow(phi_dist(FatJet2_phi,GenJetAK8_phi[nGJAK8]),2)) < 0.2 &&
+    (fabs(FatJet2_pt - GenJetAK8_pt[nGJAK8])/FatJet2_pt < 3*res_pt_2) )
+             {
+               SmearFactor_2 = 1.0 + (res_pt_sf_2 - 1.0) * (FatJet2_pt -
+    GenJetAK8_pt[nGJAK8]) / FatJet2_pt; GenJetMatched_2 = true;
+             }
+         }
+
+    //     if(!GenJetMatched && res_pt_sf[nJ] > 1.0)
+    //       {
+    //        double sigma = res_pt[nJ] * sqrt(res_pt_sf[nJ]*res_pt_sf[nJ] - 1);
+    //        normal_distribution<> d(0, sigma);
+    //        SmearFactor = 1.0 + d(m_random_generator);
+    //       }
+
+         // Smear
+         FatJet1_pt     = FatJet1_pt * SmearFactor_1;
+         FatJet1_MassSD = FatJet1_MassSD * SmearFactor_1;
+         FatJet2_pt     = FatJet2_pt * SmearFactor_2;
+         FatJet2_MassSD = FatJet2_MassSD * SmearFactor_2;
     */
 
-    // Lepton selection or veto
+    // FatJets selection
     if (lep1_Pt < 50 || lep2_Pt > 30) {
       continue;
     }
-    if (FatJet2_pt > 200 && FatJet2_MassSD > 50) {
+    if (FatJet2_pt > 180 || FatJet1_pt < 160) {
       continue;
     }
-
-    double dR_LFJ = get_dR(lep1_Eta, lep1_Phi, FatJet1_eta, FatJet1_phi);
-    if (dR_LFJ < 1.5) {
+    if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0) {
       continue;
     }
     if (MET < 50) {
       continue;
     }
-    if (FatJet1_MassSD < 50) {
-      continue;
-    }
+
     double dR_J1FJ = -1;
     double dR_J1L = 10;
     if (Jet1_Pt > 40) {
@@ -640,7 +712,7 @@ void histo_data(
       dR_JmaxL = dR_J2L;
     }
 
-    if (dR_JFJ_Max < 1.5) {
+    if (dR_JFJ_Max < 0) {
       continue;
     }
     if (dR_J1L <= 0.4 || dR_J2L <= 0.4) {
@@ -650,9 +722,15 @@ void histo_data(
       continue;
     }
 
+    // VBFTag veto
+    //   if(isVBFtag) continue;
+
+    // Lepton Selection or Veto
+    //   if (fabs(lep1_Id) !=11 ) continue;
+
     // Trigger Objects and Matchings
-    // Matching 1st
-    bool matched_TRG_1 = false;
+    // Probe Matched
+    bool probe_match = false;
 
     bool matched_to_AK8PFJet230_SoftDropMass40 = false;
     for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
@@ -665,148 +743,92 @@ void histo_data(
         }
       }
 
-    if (matched_to_AK8PFJet230_SoftDropMass40)
-      matched_TRG_1 = true;
-
-    // Matching 2nd
-    bool matched_TRG_2 = false;
-    // if (HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06) {
-    //   matched_TRG_2=true;
-    // }
-    bool match_egamma = HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 11;
-    bool match_muon = HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 13;
-    if (channel_lower == "egamma") {
-      if (match_egamma) {
-        matched_TRG_2 = true;
-      }
-    } else if (channel_lower == "muon") {
-      if (match_muon) {
-        matched_TRG_2 = true;
-      }
-    } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
-      if (match_egamma || match_muon) {
-        matched_TRG_2 = true;
-      }
-    } else {
-      throw std::invalid_argument("Invalid channel: " + channel);
+    if (matched_to_AK8PFJet230_SoftDropMass40) {
+      probe_match = true;
     }
+
+    // weight
+    weight = (weight / SumGenWeights) * xsec * param_dict.Lumi;
+    double PU_weight = PU_Rew[(int)npu];
+    weight = weight * PU_weight;
 
     // Fill histograms
-    // kinematics
-    _FatJet1_probe_pt->Fill(FatJet1_pt);
-    _FatJet1_probe_eta->Fill(FatJet1_eta);
-    _FatJet1_probe_phi->Fill(FatJet1_phi);
-    _FatJet1_probe_eta_phi->Fill(FatJet1_eta, FatJet1_phi);
-    _FatJet1_probe_Mass->Fill(FatJet1_Mass);
-    _FatJet1_probe_MassSD->Fill(FatJet1_MassSD);
-    _FatJet1_probe_Mass_Pt->Fill(FatJet1_MassSD, FatJet1_pt);
+    // Kinematics
+    _FatJet1_probe_pt->Fill(FatJet1_pt, weight);
+    _FatJet1_probe_eta->Fill(FatJet1_eta, weight);
+    _FatJet1_probe_phi->Fill(FatJet1_phi, weight);
+    _FatJet1_probe_eta_phi->Fill(FatJet1_eta, FatJet1_phi, weight);
+    _FatJet1_probe_Mass->Fill(FatJet1_Mass, weight);
+    _FatJet1_probe_MassSD->Fill(FatJet1_MassSD, weight);
+    _FatJet1_probe_Mass_Pt->Fill(FatJet1_MassSD, FatJet1_pt, weight);
+
     // ParticleNet
-    _FatJet1_probe_PNet_QCD->Fill(FatJet1PNet_QCD);
-    _FatJet1_probe_PNet_QCD0HF->Fill(FatJet1PNet_QCD0HF);
-    _FatJet1_probe_PNet_QCD1HF->Fill(FatJet1PNet_QCD1HF);
-    _FatJet1_probe_PNet_QCD2HF->Fill(FatJet1PNet_QCD2HF);
-    _FatJet1_probe_PNet_XbbVsQCD->Fill(FatJet1PNet_XbbVsQCD);
-    _FatJet1_probe_PNet_XccVsQCD->Fill(FatJet1PNet_XccVsQCD);
-    _FatJet1_probe_PNet_XggVsQCD->Fill(FatJet1PNet_XggVsQCD);
-    _FatJet1_probe_PNet_XqqVsQCD->Fill(FatJet1PNet_XqqVsQCD);
+    _FatJet1_probe_PNet_QCD->Fill(FatJet1PNet_QCD, weight);
+    _FatJet1_probe_PNet_QCD0HF->Fill(FatJet1PNet_QCD0HF, weight);
+    _FatJet1_probe_PNet_QCD1HF->Fill(FatJet1PNet_QCD1HF, weight);
+    _FatJet1_probe_PNet_QCD2HF->Fill(FatJet1PNet_QCD2HF, weight);
+    _FatJet1_probe_PNet_XbbVsQCD->Fill(FatJet1PNet_XbbVsQCD, weight);
+    _FatJet1_probe_PNet_XccVsQCD->Fill(FatJet1PNet_XccVsQCD, weight);
+    _FatJet1_probe_PNet_XggVsQCD->Fill(FatJet1PNet_XggVsQCD, weight);
+    _FatJet1_probe_PNet_XqqVsQCD->Fill(FatJet1PNet_XqqVsQCD, weight);
     // ParticleNetLegacy
-    _FatJet1_probe_PNetLegacy_Xbb->Fill(FatJet1PNetLegacy_Xbb);
-    _FatJet1_probe_PNetLegacy_Xcc->Fill(FatJet1PNetLegacy_Xcc);
-    _FatJet1_probe_PNetLegacy_Xqq->Fill(FatJet1PNetLegacy_Xqq);
-    _FatJet1_probe_PNetLegacy_QCD->Fill(FatJet1PNetLegacy_QCD);
-    _FatJet1_probe_PNetLegacy_QCDb->Fill(FatJet1PNetLegacy_QCDb);
-    _FatJet1_probe_PNetLegacy_QCDbb->Fill(FatJet1PNetLegacy_QCDbb);
-    _FatJet1_probe_PNetLegacy_QCDothers->Fill(FatJet1PNetLegacy_QCDothers);
+    _FatJet1_probe_PNetLegacy_Xbb->Fill(FatJet1PNetLegacy_Xbb, weight);
+    _FatJet1_probe_PNetLegacy_Xcc->Fill(FatJet1PNetLegacy_Xcc, weight);
+    _FatJet1_probe_PNetLegacy_Xqq->Fill(FatJet1PNetLegacy_Xqq, weight);
+    _FatJet1_probe_PNetLegacy_QCD->Fill(FatJet1PNetLegacy_QCD, weight);
+    _FatJet1_probe_PNetLegacy_QCDb->Fill(FatJet1PNetLegacy_QCDb, weight);
+    _FatJet1_probe_PNetLegacy_QCDbb->Fill(FatJet1PNetLegacy_QCDbb, weight);
+    _FatJet1_probe_PNetLegacy_QCDothers->Fill(FatJet1PNetLegacy_QCDothers,
+                                              weight);
     // GloParT
-    _FatJet1_probe_GloParT_QCD0HF->Fill(FatJet1GloParT_QCD0HF);
-    _FatJet1_probe_GloParT_QCD1HF->Fill(FatJet1GloParT_QCD1HF);
-    _FatJet1_probe_GloParT_QCD2HF->Fill(FatJet1GloParT_QCD2HF);
-    _FatJet1_probe_GloParT_Xbb->Fill(FatJet1GloParT_Xbb);
-    _FatJet1_probe_GloParT_Xcc->Fill(FatJet1GloParT_Xcc);
-    _FatJet1_probe_GloParT_Xqq->Fill(FatJet1GloParT_Xqq);
-    _FatJet1_probe_GloParT_XbbVsQCD->Fill(FatJet1GloParT_XbbVsQCD);
+    _FatJet1_probe_GloParT_QCD0HF->Fill(FatJet1GloParT_QCD0HF, weight);
+    _FatJet1_probe_GloParT_QCD1HF->Fill(FatJet1GloParT_QCD1HF, weight);
+    _FatJet1_probe_GloParT_QCD2HF->Fill(FatJet1GloParT_QCD2HF, weight);
+    _FatJet1_probe_GloParT_Xbb->Fill(FatJet1GloParT_Xbb, weight);
+    _FatJet1_probe_GloParT_Xcc->Fill(FatJet1GloParT_Xcc, weight);
+    _FatJet1_probe_GloParT_Xqq->Fill(FatJet1GloParT_Xqq, weight);
+    _FatJet1_probe_GloParT_XbbVsQCD->Fill(FatJet1GloParT_XbbVsQCD, weight);
 
-    if (matched_TRG_2) {
-      // kinematics
-      _FatJet1_tag_pt->Fill(FatJet1_pt);
-      _FatJet1_tag_eta->Fill(FatJet1_eta);
-      _FatJet1_tag_phi->Fill(FatJet1_phi);
-      _FatJet1_tag_eta_phi->Fill(FatJet1_eta, FatJet1_phi);
-      _FatJet1_tag_Mass->Fill(FatJet1_Mass);
-      _FatJet1_tag_MassSD->Fill(FatJet1_MassSD);
-      _FatJet1_tag_Mass_Pt->Fill(FatJet1_MassSD, FatJet1_pt);
+    if (probe_match) {
+      // Kinematics
+      _FatJet1_tag_pt->Fill(FatJet1_pt, weight);
+      _FatJet1_tag_eta->Fill(FatJet1_eta, weight);
+      _FatJet1_tag_phi->Fill(FatJet1_phi, weight);
+      _FatJet1_tag_eta_phi->Fill(FatJet1_eta, FatJet1_phi, weight);
+      _FatJet1_tag_Mass->Fill(FatJet1_Mass, weight);
+      _FatJet1_tag_MassSD->Fill(FatJet1_MassSD, weight);
+      _FatJet1_tag_Mass_Pt->Fill(FatJet1_MassSD, FatJet1_pt, weight);
       // ParticleNet
-      _FatJet1_tag_PNet_QCD->Fill(FatJet1PNet_QCD);
-      _FatJet1_tag_PNet_QCD0HF->Fill(FatJet1PNet_QCD0HF);
-      _FatJet1_tag_PNet_QCD1HF->Fill(FatJet1PNet_QCD1HF);
-      _FatJet1_tag_PNet_QCD2HF->Fill(FatJet1PNet_QCD2HF);
-      _FatJet1_tag_PNet_XbbVsQCD->Fill(FatJet1PNet_XbbVsQCD);
-      _FatJet1_tag_PNet_XccVsQCD->Fill(FatJet1PNet_XccVsQCD);
-      _FatJet1_tag_PNet_XggVsQCD->Fill(FatJet1PNet_XggVsQCD);
-      _FatJet1_tag_PNet_XqqVsQCD->Fill(FatJet1PNet_XqqVsQCD);
+      _FatJet1_tag_PNet_QCD->Fill(FatJet1PNet_QCD, weight);
+      _FatJet1_tag_PNet_QCD0HF->Fill(FatJet1PNet_QCD0HF, weight);
+      _FatJet1_tag_PNet_QCD1HF->Fill(FatJet1PNet_QCD1HF, weight);
+      _FatJet1_tag_PNet_QCD2HF->Fill(FatJet1PNet_QCD2HF, weight);
+      _FatJet1_tag_PNet_XbbVsQCD->Fill(FatJet1PNet_XbbVsQCD, weight);
+      _FatJet1_tag_PNet_XccVsQCD->Fill(FatJet1PNet_XccVsQCD, weight);
+      _FatJet1_tag_PNet_XggVsQCD->Fill(FatJet1PNet_XggVsQCD, weight);
+      _FatJet1_tag_PNet_XqqVsQCD->Fill(FatJet1PNet_XqqVsQCD, weight);
       // ParticleNetLegacy
-      _FatJet1_tag_PNetLegacy_Xbb->Fill(FatJet1PNetLegacy_Xbb);
-      _FatJet1_tag_PNetLegacy_Xcc->Fill(FatJet1PNetLegacy_Xcc);
-      _FatJet1_tag_PNetLegacy_Xqq->Fill(FatJet1PNetLegacy_Xqq);
-      _FatJet1_tag_PNetLegacy_QCD->Fill(FatJet1PNetLegacy_QCD);
-      _FatJet1_tag_PNetLegacy_QCDb->Fill(FatJet1PNetLegacy_QCDb);
-      _FatJet1_tag_PNetLegacy_QCDbb->Fill(FatJet1PNetLegacy_QCDbb);
-      _FatJet1_tag_PNetLegacy_QCDothers->Fill(FatJet1PNetLegacy_QCDothers);
+      _FatJet1_tag_PNetLegacy_Xbb->Fill(FatJet1PNetLegacy_Xbb, weight);
+      _FatJet1_tag_PNetLegacy_Xcc->Fill(FatJet1PNetLegacy_Xcc, weight);
+      _FatJet1_tag_PNetLegacy_Xqq->Fill(FatJet1PNetLegacy_Xqq, weight);
+      _FatJet1_tag_PNetLegacy_QCD->Fill(FatJet1PNetLegacy_QCD, weight);
+      _FatJet1_tag_PNetLegacy_QCDb->Fill(FatJet1PNetLegacy_QCDb, weight);
+      _FatJet1_tag_PNetLegacy_QCDbb->Fill(FatJet1PNetLegacy_QCDbb, weight);
+      _FatJet1_tag_PNetLegacy_QCDothers->Fill(FatJet1PNetLegacy_QCDothers,
+                                              weight);
       // GloParT
-      _FatJet1_tag_GloParT_QCD0HF->Fill(FatJet1GloParT_QCD0HF);
-      _FatJet1_tag_GloParT_QCD1HF->Fill(FatJet1GloParT_QCD1HF);
-      _FatJet1_tag_GloParT_QCD2HF->Fill(FatJet1GloParT_QCD2HF);
-      _FatJet1_tag_GloParT_Xbb->Fill(FatJet1GloParT_Xbb);
-      _FatJet1_tag_GloParT_Xcc->Fill(FatJet1GloParT_Xcc);
-      _FatJet1_tag_GloParT_Xqq->Fill(FatJet1GloParT_Xqq);
-      _FatJet1_tag_GloParT_XbbVsQCD->Fill(FatJet1GloParT_XbbVsQCD);
+      _FatJet1_tag_GloParT_QCD0HF->Fill(FatJet1GloParT_QCD0HF, weight);
+      _FatJet1_tag_GloParT_QCD1HF->Fill(FatJet1GloParT_QCD1HF, weight);
+      _FatJet1_tag_GloParT_QCD2HF->Fill(FatJet1GloParT_QCD2HF, weight);
+      _FatJet1_tag_GloParT_Xbb->Fill(FatJet1GloParT_Xbb, weight);
+      _FatJet1_tag_GloParT_Xcc->Fill(FatJet1GloParT_Xcc, weight);
+      _FatJet1_tag_GloParT_Xqq->Fill(FatJet1GloParT_Xqq, weight);
+      _FatJet1_tag_GloParT_XbbVsQCD->Fill(FatJet1GloParT_XbbVsQCD, weight);
     }
-
-    if (matched_TRG_1 && matched_TRG_2) {
-      // kinematics
-      _FatJet1_both_pt->Fill(FatJet1_pt);
-      _FatJet1_both_eta->Fill(FatJet1_eta);
-      _FatJet1_both_phi->Fill(FatJet1_phi);
-      _FatJet1_both_eta_phi->Fill(FatJet1_eta, FatJet1_phi);
-      _FatJet1_both_Mass->Fill(FatJet1_Mass);
-      _FatJet1_both_MassSD->Fill(FatJet1_MassSD);
-      _FatJet1_both_Mass_Pt->Fill(FatJet1_MassSD, FatJet1_pt);
-      // ParticleNet
-      _FatJet1_both_PNet_QCD->Fill(FatJet1PNet_QCD);
-      _FatJet1_both_PNet_QCD0HF->Fill(FatJet1PNet_QCD0HF);
-      _FatJet1_both_PNet_QCD1HF->Fill(FatJet1PNet_QCD1HF);
-      _FatJet1_both_PNet_QCD2HF->Fill(FatJet1PNet_QCD2HF);
-      _FatJet1_both_PNet_XbbVsQCD->Fill(FatJet1PNet_XbbVsQCD);
-      _FatJet1_both_PNet_XccVsQCD->Fill(FatJet1PNet_XccVsQCD);
-      _FatJet1_both_PNet_XggVsQCD->Fill(FatJet1PNet_XggVsQCD);
-      _FatJet1_both_PNet_XqqVsQCD->Fill(FatJet1PNet_XqqVsQCD);
-      // ParticleNetLegacy
-      _FatJet1_both_PNetLegacy_Xbb->Fill(FatJet1PNetLegacy_Xbb);
-      _FatJet1_both_PNetLegacy_Xcc->Fill(FatJet1PNetLegacy_Xcc);
-      _FatJet1_both_PNetLegacy_Xqq->Fill(FatJet1PNetLegacy_Xqq);
-      _FatJet1_both_PNetLegacy_QCD->Fill(FatJet1PNetLegacy_QCD);
-      _FatJet1_both_PNetLegacy_QCDb->Fill(FatJet1PNetLegacy_QCDb);
-      _FatJet1_both_PNetLegacy_QCDbb->Fill(FatJet1PNetLegacy_QCDbb);
-      _FatJet1_both_PNetLegacy_QCDothers->Fill(FatJet1PNetLegacy_QCDothers);
-      // GloParT
-      _FatJet1_both_GloParT_QCD0HF->Fill(FatJet1GloParT_QCD0HF);
-      _FatJet1_both_GloParT_QCD1HF->Fill(FatJet1GloParT_QCD1HF);
-      _FatJet1_both_GloParT_QCD2HF->Fill(FatJet1GloParT_QCD2HF);
-      _FatJet1_both_GloParT_Xbb->Fill(FatJet1GloParT_Xbb);
-      _FatJet1_both_GloParT_Xcc->Fill(FatJet1GloParT_Xcc);
-      _FatJet1_both_GloParT_Xqq->Fill(FatJet1GloParT_Xqq);
-      _FatJet1_both_GloParT_XbbVsQCD->Fill(FatJet1GloParT_XbbVsQCD);
-    }
-
-    _MET->Fill(MET);
-    _Lep1_Pt->Fill(lep1_Pt);
-    _dR_LFJ->Fill(dR_LFJ);
-    _dR_J1FJ->Fill(dR_JFJ_Max);
-    _dR_J2FJ->Fill(dR_JFJ_Min);
-    _dR_JmaxL->Fill(dR_JmaxL);
 
   } // end event loop
 
   f->Write();
+
   std::cout << "Done. Written to " << output_path << std::endl;
 }
