@@ -12,27 +12,36 @@
 void set_histo_style(TH2D* hist, std::string plot_title, const std::string& x_axis_title, const std::string& y_axis_title) {
   hist->SetMarkerStyle(23);
   hist->SetTitle(plot_title.c_str());
-  // x axis
+  // x axis settings
   hist->GetXaxis()->SetTitle(x_axis_title.c_str());
   hist->GetXaxis()->SetLabelFont(42);
   hist->GetXaxis()->SetLabelOffset(0.02);
   hist->GetXaxis()->SetTitleSize(0.045);
   hist->GetXaxis()->SetTitleOffset(1.2);
   hist->GetXaxis()->SetTitleFont(42);
-  // hist->GetXaxis()->SetNdivisions(505);
-  // y axis
+  hist->GetXaxis()->SetMoreLogLabels(kTRUE); // Show more labels in log scale
+  hist->GetXaxis()->SetNoExponent(kTRUE);    // Don't use exponential notation
+  hist->GetXaxis()->SetNdivisions(510);      // primary:5, secondary:10
+  
+  // y axis settings
   hist->GetYaxis()->SetTitle(y_axis_title.c_str());
-  // hist->GetYaxis()->SetNdivisions(510);
   hist->GetYaxis()->SetLabelFont(42);
   hist->GetYaxis()->SetLabelSize(0.04);
   hist->GetYaxis()->SetLabelOffset(0.01);
-  hist->GetYaxis()->SetTitleOffset(1);
+  hist->GetYaxis()->SetTitleOffset(1.2);
   hist->GetYaxis()->SetTitleSize(0.045);
   hist->GetYaxis()->SetTitleFont(42);
+  hist->GetYaxis()->SetMoreLogLabels(kTRUE); // Show more labels in log scale
+  hist->GetYaxis()->SetNoExponent(kTRUE);    // Don't use exponential notation
+  hist->GetYaxis()->SetNdivisions(510);      // primary:5, secondary:10
+  
   // z axis
   hist->GetZaxis()->SetTitle("Efficiency");
 
-  hist->SetMaximum(1.0);
+  gPad->SetLogx(1);
+  gPad->SetLogy(1);
+
+  hist->SetMaximum(1.2);
   hist->SetMinimum(0.0);
 }
 
@@ -46,11 +55,21 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
   
-  Float_t bins_m[13] = {0,   20,  40,  60,  80,  100, 120,
-                        140, 160, 180, 200, 220, 240};
-  int num_m_bins = 12;
-  Float_t bins_pt[10] = {250, 300, 350, 400, 450, 500, 550, 600, 650, 700};
-  int num_pt_bins = 9;
+  // Float_t bins_m[13] = {0,   20,  40,  60,  80,  100, 120,
+  //                       140, 160, 180, 200, 220, 240};
+  // int num_m_bins = 12;
+  // Float_t bins_pt[10] = {250, 300, 350, 400, 450, 500, 550, 600, 650, 700};
+  // int num_pt_bins = 9;
+  // Float_t bins_pt[9] = {300, 350, 400, 450, 500, 600, 700, 850, 1000};
+  // int num_pt_bins = 8;
+  // Float_t bins_m[8] = {60, 90, 120, 150, 180, 210, 240, 300};
+  // int num_m_bins = 7;
+  Float_t bins_pt[9] = {300, 350, 400, 450, 500, 600, 700, 850, 1000};
+  int num_pt_bins = 8;
+
+  Float_t bins_m[8] = {60, 90, 120, 150, 180, 210, 240, 300};
+  int num_m_bins = 7;
+
   TH2D *_eff_data = new TH2D("Eff_Data", "Eff_Data", num_m_bins, bins_m, num_pt_bins, bins_pt);
   TH2D *_eff_mc = new TH2D("Eff_MC", "Eff_MC", num_m_bins, bins_m, num_pt_bins, bins_pt);
 
@@ -82,6 +101,8 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
     c->SetBottomMargin(0.2);
     c->SetLeftMargin(0.15);
     c->SetRightMargin(0.15);
+    c->SetLogx(1);
+    c->SetLogy(1);
 }
 
   TFile *fData = new TFile(hist_data_path.c_str());
@@ -113,18 +134,14 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   std::string x_axis_title = "FatJet m_{SD} [GeV]";
   std::string y_axis_title = "FatJet p_{T} [GeV]";
   set_histo_style(_data_probe, plot_title, x_axis_title, y_axis_title);
-  _data_probe->SetMaximum(1.2);
-  _data_probe->SetMinimum(0.0);
   c1->cd();
-  _data_probe->Draw("colz text");
+  _data_probe->Draw("colz text e");
   c1->SaveAs(figure_data_path.c_str());
 
   // Draw MC
   set_histo_style(_mc_probe, plot_title, x_axis_title, y_axis_title);
-  _mc_probe->SetMaximum(1.2);
-  _mc_probe->SetMinimum(0.0);
   c2->cd();
-  _mc_probe->Draw("colz text");
+  _mc_probe->Draw("colz text e");
   c2->SaveAs(figure_mc_path.c_str());
 
 

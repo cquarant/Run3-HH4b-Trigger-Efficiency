@@ -172,10 +172,11 @@ void histo_mc(
     const std::string &sample_path, // path to the root file
     const std::string &output_path, // path to the output root file
     const std::string &pu_path,     // path to the pileup reweighting file
-    const std::string &sf_path,     // path to the PT-Mass-SFs root file (not needed for this method)
-    const std::string &param_path,  // path to the parameters file
-    const std::string &jec_path_ak4,// path to the AK4 JEC txt file
-    const std::string &jec_path_ak8 // path to the AK8 JEC txt file
+    const std::string &sf_path, // path to the PT-Mass-SFs root file (not needed
+                                // for this method)
+    const std::string &param_path,   // path to the parameters file
+    const std::string &jec_path_ak4, // path to the AK4 JEC txt file
+    const std::string &jec_path_ak8  // path to the AK8 JEC txt file
 ) {
   gSystem->Load("libFWCoreFWLite.so");
 
@@ -208,11 +209,16 @@ void histo_mc(
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
-  Float_t bins_m[13] = {0,   20,  40,  60,  80,  100, 120,
-                        140, 160, 180, 200, 220, 240};
-  int num_m_bins = 12;
-  Float_t bins_pt[11] = {250, 275, 300, 325, 350, 375, 400, 450, 500, 600, 700};
-  int num_pt_bins = 10;
+  // Float_t bins_m[13] = {0,   20,  40,  60,  80,  100, 120,
+  //                       140, 160, 180, 200, 220, 240};
+  // int num_m_bins = 12;
+  // Float_t bins_pt[11] = {250, 275, 300, 325, 350, 375, 400, 450, 500, 600,
+  // 700}; int num_pt_bins = 10;
+  Float_t bins_pt[9] = {300, 350, 400, 450, 500, 600, 700, 850, 1000};
+  int num_pt_bins = 8;
+
+  Float_t bins_m[8] = {60, 90, 120, 150, 180, 210, 240, 300};
+  int num_m_bins = 7;
 
   // tag FatJet 1 kinematics
   TH1D *_FatJet1_tag_pt =
@@ -228,7 +234,7 @@ void histo_mc(
   TH1D *_FatJet1_tag_MassSD =
       new TH1D("FatJet1_tag_MassSD", "FatJet1_tag_MassSD", 500, 0, 500);
   TH2D *_FatJet1_tag_Mass_Pt =
-      new TH2D("FatJet1_tag_Mass_Pt", "FatJet1_tag_Mass_Pt", num_m_bins, bins_m, 
+      new TH2D("FatJet1_tag_Mass_Pt", "FatJet1_tag_Mass_Pt", num_m_bins, bins_m,
                num_pt_bins, bins_pt);
   // tag FatJet 1 ParticleNet scores
   TH1D *_FatJet1_tag_PNet_QCD =
@@ -239,50 +245,39 @@ void histo_mc(
       "FatJet1_tag_PNet_QCD1HF", "FatJet1_tag_PNet_QCD1HF", 100, 0, 1.0);
   TH1D *_FatJet1_tag_PNet_QCD2HF = new TH1D(
       "FatJet1_tag_PNet_QCD2HF", "FatJet1_tag_PNet_QCD2HF", 100, 0, 1.0);
-  TH1D *_FatJet1_tag_PNet_XbbVsQCD =
-      new TH1D("FatJet1_tag_PNet_XbbVsQCD", "FatJet1_tag_PNet_XbbVsQCD",
-               100, 0, 1.0);
-  TH1D *_FatJet1_tag_PNet_XccVsQCD =
-      new TH1D("FatJet1_tag_PNet_XccVsQCD", "FatJet1_tag_PNet_XccVsQCD",
-               100, 0, 1.0);
-  TH1D *_FatJet1_tag_PNet_XggVsQCD =
-      new TH1D("FatJet1_tag_PNet_XggVsQCD", "FatJet1_tag_PNet_XggVsQCD",
-               100, 0, 1.0);
-  TH1D *_FatJet1_tag_PNet_XqqVsQCD =
-      new TH1D("FatJet1_tag_PNet_XqqVsQCD", "FatJet1_tag_PNet_XqqVsQCD",
-               100, 0, 1.0);
+  TH1D *_FatJet1_tag_PNet_XbbVsQCD = new TH1D(
+      "FatJet1_tag_PNet_XbbVsQCD", "FatJet1_tag_PNet_XbbVsQCD", 100, 0, 1.0);
+  TH1D *_FatJet1_tag_PNet_XccVsQCD = new TH1D(
+      "FatJet1_tag_PNet_XccVsQCD", "FatJet1_tag_PNet_XccVsQCD", 100, 0, 1.0);
+  TH1D *_FatJet1_tag_PNet_XggVsQCD = new TH1D(
+      "FatJet1_tag_PNet_XggVsQCD", "FatJet1_tag_PNet_XggVsQCD", 100, 0, 1.0);
+  TH1D *_FatJet1_tag_PNet_XqqVsQCD = new TH1D(
+      "FatJet1_tag_PNet_XqqVsQCD", "FatJet1_tag_PNet_XqqVsQCD", 100, 0, 1.0);
   // tag FatJet 1 ParticleNetLegacy scores
-  TH1D *_FatJet1_tag_PNetLegacy_Xbb =
-      new TH1D("FatJet1_tag_PNetLegacy_Xbb", "FatJet1_tag_PNetLegacy_Xbb",
-               100, 0, 1.0);
-  TH1D *_FatJet1_tag_PNetLegacy_Xcc =
-      new TH1D("FatJet1_tag_PNetLegacy_Xcc", "FatJet1_tag_PNetLegacy_Xcc",
-               100, 0, 1.0);
-  TH1D *_FatJet1_tag_PNetLegacy_Xqq =
-      new TH1D("FatJet1_tag_PNetLegacy_Xqq", "FatJet1_tag_PNetLegacy_Xqq",
-               100, 0, 1.0);
-  TH1D *_FatJet1_tag_PNetLegacy_QCD =
-      new TH1D("FatJet1_tag_PNetLegacy_QCD", "FatJet1_tag_PNetLegacy_QCD",
-               100, 0, 1.0);
+  TH1D *_FatJet1_tag_PNetLegacy_Xbb = new TH1D(
+      "FatJet1_tag_PNetLegacy_Xbb", "FatJet1_tag_PNetLegacy_Xbb", 100, 0, 1.0);
+  TH1D *_FatJet1_tag_PNetLegacy_Xcc = new TH1D(
+      "FatJet1_tag_PNetLegacy_Xcc", "FatJet1_tag_PNetLegacy_Xcc", 100, 0, 1.0);
+  TH1D *_FatJet1_tag_PNetLegacy_Xqq = new TH1D(
+      "FatJet1_tag_PNetLegacy_Xqq", "FatJet1_tag_PNetLegacy_Xqq", 100, 0, 1.0);
+  TH1D *_FatJet1_tag_PNetLegacy_QCD = new TH1D(
+      "FatJet1_tag_PNetLegacy_QCD", "FatJet1_tag_PNetLegacy_QCD", 100, 0, 1.0);
   TH1D *_FatJet1_tag_PNetLegacy_QCDb =
       new TH1D("FatJet1_tag_PNetLegacy_QCDb", "FatJet1_tag_PNetLegacy_QCDb",
                100, 0, 1.0);
   TH1D *_FatJet1_tag_PNetLegacy_QCDbb =
-      new TH1D("FatJet1_tag_PNetLegacy_QCDbb",
-               "FatJet1_tag_PNetLegacy_QCDbb", 100, 0, 1.0);
+      new TH1D("FatJet1_tag_PNetLegacy_QCDbb", "FatJet1_tag_PNetLegacy_QCDbb",
+               100, 0, 1.0);
   TH1D *_FatJet1_tag_PNetLegacy_QCDothers =
       new TH1D("FatJet1_tag_PNetLegacy_QCDothers",
                "FatJet1_tag_PNetLegacy_QCDothers", 100, 0, 1.0);
   // tag FatJet 1 GloParT scores
-  TH1D *_FatJet1_tag_GloParT_QCD0HF =
-      new TH1D("FatJet1_tag_GloParT_QCD0HF", "FatJet1_tag_GloParT_QCD0HF",
-               100, 0, 1.0);
-  TH1D *_FatJet1_tag_GloParT_QCD1HF =
-      new TH1D("FatJet1_tag_GloParT_QCD1HF", "FatJet1_tag_GloParT_QCD1HF",
-               100, 0, 1.0);
-  TH1D *_FatJet1_tag_GloParT_QCD2HF =
-      new TH1D("FatJet1_tag_GloParT_QCD2HF", "FatJet1_tag_GloParT_QCD2HF",
-               100, 0, 1.0);
+  TH1D *_FatJet1_tag_GloParT_QCD0HF = new TH1D(
+      "FatJet1_tag_GloParT_QCD0HF", "FatJet1_tag_GloParT_QCD0HF", 100, 0, 1.0);
+  TH1D *_FatJet1_tag_GloParT_QCD1HF = new TH1D(
+      "FatJet1_tag_GloParT_QCD1HF", "FatJet1_tag_GloParT_QCD1HF", 100, 0, 1.0);
+  TH1D *_FatJet1_tag_GloParT_QCD2HF = new TH1D(
+      "FatJet1_tag_GloParT_QCD2HF", "FatJet1_tag_GloParT_QCD2HF", 100, 0, 1.0);
   TH1D *_FatJet1_tag_GloParT_Xbb = new TH1D(
       "FatJet1_tag_GloParT_Xbb", "FatJet1_tag_GloParT_Xbb", 100, 0, 1.0);
   TH1D *_FatJet1_tag_GloParT_Xcc = new TH1D(
@@ -290,8 +285,8 @@ void histo_mc(
   TH1D *_FatJet1_tag_GloParT_Xqq = new TH1D(
       "FatJet1_tag_GloParT_Xqq", "FatJet1_tag_GloParT_Xqq", 100, 0, 1.0);
   TH1D *_FatJet1_tag_GloParT_XbbVsQCD =
-      new TH1D("FatJet1_tag_GloParT_XbbVsQCD",
-               "FatJet1_tag_GloParT_XbbVsQCD", 100, 0, 1.0);
+      new TH1D("FatJet1_tag_GloParT_XbbVsQCD", "FatJet1_tag_GloParT_XbbVsQCD",
+               100, 0, 1.0);
 
   // probe FatJet 1 kinematics
   TH1D *_FatJet1_probe_pt =
@@ -307,8 +302,8 @@ void histo_mc(
   TH1D *_FatJet1_probe_MassSD =
       new TH1D("FatJet1_probe_MassSD", "FatJet1_probe_MassSD", 500, 0, 500);
   TH2D *_FatJet1_probe_Mass_Pt =
-      new TH2D("FatJet1_probe_Mass_Pt", "FatJet1_probe_Mass_Pt", num_m_bins, bins_m, 
-               num_pt_bins, bins_pt);
+      new TH2D("FatJet1_probe_Mass_Pt", "FatJet1_probe_Mass_Pt", num_m_bins,
+               bins_m, num_pt_bins, bins_pt);
   // probe FatJet 1 ParticleNet scores
   TH1D *_FatJet1_probe_PNet_QCD =
       new TH1D("FatJet1_probe_PNet_QCD", "FatJet1_probePNet_QCD", 100, 0, 1.0);
@@ -318,39 +313,50 @@ void histo_mc(
       "FatJet1_probe_PNet_QCD1HF", "FatJet1_probe_PNet_QCD1HF", 100, 0, 1.0);
   TH1D *_FatJet1_probe_PNet_QCD2HF = new TH1D(
       "FatJet1_probe_PNet_QCD2HF", "FatJet1_probe_PNet_QCD2HF", 100, 0, 1.0);
-  TH1D *_FatJet1_probe_PNet_XbbVsQCD = new TH1D(
-      "FatJet1_probe_PNet_XbbVsQCD", "FatJet1_probe_PNet_XbbVsQCD", 100, 0, 1.0);
-  TH1D *_FatJet1_probe_PNet_XccVsQCD = new TH1D(
-      "FatJet1_probe_PNet_XccVsQCD", "FatJet1_probe_PNet_XccVsQCD", 100, 0, 1.0);
-  TH1D *_FatJet1_probe_PNet_XggVsQCD = new TH1D(
-      "FatJet1_probe_PNet_XggVsQCD", "FatJet1_probe_PNet_XggVsQCD", 100, 0, 1.0);
-  TH1D *_FatJet1_probe_PNet_XqqVsQCD = new TH1D(
-      "FatJet1_probe_PNet_XqqVsQCD", "FatJet1_probe_PNet_XqqVsQCD", 100, 0, 1.0);
+  TH1D *_FatJet1_probe_PNet_XbbVsQCD =
+      new TH1D("FatJet1_probe_PNet_XbbVsQCD", "FatJet1_probe_PNet_XbbVsQCD",
+               100, 0, 1.0);
+  TH1D *_FatJet1_probe_PNet_XccVsQCD =
+      new TH1D("FatJet1_probe_PNet_XccVsQCD", "FatJet1_probe_PNet_XccVsQCD",
+               100, 0, 1.0);
+  TH1D *_FatJet1_probe_PNet_XggVsQCD =
+      new TH1D("FatJet1_probe_PNet_XggVsQCD", "FatJet1_probe_PNet_XggVsQCD",
+               100, 0, 1.0);
+  TH1D *_FatJet1_probe_PNet_XqqVsQCD =
+      new TH1D("FatJet1_probe_PNet_XqqVsQCD", "FatJet1_probe_PNet_XqqVsQCD",
+               100, 0, 1.0);
   // probe FatJet 1 ParticleNetLegacy scores
-  TH1D *_FatJet1_probe_PNetLegacy_Xbb = new TH1D(
-      "FatJet1_probe_PNetLegacy_Xbb", "FatJet1_probe_PNetLegacy_Xbb", 100, 0, 1.0);
-  TH1D *_FatJet1_probe_PNetLegacy_Xcc = new TH1D(
-      "FatJet1_probe_PNetLegacy_Xcc", "FatJet1_probe_PNetLegacy_Xcc", 100, 0, 1.0);
-  TH1D *_FatJet1_probe_PNetLegacy_Xqq = new TH1D(
-      "FatJet1_probe_PNetLegacy_Xqq", "FatJet1_probe_PNetLegacy_Xqq", 100, 0, 1.0);
-  TH1D *_FatJet1_probe_PNetLegacy_QCD = new TH1D(
-      "FatJet1_probe_PNetLegacy_QCD", "FatJet1_probe_PNetLegacy_QCD", 100, 0, 1.0);
+  TH1D *_FatJet1_probe_PNetLegacy_Xbb =
+      new TH1D("FatJet1_probe_PNetLegacy_Xbb", "FatJet1_probe_PNetLegacy_Xbb",
+               100, 0, 1.0);
+  TH1D *_FatJet1_probe_PNetLegacy_Xcc =
+      new TH1D("FatJet1_probe_PNetLegacy_Xcc", "FatJet1_probe_PNetLegacy_Xcc",
+               100, 0, 1.0);
+  TH1D *_FatJet1_probe_PNetLegacy_Xqq =
+      new TH1D("FatJet1_probe_PNetLegacy_Xqq", "FatJet1_probe_PNetLegacy_Xqq",
+               100, 0, 1.0);
+  TH1D *_FatJet1_probe_PNetLegacy_QCD =
+      new TH1D("FatJet1_probe_PNetLegacy_QCD", "FatJet1_probe_PNetLegacy_QCD",
+               100, 0, 1.0);
   TH1D *_FatJet1_probe_PNetLegacy_QCDb =
       new TH1D("FatJet1_probe_PNetLegacy_QCDb", "FatJet1_probe_PNetLegacy_QCDb",
                100, 0, 1.0);
   TH1D *_FatJet1_probe_PNetLegacy_QCDbb =
-      new TH1D("FatJet1_probe_PNetLegacy_QCDbb", "FatJet1_probe_PNetLegacy_QCDbb",
-               100, 0, 1.0);
+      new TH1D("FatJet1_probe_PNetLegacy_QCDbb",
+               "FatJet1_probe_PNetLegacy_QCDbb", 100, 0, 1.0);
   TH1D *_FatJet1_probe_PNetLegacy_QCDothers =
       new TH1D("FatJet1_probe_PNetLegacy_QCDothers",
                "FatJet1_probe_PNetLegacy_QCDothers", 100, 0, 1.0);
   // probe FatJet 1 GloParT scores
-  TH1D *_FatJet1_probe_GloParT_QCD0HF = new TH1D(
-      "FatJet1_probe_GloParT_QCD0HF", "FatJet1_probe_GloParT_QCD0HF", 100, 0, 1.0);
-  TH1D *_FatJet1_probe_GloParT_QCD1HF = new TH1D(
-      "FatJet1_probe_GloParT_QCD1HF", "FatJet1_probe_GloParT_QCD1HF", 100, 0, 1.0);
-  TH1D *_FatJet1_probe_GloParT_QCD2HF = new TH1D(
-      "FatJet1_probe_GloParT_QCD2HF", "FatJet1_probe_GloParT_QCD2HF", 100, 0, 1.0);
+  TH1D *_FatJet1_probe_GloParT_QCD0HF =
+      new TH1D("FatJet1_probe_GloParT_QCD0HF", "FatJet1_probe_GloParT_QCD0HF",
+               100, 0, 1.0);
+  TH1D *_FatJet1_probe_GloParT_QCD1HF =
+      new TH1D("FatJet1_probe_GloParT_QCD1HF", "FatJet1_probe_GloParT_QCD1HF",
+               100, 0, 1.0);
+  TH1D *_FatJet1_probe_GloParT_QCD2HF =
+      new TH1D("FatJet1_probe_GloParT_QCD2HF", "FatJet1_probe_GloParT_QCD2HF",
+               100, 0, 1.0);
   TH1D *_FatJet1_probe_GloParT_Xbb = new TH1D(
       "FatJet1_probe_GloParT_Xbb", "FatJet1_probe_GloParT_Xbb", 100, 0, 1.0);
   TH1D *_FatJet1_probe_GloParT_Xcc = new TH1D(
@@ -358,8 +364,8 @@ void histo_mc(
   TH1D *_FatJet1_probe_GloParT_Xqq = new TH1D(
       "FatJet1_probe_GloParT_Xqq", "FatJet1_probe_GloParT_Xqq", 100, 0, 1.0);
   TH1D *_FatJet1_probe_GloParT_XbbVsQCD =
-      new TH1D("FatJet1_probe_GloParT_XbbVsQCD", "FatJet1_probe_GloParT_XbbVsQCD",
-               100, 0, 1.0);
+      new TH1D("FatJet1_probe_GloParT_XbbVsQCD",
+               "FatJet1_probe_GloParT_XbbVsQCD", 100, 0, 1.0);
 
   TFile *f1 = new TFile(sample_path.c_str());
 
@@ -642,65 +648,112 @@ void histo_mc(
     }
 
     // FatJets selection
-    if (lep1_Pt <= 50 || fabs(lep1_Eta) >= 2.4) {
-      continue;
-    }
-    if (FatJet1_pt <= 160 || fabs(FatJet1_eta) >= 2.5) {
-      continue;
-    }
-    if (phi_dist(FatJet1_phi, lep1_Phi) <= 2.0) {
-      continue;
-    }
-    if (FatJet2_pt > 160) {
-      continue;
-    }
-    if (lep2_Pt > 30) {
-      continue;
-    }
-    if (MET <= 50) {
-      continue;
-    }
+    bool probe_match = false;
+    if (channel_lower == "jetmet" or channel_lower == "qcd") {
+      // FatJets selection
+      if (FatJet1_pt <= 300 || fabs(FatJet1_eta) >= 2.5 ||
+          FatJet1_MassSD <= 80) {
+        continue;
+      }
+      if (FatJet2_pt <= 160 || fabs(FatJet2_eta) >= 2.5) {
+        continue;
+      }
+      if (phi_dist(FatJet1_phi, FatJet2_phi) <= 2.5) {
+        continue;
+      }
+      if (FatJet3_pt > 160) {
+        continue;
+      }
 
-    bool has_valid_tagged_AK4Jet = false;
-    if (Jet1_Pt > 40 && fabs(Jet1_Eta) < 2.4) {
+      // Trigger objects and matchings
+      bool tag_match = false;
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+        if ((Trigger_Object_bit[itrg] & 4) == 4) {
+          double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
+                             Trigger_Object_phi[itrg]);
+          if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
+            tag_match = true;
+            break;
+          }
+        }
+      if (!tag_match)
+        continue;
+
+      // Probe Matched
+      bool matched_to_AK8PFJet230_SoftDropMass40 = false;
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+        if ((Trigger_Object_bit[itrg] & 4) == 4) {
+          double dR = get_dR(FatJet2_eta, FatJet2_phi, Trigger_Object_eta[itrg],
+                             Trigger_Object_phi[itrg]);
+          if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
+            matched_to_AK8PFJet230_SoftDropMass40 = true;
+            break;
+          }
+        }
+
+      if (matched_to_AK8PFJet230_SoftDropMass40) {
+        probe_match = true;
+      }
+    } else {
+      // EGamma, Muon, Lepton (EGamma + Muon)
+      if (lep1_Pt <= 50 || fabs(lep1_Eta) >= 2.4) {
+        continue;
+      }
+      if (FatJet1_pt <= 160 || fabs(FatJet1_eta) >= 2.5) {
+        continue;
+      }
+      if (phi_dist(FatJet1_phi, lep1_Phi) <= 2.0) {
+        continue;
+      }
+      if (FatJet2_pt > 160) {
+        continue;
+      }
+      if (lep2_Pt > 30) {
+        continue;
+      }
+      if (MET <= 50) {
+        continue;
+      }
+
+      bool has_valid_tagged_AK4Jet = false;
+      if (Jet1_Pt > 40 && fabs(Jet1_Eta) < 2.4) {
         double dR_J1_FJ = get_dR(Jet1_Eta, Jet1_Phi, FatJet1_eta, FatJet1_phi);
         double dR_J1_L = get_dR(Jet1_Eta, Jet1_Phi, lep1_Eta, lep1_Phi);
-        
+
         if (dR_J1_FJ > 1.5 && dR_J1_L > 0.5) {
-            has_valid_tagged_AK4Jet = true;
-        }
-    }
-
-    if (!has_valid_tagged_AK4Jet && Jet2_Pt > 40 && fabs(Jet2_Eta) < 2.4) { 
-        double dR_J2_FJ = get_dR(Jet2_Eta, Jet2_Phi, FatJet1_eta, FatJet1_phi);
-        double dR_J2_L = get_dR(Jet2_Eta, Jet2_Phi, lep1_Eta, lep1_Phi);
-        
-        if (dR_J2_FJ > 1.5 && dR_J2_L > 0.5) {
-            has_valid_tagged_AK4Jet = true;
-        }
-    }
-
-    if (!has_valid_tagged_AK4Jet) {
-        continue;
-    }
-
-    // Trigger Objects and Matchings
-    // tag Matched
-    bool probe_match = false;
-
-    bool matched_to_AK8PFJet230_SoftDropMass40 = false;
-    for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
-      if ((Trigger_Object_bit[itrg] & 4) == 4) {
-        double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
-                           Trigger_Object_phi[itrg]);
-        if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
-          matched_to_AK8PFJet230_SoftDropMass40 = true;
-          break;
+          has_valid_tagged_AK4Jet = true;
         }
       }
 
-    if (matched_to_AK8PFJet230_SoftDropMass40) {
-      probe_match = true;
+      if (!has_valid_tagged_AK4Jet && Jet2_Pt > 40 && fabs(Jet2_Eta) < 2.4) {
+        double dR_J2_FJ = get_dR(Jet2_Eta, Jet2_Phi, FatJet1_eta, FatJet1_phi);
+        double dR_J2_L = get_dR(Jet2_Eta, Jet2_Phi, lep1_Eta, lep1_Phi);
+
+        if (dR_J2_FJ > 1.5 && dR_J2_L > 0.5) {
+          has_valid_tagged_AK4Jet = true;
+        }
+      }
+
+      if (!has_valid_tagged_AK4Jet) {
+        continue;
+      }
+
+      // Trigger Objects and Matchings
+      // tag Matched
+      bool matched_to_AK8PFJet230_SoftDropMass40 = false;
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+        if ((Trigger_Object_bit[itrg] & 4) == 4) {
+          double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
+                             Trigger_Object_phi[itrg]);
+          if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
+            matched_to_AK8PFJet230_SoftDropMass40 = true;
+            break;
+          }
+        }
+
+      if (matched_to_AK8PFJet230_SoftDropMass40) {
+        probe_match = true;
+      }
     }
 
     // weight
@@ -735,7 +788,7 @@ void histo_mc(
     _FatJet1_tag_PNetLegacy_QCDb->Fill(FatJet1PNetLegacy_QCDb, weight);
     _FatJet1_tag_PNetLegacy_QCDbb->Fill(FatJet1PNetLegacy_QCDbb, weight);
     _FatJet1_tag_PNetLegacy_QCDothers->Fill(FatJet1PNetLegacy_QCDothers,
-                                              weight);
+                                            weight);
     // GloParT
     _FatJet1_tag_GloParT_QCD0HF->Fill(FatJet1GloParT_QCD0HF, weight);
     _FatJet1_tag_GloParT_QCD1HF->Fill(FatJet1GloParT_QCD1HF, weight);
@@ -771,7 +824,7 @@ void histo_mc(
       _FatJet1_probe_PNetLegacy_QCDb->Fill(FatJet1PNetLegacy_QCDb, weight);
       _FatJet1_probe_PNetLegacy_QCDbb->Fill(FatJet1PNetLegacy_QCDbb, weight);
       _FatJet1_probe_PNetLegacy_QCDothers->Fill(FatJet1PNetLegacy_QCDothers,
-                                              weight);
+                                                weight);
       // GloParT
       _FatJet1_probe_GloParT_QCD0HF->Fill(FatJet1GloParT_QCD0HF, weight);
       _FatJet1_probe_GloParT_QCD1HF->Fill(FatJet1GloParT_QCD1HF, weight);
