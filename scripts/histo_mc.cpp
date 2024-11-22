@@ -23,10 +23,27 @@
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 
 #define ARR_SIZE 10000
+#define MATH_PI 3.14159265358979323846
+#define MATH_2PI 6.28318530717958647692
 
 std::string to_lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(), ::tolower);
   return str;
+}
+
+// D-phi
+double phi_dist(double a, double b) {
+  double dphi = fabs(a - b);
+  if (dphi > MATH_PI) {
+    return MATH_2PI - dphi;
+  }
+  return dphi;
+}
+
+double get_dR(double eta1, double phi1, double eta2, double phi2) {
+  double deta = eta1 - eta2;
+  double dphi = phi_dist(phi1, phi2);
+  return sqrt(pow(deta, 2) + pow(dphi, 2));
 }
 
 struct ParamDict {
@@ -150,19 +167,6 @@ std::vector<double> loadPUReweighting(const std::string &pu_file) {
   return values;
 }
 
-// D-phi
-double phi_dist(double a, double b) {
-  if (fabs(a - b) > 3.14159265) {
-    return 6.2831853 - fabs(a - b);
-  }
-  return fabs(a - b);
-}
-
-double get_dR(double eta1, double phi1, double eta2, double phi2) {
-  double deta = eta1 - eta2;
-  double dphi = phi_dist(phi1, phi2);
-  return sqrt(pow(deta, 2) + pow(dphi, 2));
-}
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 

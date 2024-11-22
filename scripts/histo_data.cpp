@@ -20,6 +20,8 @@
 #include <vector>
 
 #define ARR_SIZE 10000
+#define MATH_PI 3.14159265358979323846
+#define MATH_2PI 6.28318530717958647692
 
 std::string to_lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(), ::tolower);
@@ -28,10 +30,11 @@ std::string to_lower(std::string str) {
 
 // D-phi
 double phi_dist(double a, double b) {
-  if (fabs(a - b) > 3.14159265) {
-    return 6.2831853 - fabs(a - b);
+  double dphi = fabs(a - b);
+  if (dphi > MATH_PI) {
+    return MATH_2PI - dphi;
   }
-  return fabs(a - b);
+  return dphi;
 }
 
 double get_dR(double eta1, double phi1, double eta2, double phi2) {
