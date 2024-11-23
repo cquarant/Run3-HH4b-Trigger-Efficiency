@@ -454,10 +454,10 @@ void histo_data(
   // Trigger Objects
   TTree *InputTree_TrgObj = (TTree *)f1->Get("tree_TrgObj");
   Int_t NTrigger_Objects;
-  Float_t Trigger_Object_pt[20];
-  Float_t Trigger_Object_eta[20];
-  Float_t Trigger_Object_phi[20];
-  Int_t Trigger_Object_bit[20];
+  Float_t Trigger_Object_pt[ARR_SIZE];
+  Float_t Trigger_Object_eta[ARR_SIZE];
+  Float_t Trigger_Object_phi[ARR_SIZE];
+  Int_t Trigger_Object_bit[ARR_SIZE];
   InputTree_TrgObj->SetBranchAddress("NTrigger_Objects", &NTrigger_Objects);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_pt", Trigger_Object_pt);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_eta", Trigger_Object_eta);

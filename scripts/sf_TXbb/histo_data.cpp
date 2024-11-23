@@ -446,10 +446,10 @@ void histo_data(
   // Trigger Objects
   TTree *InputTree_TrgObj = (TTree *)f1->Get("tree_TrgObj");
   Int_t NTrigger_Objects;
-  Float_t Trigger_Object_pt[20];
-  Float_t Trigger_Object_eta[20];
-  Float_t Trigger_Object_phi[20];
-  Int_t Trigger_Object_bit[20];
+  Float_t Trigger_Object_pt[ARR_SIZE];
+  Float_t Trigger_Object_eta[ARR_SIZE];
+  Float_t Trigger_Object_phi[ARR_SIZE];
+  Int_t Trigger_Object_bit[ARR_SIZE];
   InputTree_TrgObj->SetBranchAddress("NTrigger_Objects", &NTrigger_Objects);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_pt", Trigger_Object_pt);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_eta", Trigger_Object_eta);
@@ -462,20 +462,27 @@ void histo_data(
     InputTree_TrgObj->GetEntry(i);
 
     // HLT Selection
+    bool JetMET = HLT_AK8PFJet230_SoftDropMass40;
+    bool EGamma = (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11);
+    bool Muon = (HLT_IsoMu27 && fabs(lep1_Id) == 13);
     if (channel_lower == "egamma" or channel_lower == "electron") {
-      if (!(HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11)) {
+      if (!EGamma) {
         continue;
       }
     } else if (channel_lower == "muon") {
-      if (!(HLT_IsoMu27 && fabs(lep1_Id) == 13)) {
+      if (!Muon) {
+        continue;
+      }
+    } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
+      if (!EGamma && !Muon) {
         continue;
       }
     } else if (channel_lower == "jetmet" or channel_lower == "qcd") {
-      if (HLT_AK8PFJet230_SoftDropMass40 == 0) {
+      if (!JetMET) {
         continue;
       }
     } else {
-      throw std::invalid_argument("Invalid channel");
+      throw std::invalid_argument("Invalid channel: " + channel);
     }
 
     // JSON certification
@@ -622,8 +629,8 @@ void histo_data(
     }
 
     bool match_qcd = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
-    bool match_egamma = HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 11;
-    bool match_muon = HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 13;
+    bool match_egamma = HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
+    bool match_muon = HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06;
     if (channel_lower == "egamma" or channel_lower == "electron") {
       probe_match = match_egamma;
     } else if (channel_lower == "muon") {
