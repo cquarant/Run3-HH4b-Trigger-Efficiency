@@ -769,8 +769,8 @@ void histo_mc(
     }
 
     bool match_qcd = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
-    bool match_egamma = HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
-    bool match_muon = HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06;
+    bool match_egamma = HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 11;
+    bool match_muon = HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 13;
     if (channel_lower == "egamma" or channel_lower == "electron") {
       probe_match = match_egamma;
     } else if (channel_lower == "muon") {
