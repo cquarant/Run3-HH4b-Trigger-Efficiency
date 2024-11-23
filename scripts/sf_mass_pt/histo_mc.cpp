@@ -23,27 +23,10 @@
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 
 #define ARR_SIZE 10000
-#define MATH_PI 3.14159265358979323846
-#define MATH_2PI 6.28318530717958647692
 
 std::string to_lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(), ::tolower);
   return str;
-}
-
-// D-phi
-double phi_dist(double a, double b) {
-  double dphi = fabs(a - b);
-  if (dphi > MATH_PI) {
-    return MATH_2PI - dphi;
-  }
-  return dphi;
-}
-
-double get_dR(double eta1, double phi1, double eta2, double phi2) {
-  double deta = eta1 - eta2;
-  double dphi = phi_dist(phi1, phi2);
-  return sqrt(pow(deta, 2) + pow(dphi, 2));
 }
 
 struct ParamDict {
@@ -74,7 +57,7 @@ void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
       continue;
 
     // Look for double declarations
-    if (line.find("double") != std::string::npos) {
+    // if (line.find("double") != std::string::npos) {
       std::istringstream iss(line);
       std::string type, name, equals;
       double value;
@@ -167,19 +150,30 @@ std::vector<double> loadPUReweighting(const std::string &pu_file) {
   return values;
 }
 
+// D-phi
+double phi_dist(double a, double b) {
+  if (fabs(a - b) > 3.14159265) {
+    return 6.2831853 - fabs(a - b);
+  }
+  return fabs(a - b);
+}
+
+double get_dR(double eta1, double phi1, double eta2, double phi2) {
+  double deta = eta1 - eta2;
+  double dphi = phi_dist(phi1, phi2);
+  return sqrt(pow(deta, 2) + pow(dphi, 2));
+}
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
 void histo_mc(
-    const std::string &data_type,   // Example: TTtoLNu2Q, QCD_HT100to200
-    const std::string &channel,     // Muon, EGamma, leptonic
-    const std::string &sample_path, // path to the root file
-    const std::string &output_path, // path to the output root file
-    const std::string &pu_path,     // path to the pileup reweighting file
-    const std::string &sf_path, // path to the PT-Mass-SFs root file (not needed
-                                // for this method)
+    const std::string &data_type,    // Example: TTtoLNu2Q, QCD_HT100to200
+    const std::string &channel,      // Muon, EGamma, leptonic
+    const std::string &sample_path,  // path to the root file
+    const std::string &output_path,  // path to the output root file
+    const std::string &pu_path,      // path to the pileup reweighting file
     const std::string &param_path,   // path to the parameters file
-    const std::string &jec_path_ak4, // path to the AK4 JEC txt file
+    const std::string &jec_path_ak4, // path to th  e AK4 JEC txt file
     const std::string &jec_path_ak8  // path to the AK8 JEC txt file
 ) {
   gSystem->Load("libFWCoreFWLite.so");
@@ -213,16 +207,22 @@ void histo_mc(
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
-  // Float_t bins_m[13] = {0,   20,  40,  60,  80,  100, 120,
-  //                       140, 160, 180, 200, 220, 240};
-  // int num_m_bins = 12;
-  // Float_t bins_pt[11] = {250, 275, 300, 325, 350, 375, 400, 450, 500, 600,
-  // 700}; int num_pt_bins = 10;
-  Float_t bins_pt[9] = {300, 350, 400, 450, 500, 600, 700, 850, 1000};
-  int num_pt_bins = 8;
+  // Float_t bins_pt[9] = {300, 350, 400, 450, 500, 600, 700, 850, 1000};
+  // int num_pt_bins = 8;
 
-  Float_t bins_m[8] = {60, 90, 120, 150, 180, 210, 240, 300};
-  int num_m_bins = 7;
+  // Float_t bins_m[8] = {60, 90, 120, 150, 180, 210, 240, 300};
+  // int num_m_bins = 7;
+  Float_t bins_pt[46] = {0.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,  70.0,
+                         80.0,  90.0,  100.0, 110.0, 120.0, 130.0, 140.0, 150.0,
+                         160.0, 170.0, 180.0, 190.0, 200.0, 210.0, 220.0, 230.0,
+                         240.0, 250.0, 260.0, 270.0, 280.0, 290.0, 300.0, 320.0,
+                         340.0, 360.0, 380.0, 400.0, 420.0, 440.0, 460.0, 480.0,
+                         500.0, 550.0, 600.0, 700.0, 800.0, 1000.0};
+  int num_pt_bins = 45;
+
+  Float_t bins_m[16] = {0.0,  5.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,
+                        80.0, 100.0, 120.0, 150.0, 200.0, 250.0, 300.0, 350.0};
+  int num_m_bins = 15;
 
   // tag FatJet 1 kinematics
   TH1D *_FatJet1_tag_pt =
@@ -654,7 +654,6 @@ void histo_mc(
     // FatJets selection
     bool probe_match = false;
     if (channel_lower == "jetmet" or channel_lower == "qcd") {
-      // FatJets selection
       if (FatJet1_pt <= 300 || fabs(FatJet1_eta) >= 2.5 ||
           FatJet1_MassSD <= 80) {
         continue;
@@ -671,7 +670,7 @@ void histo_mc(
 
       // Trigger objects and matchings
       bool tag_match = false;
-      for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
         if ((Trigger_Object_bit[itrg] & 4) == 4) {
           double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
                              Trigger_Object_phi[itrg]);
@@ -680,12 +679,14 @@ void histo_mc(
             break;
           }
         }
-      if (!tag_match)
+      }
+      if (!tag_match) {
         continue;
+      }
 
-      // Probe Matched
+      // Probe matching
       bool matched_to_AK8PFJet230_SoftDropMass40 = false;
-      for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
         if ((Trigger_Object_bit[itrg] & 4) == 4) {
           double dR = get_dR(FatJet2_eta, FatJet2_phi, Trigger_Object_eta[itrg],
                              Trigger_Object_phi[itrg]);
@@ -694,7 +695,7 @@ void histo_mc(
             break;
           }
         }
-
+      }
       if (matched_to_AK8PFJet230_SoftDropMass40) {
         probe_match = true;
       }
@@ -742,10 +743,8 @@ void histo_mc(
         continue;
       }
 
-      // Trigger Objects and Matchings
-      // tag Matched
       bool matched_to_AK8PFJet230_SoftDropMass40 = false;
-      for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
         if ((Trigger_Object_bit[itrg] & 4) == 4) {
           double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
                              Trigger_Object_phi[itrg]);
@@ -754,7 +753,7 @@ void histo_mc(
             break;
           }
         }
-
+      }
       if (matched_to_AK8PFJet230_SoftDropMass40) {
         probe_match = true;
       }

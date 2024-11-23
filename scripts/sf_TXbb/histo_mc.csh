@@ -12,6 +12,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 OUTPUT_DIR=${SCRIPT_DIR}/output
 TMP_DIR=${SCRIPT_DIR}/tmp
 mkdir -p ${OUTPUT_DIR} ${TMP_DIR}
+SAMPLE_DIR="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
 
 # Era Configuration
 declare -A era_runs=(
@@ -37,23 +38,12 @@ get_era_paths() {
             pu_path="${PROJ_ROOT}/pileups/pu_${era}.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
-            # Process-specific scale factors
-            if [ "$process" == "ttbar" ]; then
-                sf_path="${PROJ_ROOT}/Trigger_SFs/PT_Mass_SF_TTbar/PT_Mass_2dSF_2023.root"
-            else
-                sf_path="${PROJ_ROOT}/Trigger_SFs/PT_Mass_SF_QCD/PT_Mass_2dSF_2023.root"
-            fi
             ;;
         "2023BPix")
             # Use same structure as 2023 but with BPix specific paths
             pu_path="${PROJ_ROOT}/pileups/pu_2023.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_2023.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
-            if [ "$process" == "ttbar" ]; then
-                sf_path="${PROJ_ROOT}/Trigger_SFs/PT_Mass_SF_TTbar/PT_Mass_2dSF_2023.root"
-            else
-                sf_path="${PROJ_ROOT}/Trigger_SFs/PT_Mass_SF_QCD/PT_Mass_2dSF_2023.root"
-            fi
             ;;
         *)
             # TODO: Implement correct paths for 2022 and 2022EE
@@ -66,6 +56,13 @@ get_era_paths() {
     # Set JEC paths
     jec_path_ak4="${jec_base}/${jec_configs[${era}]}_L2Relative_AK4PFPuppi.txt"
     jec_path_ak8="${jec_base}/${jec_configs[${era}]}_L2Relative_AK8PFPuppi.txt"
+
+    # Trigger efficiency paths (as a function of mass and pt)
+    if [ "$process" == "ttbar" ]; then
+        sf_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_2023_TTbar.root"
+    else
+        sf_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_2023_QCD.root"
+    fi
 }
 
 process_ttbar() {
@@ -79,8 +76,7 @@ process_ttbar() {
     local ttbar_type="TTtoLNu2Q"
     
     # Find TTBar sample with wildcard
-    local sample_dir="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
-    local ttbar_file=$(ls ${sample_dir}/${era}/TTtoLNu2Q*.root 2>/dev/null | head -n1)
+    local ttbar_file=$(ls ${SAMPLE_DIR}/${era}/TTtoLNu2Q*.root 2>/dev/null | head -n1)
     
     if [ -z "${ttbar_file}" ]; then
         echo "Warning: No TTBar file found for era ${era}"
@@ -109,7 +105,6 @@ process_qcd() {
     
     local channel="QCD"
     local HT_BINS=("100to200" "200to400" "400to600" "600to800" "800to1000" "1000to1200" "1200to1500" "1500to2000" "2000toInf")
-    local sample_dir="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
     
     for ht_bin in "${HT_BINS[@]}"; do
         # Handle special case for 2000toInf
@@ -120,7 +115,7 @@ process_qcd() {
         fi
         
         # Find the exact file name
-        local sample_file=$(ls ${sample_dir}/${era}/${search_pattern} 2>/dev/null | head -n1)
+        local sample_file=$(ls ${SAMPLE_DIR}/${era}/${search_pattern} 2>/dev/null | head -n1)
         
         if [ -z "${sample_file}" ]; then
             echo "Warning: No matching file found for HT bin ${ht_bin} in ${era}"

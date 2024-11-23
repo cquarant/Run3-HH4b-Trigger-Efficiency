@@ -23,7 +23,8 @@ for era_tag in ${era_tags[@]}; do
         output_path="${OUTPUT_DIR}/efficiency_mass_pt_${era_tag}_${data_type}.root"
         figure_mc_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_MC_${data_type}.pdf"
         figure_data_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_data_${data_type}.pdf"
-        root -l -b -q "trig_eff_mass_pt.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\")"
+        figure_sf_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_SF_${data_type}.pdf"
+        root -l -b -q "trig_eff_mass_pt.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\", \"${figure_sf_path}\")"
     done
 
     # together
@@ -32,5 +33,6 @@ for era_tag in ${era_tags[@]}; do
     output_path="${OUTPUT_DIR}/efficiency_mass_pt_${era_tag}.root"
     figure_mc_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_MC.pdf"
     figure_data_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_data.pdf"
-    root -l -b -q "trig_eff_mass_pt.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\")"
+    figure_sf_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_SF.pdf"
+    root -l -b -q "trig_eff_mass_pt.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\", \"${figure_sf_path}\")"
 done

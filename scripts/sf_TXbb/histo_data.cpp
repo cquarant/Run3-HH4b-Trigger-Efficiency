@@ -20,8 +20,6 @@
 #include <vector>
 
 #define ARR_SIZE 10000
-#define MATH_PI 3.14159265358979323846
-#define MATH_2PI 6.28318530717958647692
 
 std::string to_lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(), ::tolower);
@@ -30,11 +28,10 @@ std::string to_lower(std::string str) {
 
 // D-phi
 double phi_dist(double a, double b) {
-  double dphi = fabs(a - b);
-  if (dphi > MATH_PI) {
-    return MATH_2PI - dphi;
+  if (fabs(a - b) > 3.14159265) {
+    return 6.2831853 - fabs(a - b);
   }
-  return dphi;
+  return fabs(a - b);
 }
 
 double get_dR(double eta1, double phi1, double eta2, double phi2) {
@@ -86,24 +83,22 @@ void histo_data(
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
-  // Base binning arrays
-  // Float_t bins_m[16] = {0,  5,   10,  20,  30,  40,  50,  60,
-  //                        80, 100, 120, 150, 200, 250, 300, 350};
-  // Float_t bins_pt[46] = {0,   10,  20,  30,  40,  50,  60,  70,  80,  90,
-  //                         100, 110, 120, 130, 140, 150, 160, 170, 180, 190,
-  //                         200, 210, 220, 230, 240, 250, 260, 270, 280, 290,
-  //                         300, 320, 340, 360, 380, 400, 420, 440, 460, 480,
-  //                         500, 550, 600, 700, 800, 1000};
-  // Float_t bins_pt[11] = {250, 275, 300, 325, 350, 375, 400, 450, 500, 600, 700};
-  // int num_pt_bins = 10;
-  // Float_t bins_m[13] = {0,   20,  40,  60,  80,  100, 120,
-  //                       140, 160, 180, 200, 220, 240};
-  // int num_m_bins = 12;
-  Float_t bins_pt[9] = {300, 350, 400, 450, 500, 600, 700, 850, 1000};
-  int num_pt_bins = 8;
+  // Float_t bins_pt[9] = {300, 350, 400, 450, 500, 600, 700, 850, 1000};
+  // int num_pt_bins = 8;
 
-  Float_t bins_m[8] = {60, 90, 120, 150, 180, 210, 240, 300};
-  int num_m_bins = 7;
+  // Float_t bins_m[8] = {60, 90, 120, 150, 180, 210, 240, 300};
+  // int num_m_bins = 7;
+  Float_t bins_pt[46] = {0.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,  70.0,
+                         80.0,  90.0,  100.0, 110.0, 120.0, 130.0, 140.0, 150.0,
+                         160.0, 170.0, 180.0, 190.0, 200.0, 210.0, 220.0, 230.0,
+                         240.0, 250.0, 260.0, 270.0, 280.0, 290.0, 300.0, 320.0,
+                         340.0, 360.0, 380.0, 400.0, 420.0, 440.0, 460.0, 480.0,
+                         500.0, 550.0, 600.0, 700.0, 800.0, 1000.0};
+  int num_pt_bins = 45;
+
+  Float_t bins_m[16] = {0.0,  5.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,
+                        80.0, 100.0, 120.0, 150.0, 200.0, 250.0, 300.0, 350.0};
+  int num_m_bins = 15;
 
   // probe FatJet 1 kinematics
   TH1D *_FatJet1_probe_pt =
@@ -352,14 +347,6 @@ void histo_data(
       "HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06",
       &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06);
 
-  InputTree->SetBranchAddress("HLT_Ele32_WPTight_Gsf", &HLT_Ele32_WPTight_Gsf);
-  InputTree->SetBranchAddress(
-      "HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40",
-      &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40);
-  InputTree->SetBranchAddress(
-      "HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06",
-      &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06);
-
   InputTree->SetBranchAddress("HLT_Mu50", &HLT_Mu50);
   InputTree->SetBranchAddress("HLT_IsoMu27", &HLT_IsoMu27);
   InputTree->SetBranchAddress("HLT_IsoMu50_AK8PFJet230_SoftDropMass40",
@@ -527,9 +514,9 @@ void histo_data(
       FatJet2_MassSD = FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * corr;
     }
 
+    // FatJets selection
     bool probe_match = false;
     if (channel_lower == "jetmet" or channel_lower == "qcd") {
-      // FatJets selection
       if (FatJet1_pt <= 300 || fabs(FatJet1_eta) >= 2.5 || FatJet1_MassSD <= 80) {
         continue;
       }
@@ -545,7 +532,7 @@ void histo_data(
 
       // Trigger objects and matchings
       bool tag_match = false;
-      for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
         if ((Trigger_Object_bit[itrg] & 4) == 4) {
           double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
                              Trigger_Object_phi[itrg]);
@@ -554,12 +541,14 @@ void histo_data(
             break;
           }
         }
-      if (!tag_match)
+      }
+      if (!tag_match) {
         continue;
+      }
 
-      // Probe Matched
+      // Probe matching
       bool matched_to_AK8PFJet230_SoftDropMass40 = false;
-      for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
         if ((Trigger_Object_bit[itrg] & 4) == 4) {
           double dR = get_dR(FatJet2_eta, FatJet2_phi, Trigger_Object_eta[itrg],
                              Trigger_Object_phi[itrg]);
@@ -568,9 +557,9 @@ void histo_data(
             break;
           }
         }
-
-      if (matched_to_AK8PFJet230_SoftDropMass40) {
-        probe_match = true;
+      }
+      if (!matched_to_AK8PFJet230_SoftDropMass40) {
+        continue;
       }
     } else {
       // EGamma, Muon
@@ -616,21 +605,35 @@ void histo_data(
           continue;
       }
 
-      // Trigger objects and Matchings Probe Matched
       bool matched_to_AK8PFJet230_SoftDropMass40 = false;
-      for (int itrg = 0; itrg < NTrigger_Objects; itrg++)
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
         if ((Trigger_Object_bit[itrg] & 4) == 4) {
           double dR = get_dR(FatJet1_eta, FatJet1_phi, Trigger_Object_eta[itrg],
                              Trigger_Object_phi[itrg]);
-          if (dR <= 0.5 && Trigger_Object_pt[itrg] > 100) {
+          if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
             matched_to_AK8PFJet230_SoftDropMass40 = true;
             break;
           }
         }
-
-      if (matched_to_AK8PFJet230_SoftDropMass40) {
-        probe_match = true;
       }
+      if (!matched_to_AK8PFJet230_SoftDropMass40) {
+        continue;
+      }
+    }
+
+    bool match_qcd = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
+    bool match_egamma = HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 11;
+    bool match_muon = HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 13;
+    if (channel_lower == "egamma" or channel_lower == "electron") {
+      probe_match = match_egamma;
+    } else if (channel_lower == "muon") {
+      probe_match = match_muon;
+    } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
+      probe_match = match_egamma || match_muon;
+    } else if (channel_lower == "jetmet" or channel_lower == "qcd") {
+      probe_match = match_qcd;
+    } else {
+      throw std::invalid_argument("Invalid channel: " + channel);
     }
 
     // Fill histograms
