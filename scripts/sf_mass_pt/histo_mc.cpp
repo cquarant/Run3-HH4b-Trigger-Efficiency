@@ -62,45 +62,44 @@ void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
       std::string type, name, equals;
       double value;
 
-      // Parse line of format: double XSec_QCD_HT_100to200    =  25220000.00;
-      if (!(iss >> type >> name >> equals >> value)) {
-        continue;
-      }
+    // Parse line of format: double XSec_QCD_HT_100to200    =  25220000.00;
+    if (!(iss >> type >> name >> equals >> value)) {
+      continue;
+    }
 
-      // Remove semicolon if present
-      if (name.back() == ';')
-        name = name.substr(0, name.size() - 1);
+    // Remove semicolon if present
+    if (name.back() == ';')
+      name = name.substr(0, name.size() - 1);
 
-      if (name == "Lumi") {
-        param_dict->Lumi = value;
-      } else if (name == "XSec_TTtoLNu2Q") {
-        param_dict->XSec_TTtoLNu2Q = value;
-      } else if (name == "XSec_TTto4Q") {
-        param_dict->XSec_TTto4Q = value;
-      } else if (name == "XSec_TTto2L2Nu") {
-        param_dict->XSec_TTto2L2Nu = value;
-      } else if (name == "XSec_QCD_HT_100to200") {
-        param_dict->XSec_QCD_HT_100to200 = value;
-      } else if (name == "XSec_QCD_HT_200to400") {
-        param_dict->XSec_QCD_HT_200to400 = value;
-      } else if (name == "XSec_QCD_HT_400to600") {
-        param_dict->XSec_QCD_HT_400to600 = value;
-      } else if (name == "XSec_QCD_HT_600to800") {
-        param_dict->XSec_QCD_HT_600to800 = value;
-      } else if (name == "XSec_QCD_HT_800to1000") {
-        param_dict->XSec_QCD_HT_800to1000 = value;
-      } else if (name == "XSec_QCD_HT_1000to1200") {
-        param_dict->XSec_QCD_HT_1000to1200 = value;
-      } else if (name == "XSec_QCD_HT_1200to1500") {
-        param_dict->XSec_QCD_HT_1200to1500 = value;
-      } else if (name == "XSec_QCD_HT_1500to2000") {
-        param_dict->XSec_QCD_HT_1500to2000 = value;
-      } else if (name == "XSec_QCD_HT_2000toInf") {
-        param_dict->XSec_QCD_HT_2000toInf = value;
-      } else {
-        // warn if unknown parameter
-        std::cerr << "Unknown parameter: " << name << std::endl;
-      }
+    if (name == "Lumi") {
+      param_dict->Lumi = value;
+    } else if (name == "XSec_TTtoLNu2Q") {
+      param_dict->XSec_TTtoLNu2Q = value;
+    } else if (name == "XSec_TTto4Q") {
+      param_dict->XSec_TTto4Q = value;
+    } else if (name == "XSec_TTto2L2Nu") {
+      param_dict->XSec_TTto2L2Nu = value;
+    } else if (name == "XSec_QCD_HT_100to200") {
+      param_dict->XSec_QCD_HT_100to200 = value;
+    } else if (name == "XSec_QCD_HT_200to400") {
+      param_dict->XSec_QCD_HT_200to400 = value;
+    } else if (name == "XSec_QCD_HT_400to600") {
+      param_dict->XSec_QCD_HT_400to600 = value;
+    } else if (name == "XSec_QCD_HT_600to800") {
+      param_dict->XSec_QCD_HT_600to800 = value;
+    } else if (name == "XSec_QCD_HT_800to1000") {
+      param_dict->XSec_QCD_HT_800to1000 = value;
+    } else if (name == "XSec_QCD_HT_1000to1200") {
+      param_dict->XSec_QCD_HT_1000to1200 = value;
+    } else if (name == "XSec_QCD_HT_1200to1500") {
+      param_dict->XSec_QCD_HT_1200to1500 = value;
+    } else if (name == "XSec_QCD_HT_1500to2000") {
+      param_dict->XSec_QCD_HT_1500to2000 = value;
+    } else if (name == "XSec_QCD_HT_2000toInf") {
+      param_dict->XSec_QCD_HT_2000toInf = value;
+    } else {
+      // warn if unknown parameter
+      std::cerr << "Unknown parameter: " << name << std::endl;
     }
   }
 }
