@@ -807,12 +807,9 @@ void histo_mc(
       eff_mc = eff_mc_bin;
     }
 
-    double data_total = 1 - (1 - eff_data);
-    double mc_total = 1 - (1 - eff_mc);
-    double SF_mass_pt = data_total / (mc_total + 1e-12);
+    double SF_mass_pt = eff_data / eff_mc;
 
     if (SF_mass_pt > 0 && SF_mass_pt < 10) {
-      // std::cout << "SF_mass_pt: " << SF_mass_pt << std::endl;
       weight = weight * SF_mass_pt;
     }
 
