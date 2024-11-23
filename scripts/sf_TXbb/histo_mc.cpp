@@ -202,7 +202,6 @@ void histo_mc(
   TFile *f_SF_mass_pt = new TFile(eff_mass_pt_path.c_str());
   TH2D *_eff_data = (TH2D *)f_SF_mass_pt->Get("Eff_Data");
   TH2D *_eff_mc = (TH2D *)f_SF_mass_pt->Get("Eff_MC");
-  f_SF_mass_pt->Close();
 
   // JEC
   vector<JetCorrectorParameters> vPar;
@@ -617,7 +616,7 @@ void histo_mc(
     InputTree_TrgObj->GetEntry(i);
 
     // HLT Selection
-    bool JetMET = (HLT_AK8PFJet230_SoftDropMass40 == 1);
+    bool JetMET = HLT_AK8PFJet230_SoftDropMass40;
     bool EGamma = (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11);
     bool Muon = (HLT_IsoMu27 && fabs(lep1_Id) == 13);
     if (channel_lower == "egamma" or channel_lower == "electron") {
@@ -770,11 +769,8 @@ void histo_mc(
     }
 
     bool match_qcd = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
-    bool match_egamma =
-        HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 &&
-        abs(lep1_Id) == 11;
-    bool match_muon =
-        HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 13;
+    bool match_egamma = HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
+    bool match_muon = HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06;
     if (channel_lower == "egamma" or channel_lower == "electron") {
       probe_match = match_egamma;
     } else if (channel_lower == "muon") {
@@ -813,9 +809,10 @@ void histo_mc(
 
     double data_total = 1 - (1 - eff_data);
     double mc_total = 1 - (1 - eff_mc);
-    double SF_mass_pt = data_total / mc_total;
+    double SF_mass_pt = data_total / (mc_total + 1e-12);
 
-    if (SF_mass_pt > 0) {
+    if (SF_mass_pt > 0 && SF_mass_pt < 10) {
+      // std::cout << "SF_mass_pt: " << SF_mass_pt << std::endl;
       weight = weight * SF_mass_pt;
     }
 
@@ -898,6 +895,7 @@ void histo_mc(
   delete _eff_mc;
 
   f->Write();
+  f_SF_mass_pt->Close();
 
   std::cout << "Done. Written to " << output_path << std::endl;
 }
