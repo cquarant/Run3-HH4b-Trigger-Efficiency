@@ -170,15 +170,17 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     f->Close();
 
     // Clean up
-    delete fData;
-    delete fMC;
-    delete c1;
-    delete c2;
-    delete c3;
-    
-    // Clean up the new histograms
     delete _mc_tag;
     delete _mc_probe;
     delete _data_tag;
     delete _data_probe;
+    delete _eff_mc;
+    delete _eff_data;
+    delete _SF_TXbb;
+    delete c1;
+    delete c2;
+    delete c3;
+    delete f;
+    delete fData;
+    delete fMC;
 }
