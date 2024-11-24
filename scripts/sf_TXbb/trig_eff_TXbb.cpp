@@ -180,7 +180,7 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     _eff_mc->Draw("EP SAME");
     
     // Add legend
-    TLegend* legend = new TLegend(0.65, 0.2, 0.90, 0.35);
+    TLegend* legend = new TLegend(0.7, 0.2, 0.90, 0.35);
     legend->SetBorderSize(0);
     legend->SetFillStyle(0);
     legend->AddEntry(_eff_data, "Data", "ep");
@@ -189,7 +189,7 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     
     // Draw lower pad (ratio)
     pad2->cd();
-    set_histo_style_1D(_SF_TXbb, "Probe - X_{bb}", "Data / MC", 0.3, 1.7);
+    set_histo_style_1D(_SF_TXbb, "T_{Xbb}", "Data / MC", 0.3, 1.7);
     _SF_TXbb->SetMarkerStyle(20);
     _SF_TXbb->GetXaxis()->SetLabelSize(0.08);
     _SF_TXbb->GetXaxis()->SetTitleSize(0.08);
