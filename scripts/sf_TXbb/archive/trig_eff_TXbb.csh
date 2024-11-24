@@ -24,14 +24,18 @@ for era_tag in ${era_tags[@]}; do
         hist_mc_path="${OUTPUT_DIR}/Histograms_${era_tag}_MC_${data_type}.root"
         hist_data_path="${OUTPUT_DIR}/Histograms_${era_tag}_data_${data_type}.root"
         output_path="${OUTPUT_DIR}/efficiency_TXbb_${era_tag}_${data_type}.root"
-        figure_path="${FIG_DIR}/efficiency_TXbb_${era_tag}_${data_type}.pdf"
-        root -l -b -q "trig_eff_TXbb.cpp(\"${hist_data_path}\", \"${hist_mc_path}\", \"${output_path}\", \"${figure_path}\")"
+        figure_mc_path="${FIG_DIR}/efficiency_TXbb_${era_tag}_MC_${data_type}.pdf"
+        figure_data_path="${FIG_DIR}/efficiency_TXbb_${era_tag}_data_${data_type}.pdf"
+        figure_sf_path="${FIG_DIR}/SF_TXbb_${era_tag}_${data_type}.pdf"
+        root -l -b -q "trig_eff_TXbb.cpp(\"${hist_data_path}\", \"${hist_mc_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\", \"${figure_sf_path}\")"
     done
 
     # together
     hist_mc_path="${OUTPUT_DIR}/Histograms_${era_tag}_MC.root"
     hist_data_path="${OUTPUT_DIR}/Histograms_${era_tag}_data.root"
     output_path="${OUTPUT_DIR}/efficiency_TXbb_${era_tag}.root"
-    figure_path="${FIG_DIR}/efficiency_TXbb_${era_tag}.pdf"
-    root -l -b -q "trig_eff_TXbb.cpp(\"${hist_data_path}\", \"${hist_mc_path}\", \"${output_path}\", \"${figure_path}\")"
+    figure_mc_path="${FIG_DIR}/efficiency_TXbb_${era_tag}_MC.pdf"
+    figure_data_path="${FIG_DIR}/efficiency_TXbb_${era_tag}_data.pdf"
+    figure_sf_path="${FIG_DIR}/SF_TXbb_${era_tag}.pdf"
+    root -l -b -q "trig_eff_TXbb.cpp(\"${hist_data_path}\", \"${hist_mc_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\", \"${figure_sf_path}\")"
 done

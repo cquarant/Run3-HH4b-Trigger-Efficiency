@@ -2,74 +2,52 @@
 #include "TStyle.h"
 #include "TRandom.h"
 #include "TCanvas.h"
-#include "TLegend.h"
-#include "TPad.h"
-#include "TLine.h"
-#include "TLatex.h"
 #include <TF1.h>
 #include <TH1D.h>
 #include <iostream>
 #include <math.h>
 
-void set_pad_style(TPad* pad) {
-    pad->SetFillColor(0);
-    pad->SetBorderMode(0);
-    pad->SetBorderSize(2);
-    pad->SetTickx(1);
-    pad->SetTicky(1);
-    pad->SetLeftMargin(0.12);
-    pad->SetRightMargin(0.04);
-    pad->SetTopMargin(0.08);
-    pad->SetBottomMargin(0.12);
-    pad->SetFrameFillStyle(0);
-    pad->SetFrameBorderMode(0);
-    pad->SetFrameBorderSize(2);
-}
+void set_histo_style_1D(TH1D* hist, std::string plot_title, const std::string& x_axis_title, const std::string& y_axis_title, float min, float max) {
+    hist->SetMarkerStyle(20);
+    hist->SetMarkerSize(1.2);
+    hist->SetLineColor(1);
+    hist->SetMarkerColor(1);
+    hist->SetTitle(plot_title.c_str());
 
-void set_histo_style_1D(TH1D* hist, const std::string& x_axis_title, const std::string& y_axis_title, float min, float max) {
-    hist->SetTitle("");
-    
-    // X-axis style
     hist->GetXaxis()->SetTitle(x_axis_title.c_str());
     hist->GetXaxis()->SetLabelFont(42);
-    hist->GetXaxis()->SetLabelSize(0.04);
-    hist->GetXaxis()->SetTitleSize(0.05);
-    hist->GetXaxis()->SetTitleOffset(1.1);
+    hist->GetXaxis()->SetLabelOffset(0.02);
+    hist->GetXaxis()->SetTitleSize(0.045);
+    hist->GetXaxis()->SetTitleOffset(1.2);
     hist->GetXaxis()->SetTitleFont(42);
-    
-    // Y-axis style
+
     hist->GetYaxis()->SetTitle(y_axis_title.c_str());
     hist->GetYaxis()->SetLabelFont(42);
     hist->GetYaxis()->SetLabelSize(0.04);
-    hist->GetYaxis()->SetTitleSize(0.05);
-    hist->GetYaxis()->SetTitleOffset(1.1);
+    hist->GetYaxis()->SetLabelOffset(0.01);
+    hist->GetYaxis()->SetTitleSize(0.045);
+    hist->GetYaxis()->SetTitleOffset(1);
     hist->GetYaxis()->SetTitleFont(42);
-    
-    // Set range
     hist->SetMaximum(max);
     hist->SetMinimum(min);
-    
-    // Add minor ticks
-    hist->GetXaxis()->SetNdivisions(510);
-    hist->GetYaxis()->SetNdivisions(510);
 }
 
+
 void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
-                   const std::string& output_root_path, const std::string& figure_path) {
+                   const std::string& output_root_path, const std::string& figure_mc_path,
+                   const std::string& figure_data_path, const std::string& figure_sf_path) {
     
-    // Define the binning
+    // Define the new binning
     const int nBins = 20;
     Double_t xbb_bins[21] = {
         0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45,
         0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0
     };
 
-    // Open files
     TFile* f = new TFile(output_root_path.c_str(), "RECREATE");
     TFile* fData = new TFile(data_path.c_str());
     TFile* fMC = new TFile(mc_path.c_str());
 
-    // Define variables
     TString tag_var = "FatJet1_tag_GloParT_XbbVsQCD";
     TString probe_var = "FatJet1_probe_GloParT_XbbVsQCD";
 
@@ -79,7 +57,7 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     TH1D* _data_tag_orig = (TH1D*)fData->Get(tag_var);
     TH1D* _data_probe_orig = (TH1D*)fData->Get(probe_var);
 
-    // Check if histograms exist
+    // Check not null
     if (!_mc_tag_orig || !_mc_probe_orig || !_data_tag_orig || !_data_probe_orig) {
         std::cerr << "Error: could not find histograms in input files" << std::endl;
         return;
@@ -137,80 +115,52 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     _eff_data->Sumw2();
     _eff_data->Divide(_data_tag);
 
-    // Calculate scale factors
-    TH1D* _SF_TXbb = (TH1D*)_eff_data->Clone("SF_TXbb");
-    _SF_TXbb->Sumw2();
-    _SF_TXbb->Divide(_eff_mc);
-
-    // Set global style
+    // Set styles and draw histograms
     gStyle->SetOptFile(0);
     gStyle->SetOptStat(0);
     gStyle->SetPaintTextFormat("1.2f");
 
-    // Create canvas and pads
-    TCanvas* c = new TCanvas("c", "c", 800, 800);
-    c->cd();
-    
-    TPad* pad1 = new TPad("pad1", "pad1", 0, 0.35, 1, 1.0);
-    TPad* pad2 = new TPad("pad2", "pad2", 0, 0.0, 1, 0.35);
-    
-    set_pad_style(pad1);
-    set_pad_style(pad2);
-    pad1->SetBottomMargin(0.05);
-    pad2->SetTopMargin(0.05);
-    pad2->SetBottomMargin(0.3);
-    
-    pad1->Draw();
-    pad2->Draw();
-    
-    // Draw upper pad (efficiency)
-    pad1->cd();
-    set_histo_style_1D(_eff_data, "", "Efficiency", 0.0, 1.0);
-    
-    _eff_data->SetMarkerStyle(20);  // Filled circle
-    _eff_data->SetMarkerColor(kRed);
-    _eff_data->SetLineColor(kRed);
-    _eff_data->SetMarkerSize(1.0);
-    _eff_data->Draw("EP");
-    
-    _eff_mc->SetMarkerStyle(23);  // Filled triangle down
-    _eff_mc->SetMarkerColor(kBlue);
-    _eff_mc->SetLineColor(kBlue);
-    _eff_mc->SetMarkerSize(1.0);
-    _eff_mc->Draw("EP SAME");
-    
-    // Add legend
-    TLegend* legend = new TLegend(0.65, 0.2, 0.90, 0.35);
-    legend->SetBorderSize(0);
-    legend->SetFillStyle(0);
-    legend->AddEntry(_eff_data, "Data", "ep");
-    legend->AddEntry(_eff_mc, "MC TTbar", "ep");
-    legend->Draw();
-    
-    // Draw lower pad (ratio)
-    pad2->cd();
-    set_histo_style_1D(_SF_TXbb, "Probe - X_{bb}", "Data / MC", 0.3, 1.7);
-    _SF_TXbb->SetMarkerStyle(20);
-    _SF_TXbb->GetXaxis()->SetLabelSize(0.08);
-    _SF_TXbb->GetXaxis()->SetTitleSize(0.08);
-    _SF_TXbb->GetXaxis()->SetTitleOffset(0.9);
-    _SF_TXbb->GetYaxis()->SetLabelSize(0.08);
-    _SF_TXbb->GetYaxis()->SetTitleSize(0.08);
-    _SF_TXbb->GetYaxis()->SetTitleOffset(0.5);
-    _SF_TXbb->Draw("EP");
-    
-    // Add horizontal line at 1
-    TLine* line = new TLine(0, 1, 1, 1);
-    line->SetLineStyle(2);
-    line->Draw();
-    
-    // Add grid lines
-    pad1->SetGrid(0, 1);
-    pad2->SetGrid(0, 1);
-    
-    // Save canvas
-    c->SaveAs(figure_path.c_str());
-    
+    TCanvas* c1 = new TCanvas("Data", "Data", 100, 52, 1200, 800);
+    TCanvas* c2 = new TCanvas("MC", "MC", 100, 52, 1200, 800);
+    TCanvas* c3 = new TCanvas("ScaleFactor", "ScaleFactor", 100, 52, 1200, 800);
+
+    for (auto c : {c1, c2, c3}) {
+        c->Range(0, 0, 1, 1);
+        c->SetFillColor(0);
+        c->SetBorderMode(0);
+        c->SetBorderSize(10);
+        c->SetTickx(1);
+        c->SetTicky(1);
+        c->SetFrameFillStyle(0);
+        c->SetFrameLineStyle(0);
+        c->SetFrameLineWidth(2);
+        c->SetFrameBorderMode(0);
+        c->SetFrameBorderSize(10);
+        c->SetBottomMargin(0.15);
+        c->SetLeftMargin(0.15);
+        c->SetRightMargin(0.15);
+    }
+
+    set_histo_style_1D(_eff_data, "", "T_{Xbb}", "Efficiency", 0.0, 1.0);
+    c1->cd();
+    _eff_data->Draw("E1");
+    c1->SaveAs(figure_data_path.c_str());
+
+    set_histo_style_1D(_eff_mc, "", "T_{Xbb}", "Efficiency", 0.0, 1.0);
+    c2->cd();
+    _eff_mc->Draw("E1");
+    c2->SaveAs(figure_mc_path.c_str());
+
+    // Compute scale factors
+    TH1D* _SF_TXbb = (TH1D*)_eff_data->Clone("SF_TXbb");
+    _SF_TXbb->Sumw2();
+    _SF_TXbb->Divide(_eff_mc);
+
+    set_histo_style_1D(_SF_TXbb, "", "T_{Xbb}", "Data / MC", 0.5, 1.5);
+    c3->cd();
+    _SF_TXbb->Draw("E1");
+    c3->SaveAs(figure_sf_path.c_str());
+
     // Save histograms to ROOT file
     f->cd();
     _eff_data->Write();
@@ -227,11 +177,9 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     delete _eff_mc;
     delete _eff_data;
     delete _SF_TXbb;
-    delete legend;
-    delete line;
-    delete pad1;
-    delete pad2;
-    delete c;
+    delete c1;
+    delete c2;
+    delete c3;
     delete f;
     delete fData;
     delete fMC;
