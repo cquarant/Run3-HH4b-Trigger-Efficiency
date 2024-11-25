@@ -9,9 +9,17 @@
 #include <iostream>
 #include <math.h>
 
-#define x_min 100.0  // Minimum for mSD
+// #define x_min 100.0  // Minimum for mSD
+// #define x_max 350.0  // Adjust based on your preferred maximum
+// #define y_min 300.0  // Minimum for pT
+// #define y_max 1000.0 // Adjust based on your preferred maximum
+// #define x_min 50.0   // Minimum for mSD
+// #define x_max 350.0  // Adjust based on your preferred maximum
+// #define y_min 280.0  // Minimum for pT
+// #define y_max 1000.0 // Adjust based on your preferred maximum
+#define x_min 50.0    // Minimum for mSD
 #define x_max 350.0  // Adjust based on your preferred maximum
-#define y_min 300.0  // Minimum for pT
+#define y_min 0.0    // Minimum for pT
 #define y_max 1000.0 // Adjust based on your preferred maximum
 
 double get_dynamic_marker_size(TH2D *hist, double min_size = 0.05,
@@ -97,17 +105,22 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
 
   // Float_t bins_m[8] = {60, 90, 120, 150, 180, 210, 240, 300};
   // int num_m_bins = 7;
-  Float_t bins_pt[46] = {0.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,  70.0,
-                         80.0,  90.0,  100.0, 110.0, 120.0, 130.0, 140.0, 150.0,
-                         160.0, 170.0, 180.0, 190.0, 200.0, 210.0, 220.0, 230.0,
-                         240.0, 250.0, 260.0, 270.0, 280.0, 290.0, 300.0, 320.0,
-                         340.0, 360.0, 380.0, 400.0, 420.0, 440.0, 460.0, 480.0,
-                         500.0, 550.0, 600.0, 700.0, 800.0, 1000.0};
-  int num_pt_bins = 45;
+  // Float_t bins_pt[46] = {0.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,  70.0,
+  //                        80.0,  90.0,  100.0, 110.0, 120.0, 130.0, 140.0, 150.0,
+  //                        160.0, 170.0, 180.0, 190.0, 200.0, 210.0, 220.0, 230.0,
+  //                        240.0, 250.0, 260.0, 270.0, 280.0, 290.0, 300.0, 320.0,
+  //                        340.0, 360.0, 380.0, 400.0, 420.0, 440.0, 460.0, 480.0,
+  //                        500.0, 550.0, 600.0, 700.0, 800.0, 1000.0};
+  // int num_pt_bins = 45;
 
-  Float_t bins_m[16] = {0.0,  5.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,
-                        80.0, 100.0, 120.0, 150.0, 200.0, 250.0, 300.0, 350.0};
-  int num_m_bins = 15;
+  // Float_t bins_m[16] = {0.0,  5.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,
+  //                       80.0, 100.0, 120.0, 150.0, 200.0, 250.0, 300.0, 350.0};
+  // int num_m_bins = 15;
+  Float_t bins_pt[9] = {250, 275, 300, 350, 400, 450, 500, 600, 100000};
+  int num_pt_bins = 8;
+
+  Float_t bins_m[10] = {50, 60, 80, 100, 120, 150, 200, 250, 300, 350};
+  int num_m_bins = 9;
 
   TH2D *_eff_data = new TH2D("Eff_Data", "Eff_Data", num_m_bins, bins_m,
                              num_pt_bins, bins_pt);

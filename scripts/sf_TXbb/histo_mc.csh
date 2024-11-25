@@ -26,7 +26,8 @@ declare -A era_runs=(
 declare -A jec_configs=(
     ["2023"]="Summer23Prompt23_V1_MC"
     ["2023BPix"]="Summer23BPixPrompt23_V1_MC"
-    # TODO: Add correct JEC configurations for 2022 and 2022EE
+    ["2022"]="Summer22_22Sep2023_V2_MC"
+    ["2022EE"]="Summer22EE_22Sep2023_V2_MC"
 )
 
 get_era_paths() {
@@ -35,20 +36,28 @@ get_era_paths() {
     
     case ${era} in
         "2023")
-            pu_path="${PROJ_ROOT}/pileups/pu_${era}.txt"
+            pu_path="${PROJ_ROOT}/pileups/pu_2023C.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
             ;;
         "2023BPix")
             # Use same structure as 2023 but with BPix specific paths
-            pu_path="${PROJ_ROOT}/pileups/pu_2023.txt"
+            pu_path="${PROJ_ROOT}/pileups/pu_2023D.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_2023.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
             ;;
+        "2022")
+            pu_path="${PROJ_ROOT}/pileups/pu_2022CD.txt"
+            param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
+            jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            ;;
+        "2022EE")
+            pu_path="${PROJ_ROOT}/pileups/pu_2022EFG.txt"
+            param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
+            jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            ;;
         *)
-            # TODO: Implement correct paths for 2022 and 2022EE
-            # For now, return error
-            echo "TODO: Implement paths for ${era}"
+            echo "Error: Invalid era ${era}"
             return 1
             ;;
     esac

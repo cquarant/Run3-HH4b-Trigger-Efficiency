@@ -53,7 +53,27 @@ void histo_data(
   // Load appropriate Good Lumi List based on era
   // TODO: add more eras if needed
   map<int, vector<pair<int, int>>> Good_Lumis;
-  if (run_tag == "2023C") {
+  if (run_tag == "2022C") {
+    Good_Lumis = {
+#include "GoodLumiList/GoodLumiList_Map_2022C.txt"
+    };
+  } else if (run_tag == "2022D") {
+    Good_Lumis = {
+#include "GoodLumiList/GoodLumiList_Map_2022D.txt"
+    };
+  } else if (run_tag == "2022E") {
+    Good_Lumis = {
+#include "GoodLumiList/GoodLumiList_Map_2022E.txt"
+    };
+  } else if (run_tag == "2022F") {
+    Good_Lumis = {
+#include "GoodLumiList/GoodLumiList_Map_2022F.txt"
+    };
+  } else if (run_tag == "2022G") {
+    Good_Lumis = {
+#include "GoodLumiList/GoodLumiList_Map_2022G.txt"
+    };
+  } else if (run_tag == "2023C") {
     Good_Lumis = {
 #include "GoodLumiList/GoodLumiList_Map_2023C.txt"
     };
@@ -88,17 +108,23 @@ void histo_data(
 
   // Float_t bins_m[8] = {60, 90, 120, 150, 180, 210, 240, 300};
   // int num_m_bins = 7;
-  Float_t bins_pt[46] = {0.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,  70.0,
-                         80.0,  90.0,  100.0, 110.0, 120.0, 130.0, 140.0, 150.0,
-                         160.0, 170.0, 180.0, 190.0, 200.0, 210.0, 220.0, 230.0,
-                         240.0, 250.0, 260.0, 270.0, 280.0, 290.0, 300.0, 320.0,
-                         340.0, 360.0, 380.0, 400.0, 420.0, 440.0, 460.0, 480.0,
-                         500.0, 550.0, 600.0, 700.0, 800.0, 1000.0};
-  int num_pt_bins = 45;
+  // Float_t bins_pt[46] = {0.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,  70.0,
+  //                        80.0,  90.0,  100.0, 110.0, 120.0, 130.0, 140.0, 150.0,
+  //                        160.0, 170.0, 180.0, 190.0, 200.0, 210.0, 220.0, 230.0,
+  //                        240.0, 250.0, 260.0, 270.0, 280.0, 290.0, 300.0, 320.0,
+  //                        340.0, 360.0, 380.0, 400.0, 420.0, 440.0, 460.0, 480.0,
+  //                        500.0, 550.0, 600.0, 700.0, 800.0, 1000.0};
+  // int num_pt_bins = 45;
 
-  Float_t bins_m[16] = {0.0,  5.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,
-                        80.0, 100.0, 120.0, 150.0, 200.0, 250.0, 300.0, 350.0};
-  int num_m_bins = 15;
+  // Float_t bins_m[16] = {0.0,  5.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,
+  //                       80.0, 100.0, 120.0, 150.0, 200.0, 250.0, 300.0, 350.0};
+  // int num_m_bins = 15;
+  
+  Float_t bins_pt[9] = {250, 275, 300, 350, 400, 450, 500, 600, 100000};
+  int num_pt_bins = 8;
+
+  Float_t bins_m[10] = {50, 60, 80, 100, 120, 150, 200, 250, 300, 350};
+  int num_m_bins = 9;
 
   // probe FatJet 1 kinematics
   TH1D *_FatJet1_probe_pt =

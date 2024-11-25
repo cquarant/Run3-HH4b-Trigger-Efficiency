@@ -70,6 +70,8 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     TFile* fMC = new TFile(mc_path.c_str());
 
     // Define variables
+    // TString tag_var = "FatJet1_tag_GloParT_XbbVsQCD";
+    // TString probe_var = "FatJet1_probe_GloParT_XbbVsQCD";
     TString tag_var = "FatJet1_tag_GloParT_XbbVsQCD";
     TString probe_var = "FatJet1_probe_GloParT_XbbVsQCD";
 
@@ -184,7 +186,7 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     legend->SetBorderSize(0);
     legend->SetFillStyle(0);
     legend->AddEntry(_eff_data, "Data", "ep");
-    legend->AddEntry(_eff_mc, "MC TTbar", "ep");
+    legend->AddEntry(_eff_mc, "MC", "ep");
     legend->Draw();
     
     // Draw lower pad (ratio)

@@ -14,7 +14,7 @@ mkdir -p ${OUTPUT_DIR}
 mkdir -p ${FIG_DIR}
 mkdir -p ${FIG_TMP_DIR}
 
-era_tags=("2023" "2023BPix")
+era_tags=("2022" "2022EE" "2023" "2023BPix")
 for era_tag in ${era_tags[@]}; do
     echo "Era: ${era_tag}"
     
