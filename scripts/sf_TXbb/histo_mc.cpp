@@ -273,6 +273,8 @@ void histo_mc(
   // tag FatJet 1 ParticleNetLegacy scores
   TH1D *_FatJet1_tag_PNetLegacy_Xbb = new TH1D(
       "FatJet1_tag_PNetLegacy_Xbb", "FatJet1_tag_PNetLegacy_Xbb", 100, 0, 1.0);
+  TH1D *_FatJet1_tag_PNetLegacy_XbbVsQCD = new TH1D(
+      "FatJet1_tag_PNetLegacy_XbbVsQCD", "FatJet1_tag_PNetLegacy_XbbVsQCD", 100, 0, 1.0);
   TH1D *_FatJet1_tag_PNetLegacy_Xcc = new TH1D(
       "FatJet1_tag_PNetLegacy_Xcc", "FatJet1_tag_PNetLegacy_Xcc", 100, 0, 1.0);
   TH1D *_FatJet1_tag_PNetLegacy_Xqq = new TH1D(
@@ -345,6 +347,9 @@ void histo_mc(
   // probe FatJet 1 ParticleNetLegacy scores
   TH1D *_FatJet1_probe_PNetLegacy_Xbb =
       new TH1D("FatJet1_probe_PNetLegacy_Xbb", "FatJet1_probe_PNetLegacy_Xbb",
+               100, 0, 1.0);
+  TH1D *_FatJet1_probe_PNetLegacy_XbbVsQCD =
+      new TH1D("FatJet1_probe_PNetLegacy_XbbVsQCD", "FatJet1_probe_PNetLegacy_XbbVsQCD",
                100, 0, 1.0);
   TH1D *_FatJet1_probe_PNetLegacy_Xcc =
       new TH1D("FatJet1_probe_PNetLegacy_Xcc", "FatJet1_probe_PNetLegacy_Xcc",
@@ -841,7 +846,10 @@ void histo_mc(
     _FatJet1_tag_PNet_XggVsQCD->Fill(FatJet1PNet_XggVsQCD, weight);
     _FatJet1_tag_PNet_XqqVsQCD->Fill(FatJet1PNet_XqqVsQCD, weight);
     // ParticleNetLegacy
+    Float_t FatJet1PNetLegacy_XbbVsQCD =
+        FatJet1PNetLegacy_Xbb / (FatJet1PNetLegacy_Xbb + FatJet1PNetLegacy_QCD + 1e-12);
     _FatJet1_tag_PNetLegacy_Xbb->Fill(FatJet1PNetLegacy_Xbb, weight);
+    _FatJet1_tag_PNetLegacy_XbbVsQCD->Fill(FatJet1PNetLegacy_XbbVsQCD, weight);
     _FatJet1_tag_PNetLegacy_Xcc->Fill(FatJet1PNetLegacy_Xcc, weight);
     _FatJet1_tag_PNetLegacy_Xqq->Fill(FatJet1PNetLegacy_Xqq, weight);
     _FatJet1_tag_PNetLegacy_QCD->Fill(FatJet1PNetLegacy_QCD, weight);
@@ -878,6 +886,8 @@ void histo_mc(
       _FatJet1_probe_PNet_XqqVsQCD->Fill(FatJet1PNet_XqqVsQCD, weight);
       // ParticleNetLegacy
       _FatJet1_probe_PNetLegacy_Xbb->Fill(FatJet1PNetLegacy_Xbb, weight);
+      _FatJet1_probe_PNetLegacy_XbbVsQCD->Fill(FatJet1PNetLegacy_XbbVsQCD,
+                                              weight);
       _FatJet1_probe_PNetLegacy_Xcc->Fill(FatJet1PNetLegacy_Xcc, weight);
       _FatJet1_probe_PNetLegacy_Xqq->Fill(FatJet1PNetLegacy_Xqq, weight);
       _FatJet1_probe_PNetLegacy_QCD->Fill(FatJet1PNetLegacy_QCD, weight);
