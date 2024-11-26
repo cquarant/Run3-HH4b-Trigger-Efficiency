@@ -23,7 +23,8 @@ declare -A era_runs=(
 
 # JEC configurations
 declare -A jec_configs=(
-    ["2022"]="Summer22_22Sep2023_RunCD_V2_DATA"
+    ["2022_RunC"]="Summer22_22Sep2023_RunCD_V2_DATA"
+    ["2022_RunD"]="Summer22_22Sep2023_RunCD_V2_DATA"
     ["2022EE_RunE"]="Summer22EE_22Sep2023_RunE_V2_DATA"
     ["2022EE_RunF"]="Summer22EE_22Sep2023_RunF_V2_DATA"
     ["2022EE_RunG"]="Summer22EE_22Sep2023_RunG_V2_DATA"
@@ -41,24 +42,54 @@ process_single_file() {
     local channel=$2
     local version=$3
     local run_tag=$4
-    local jec_config=$5
+    
+    # Get the year from era
+    local year=${era:0:4}
+    
+    # Extract run period (C/D/E/F/G) from run_tag
+    local run_period=${run_tag: -1}
 
-    if [ "$era" == "2023BPix" ] || [ "$era" == "2022EE" ]; then
-        # 2023BPix was in 2023, 2022EE was in 2022
-        local year=${era:0:4}
-        local sample_path="${sample_dir}/${year}/${channel}_${run_tag}${version}.root"
+    # Determine JEC config key based on era and version/run
+    local jec_key
+    if [ "$era" == "2023" ]; then
+        if [ "$version" == "v4" ]; then
+            jec_key="2023_v4"
+        else
+            jec_key="2023_v123"
+        fi
+    elif [ "$era" == "2023BPix" ]; then
+        jec_key="2023BPix"
     else
-        local sample_path="${sample_dir}/${era}/${channel}_${run_tag}.root"
+        jec_key="${era}_Run${run_period}"
     fi
     
-    local output_path="${TMP_DIR}/Histograms_${era}_data_${channel}_${run_tag}${version}.root"
+    local jec_config="${jec_configs[$jec_key]}"
+
+    # Handle input file version suffix for different eras
+    local input_version=""
+    if [ "$era" == "2023" ] || [ "$era" == "2023BPix" ]; then
+        input_version="_${version}"
+    fi
+
+    # For output files, add Run prefix for 2022/2022EE
+    local output_tag
+    if [ "$era" == "2022" ] || [ "$era" == "2022EE" ]; then
+        output_tag="Run${run_tag}"
+    else
+        output_tag="${run_tag}${input_version}"
+    fi
+
+    # Set up paths
+    local sample_path="${sample_dir}/${year}/${channel}_${run_tag}${input_version}.root"
+    local output_path="${TMP_DIR}/Histograms_${era}_data_${channel}_${output_tag}.root"
     
     # Set appropriate JEC paths
     local jec_dir="${jec_base}/${jec_config}"
     local jec_path_L2Relative="${jec_dir}/${jec_config}_L2Relative_AK8PFPuppi.txt"
     local jec_path_L2L3Residual="${jec_dir}/${jec_config}_L2L3Residual_AK8PFPuppi.txt"
 
-    echo "Processing ${era} ${channel} ${run_tag}${version}"
+    echo "Processing ${era} ${channel} ${run_tag}${input_version} with ${jec_config} JECs"
+    echo "Input file: ${sample_path}"
     root -l -b -q "histo_data.cpp(\"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\")"
 }
 
@@ -71,11 +102,11 @@ process_era() {
             for run_tag in ${era_runs[${era}]}; do
                 for channel in "${channels[@]}"; do
                     # Process v1-v3 with first JEC set
-                    for version in v{1..3}; do
-                        process_single_file "$era" "$channel" "$version" "$run_tag" "${jec_configs["2023_v123"]}"
+                    for version in v1 v2 v3; do
+                        process_single_file "$era" "$channel" "$version" "$run_tag"
                     done
                     # Process v4 with its specific JEC set
-                    process_single_file "$era" "$channel" "v4" "$run_tag" "${jec_configs["2023_v4"]}"
+                    process_single_file "$era" "$channel" "v4" "$run_tag"
                 done
             done
             ;;
@@ -83,29 +114,17 @@ process_era() {
         "2023BPix")
             for run_tag in ${era_runs[${era}]}; do
                 for channel in "${channels[@]}"; do
-                    for version in v{1..2}; do
-                        process_single_file "$era" "$channel" "$version" "$run_tag" "${jec_configs["2023BPix"]}"
+                    for version in v1 v2; do
+                        process_single_file "$era" "$channel" "$version" "$run_tag"
                     done
                 done
             done
             ;;
             
-        "2022")
+        "2022"|"2022EE")
             for run_tag in ${era_runs[${era}]}; do
                 for channel in "${channels[@]}"; do
-                    process_single_file "$era" "$channel" "" "$run_tag" "${jec_configs["2022"]}"
-                done
-            done
-            ;;
-            
-        "2022EE")
-            # Treat _RunE/_RunF/_RunG like version tags
-            for run_tag in ${era_runs[${era}]}; do
-                for channel in "${channels[@]}"; do
-                    local run_period=${run_tag:4:1}  # Extract E, F, or G
-                    local version="_Run${run_period}"
-                    local jec_key="2022EE_Run${run_period}"
-                    process_single_file "$era" "$channel" "$version" "$run_tag" "${jec_configs[$jec_key]}"
+                    process_single_file "$era" "$channel" "" "$run_tag"
                 done
             done
             ;;
