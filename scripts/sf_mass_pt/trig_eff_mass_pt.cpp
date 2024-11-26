@@ -17,10 +17,11 @@
 // #define x_max 350.0  // Adjust based on your preferred maximum
 // #define y_min 280.0  // Minimum for pT
 // #define y_max 1000.0 // Adjust based on your preferred maximum
-#define x_min 50.0    // Minimum for mSD
-#define x_max 350.0  // Adjust based on your preferred maximum
-#define y_min 0.0    // Minimum for pT
-#define y_max 1000.0 // Adjust based on your preferred maximum
+#define x_min 50.0     // Minimum for mSD
+#define x_max 350.0    // Minimum for mSD
+#define y_min 250.0    // Minimum for pT
+#define y_max 1000.0   // Maximum for pT
+#define SET_LOG true
 
 double get_dynamic_marker_size(TH2D *hist, double min_size = 0.05,
                                double max_size = 1.0) {
@@ -48,11 +49,12 @@ double get_dynamic_marker_size(TH2D *hist, double min_size = 0.05,
 
 void set_histo_style(TH2D *hist, std::string plot_title,
                      const std::string &x_axis_title,
-                     const std::string &y_axis_title) {
+                     const std::string &y_axis_title,
+                     float hist_min, float hist_max) {
   hist->SetMarkerStyle(23);
   // hist->SetMarkerSize(0.05);
   // hist->SetMarkerSize(1.0);
-  hist->SetMarkerSize(0.5);
+  hist->SetMarkerSize(0.9);
   // double marker_size = get_dynamic_marker_size(hist, 0.05, 1.0);
   // hist->SetMarkerSize(marker_size);
   hist->SetTitle(plot_title.c_str());
@@ -75,18 +77,20 @@ void set_histo_style(TH2D *hist, std::string plot_title,
   hist->GetYaxis()->SetTitleOffset(1.2);
   hist->GetYaxis()->SetTitleSize(0.045);
   hist->GetYaxis()->SetTitleFont(42);
-  // hist->GetYaxis()->SetMoreLogLabels(kTRUE); // Show more labels in log scale
   hist->GetYaxis()->SetNoExponent(kTRUE); // Don't use exponential notation
   hist->GetYaxis()->SetNdivisions(510);   // primary:5, secondary:10
 
   // z axis
   hist->GetZaxis()->SetTitle("Efficiency");
 
-  // gPad->SetLogx(1);
-  // gPad->SetLogy(1);
+  if (SET_LOG) {
+    hist->GetYaxis()->SetMoreLogLabels(kTRUE); // Show more labels in log scale
+    gPad->SetLogx(1);
+    gPad->SetLogy(1);
+  }
 
-  hist->SetMaximum(1.2);
-  hist->SetMinimum(0.0);
+  hist->SetMaximum(hist_max);
+  hist->SetMinimum(hist_min);
 }
 
 void trig_eff_mass_pt(const std::string &hist_mc_path,
@@ -116,7 +120,7 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   // Float_t bins_m[16] = {0.0,  5.0,   10.0,  20.0,  30.0,  40.0,  50.0,  60.0,
   //                       80.0, 100.0, 120.0, 150.0, 200.0, 250.0, 300.0, 350.0};
   // int num_m_bins = 15;
-  Float_t bins_pt[9] = {250, 275, 300, 350, 400, 450, 500, 600, 100000};
+  Float_t bins_pt[9] = {250, 275, 300, 350, 400, 450, 500, 600, 1000};
   int num_pt_bins = 8;
 
   Float_t bins_m[10] = {50, 60, 80, 100, 120, 150, 200, 250, 300, 350};
@@ -158,6 +162,11 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
     c->SetBottomMargin(0.2);
     c->SetLeftMargin(0.15);
     c->SetRightMargin(0.15);
+
+    if (SET_LOG) {
+      c->SetLogx(1);
+      c->SetLogy(1);
+    }
   }
 
   TFile *fData = new TFile(hist_data_path.c_str());
@@ -187,7 +196,7 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   std::string x_axis_title = "FatJet m_{SD} [GeV]";
   std::string y_axis_title = "FatJet p_{T} [GeV]";
 
-  set_histo_style(_data_probe, plot_title, x_axis_title, y_axis_title);
+  set_histo_style(_data_probe, plot_title, x_axis_title, y_axis_title, 0, 1.2);
   c1->cd();
   _data_probe->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
   _data_probe->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
@@ -195,7 +204,7 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   c1->SaveAs(figure_data_path.c_str());
 
   // Draw MC
-  set_histo_style(_mc_probe, plot_title, x_axis_title, y_axis_title);
+  set_histo_style(_mc_probe, plot_title, x_axis_title, y_axis_title, 0, 1.2);
   c2->cd();
   _mc_probe->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
   _mc_probe->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
@@ -228,7 +237,7 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   }
 
   // Draw Scale Factors
-  set_histo_style(_sf, plot_title, x_axis_title, y_axis_title);
+  set_histo_style(_sf, plot_title, x_axis_title, y_axis_title, 0.5, 1.5);
   c3->cd();
   _sf->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
   _sf->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
