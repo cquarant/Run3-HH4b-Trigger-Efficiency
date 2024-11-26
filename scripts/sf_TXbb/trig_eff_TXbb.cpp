@@ -185,7 +185,8 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
     _eff_mc->Draw("EP SAME");
     
     // Add legend
-    TLegend* legend = new TLegend(0.7, 0.2, 0.90, 0.35);
+    // TLegend* legend = new TLegend(0.7, 0.2, 0.9, 0.35);
+    TLegend* legend = new TLegend(0.2, 0.7, 0.4, 0.82);
     legend->SetBorderSize(0);
     legend->SetFillStyle(0);
     legend->AddEntry(_eff_data, "Data", "ep");
