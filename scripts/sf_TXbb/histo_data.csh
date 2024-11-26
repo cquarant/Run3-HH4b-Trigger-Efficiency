@@ -156,8 +156,15 @@ process_era() {
         ${OUTPUT_DIR}/Histograms_${era}_data_EGamma.root
 }
 
-# Process each era
-declare -a eras=("2022" "2022EE" "2023" "2023BPix")
-for era in "${eras[@]}"; do
-    process_era "$era"
-done
+if [ $# -ne 1 ]; then
+    # process all eras
+    eras=("2022" "2022EE" "2023" "2023BPix")
+    for era in "${eras[@]}"; do
+        process_era ${era} &
+    done
+    wait
+    echo "All data processing completed!"
+else
+    # process single era
+    process_era $1
+fi

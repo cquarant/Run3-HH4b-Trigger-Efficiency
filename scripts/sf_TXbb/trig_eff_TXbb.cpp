@@ -54,8 +54,9 @@ void set_histo_style_1D(TH1D* hist, const std::string& x_axis_title, const std::
     hist->GetYaxis()->SetNdivisions(510);
 }
 
-void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
-                   const std::string& output_root_path, const std::string& figure_path) {
+void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
+                   const std::string& tagger_name, const std::string& output_root_path, 
+                   const std::string& figure_path) {
     
     // Define the binning
     const int nBins = 20;
@@ -72,8 +73,10 @@ void trig_eff_TXbb(const std::string& data_path, const std::string& mc_path,
     // Define variables
     // TString tag_var = "FatJet1_tag_GloParT_XbbVsQCD";
     // TString probe_var = "FatJet1_probe_GloParT_XbbVsQCD";
-    TString tag_var = "FatJet1_tag_GloParT_XbbVsQCD";
-    TString probe_var = "FatJet1_probe_GloParT_XbbVsQCD";
+    // TString tag_var = "FatJet1_tag_PNetLegacy_XbbVsQCD";
+    // TString probe_var = "FatJet1_probe_PNetLegacy_XbbVsQCD";
+    TString tag_var = "FatJet1_tag_" + tagger_name + "_XbbVsQCD";
+    TString probe_var = "FatJet1_probe_" + tagger_name + "_XbbVsQCD";
 
     // Get original histograms
     TH1D* _mc_tag_orig = (TH1D*)fMC->Get(tag_var);

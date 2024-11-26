@@ -68,9 +68,9 @@ get_era_paths() {
 
     # Trigger efficiency paths (as a function of mass and pt)
     if [ "$process" == "ttbar" ]; then
-        sf_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_2023_TTbar.root"
+        sf_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_${era}_TTbar.root"
     else
-        sf_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_2023_QCD.root"
+        sf_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_${era}_QCD.root"
     fi
 }
 
@@ -174,19 +174,16 @@ process_era() {
     echo "MC processing for era ${era} completed successfully!"
 }
 
-main() {
-    # declare -a eras=("2022" "2022EE" "2023" "2023BPix")
-    declare -a eras=("2023" "2023BPix")
+if [ $# -ne 1 ]; then
+    # process all eras
+    eras=("2022" "2022EE" "2023" "2023BPix")
     for era in "${eras[@]}"; do
-        echo "Starting processing for era: ${era}"
-        if process_era ${era}; then
-            echo "Successfully processed era ${era}"
-        else
-            echo "Warning: Some processing steps failed for era ${era}"
-        fi
+        process_era ${era} &
     done
+    wait
     echo "All MC processing completed!"
-}
+else
+    # process single era
+    process_era $1
+fi
 
-# Execute main function
-main
