@@ -231,7 +231,7 @@ void histo_mc(
   //                       80.0, 100.0, 120.0, 150.0, 200.0, 250.0, 300.0, 350.0};
   // int num_m_bins = 15;
   
-  Float_t bins_pt[9] = {250, 275, 300, 350, 400, 450, 500, 600, 2000};
+  Float_t bins_pt[9] = {250, 275, 300, 350, 400, 450, 500, 600, 1000};
   int num_pt_bins = 8;
 
   Float_t bins_m[10] = {50, 60, 80, 100, 120, 150, 200, 250, 300, 350};
@@ -792,7 +792,9 @@ void histo_mc(
     // weight
     weight = (weight / SumGenWeights) * xsec * param_dict.Lumi;
     double PU_weight = PU_Rew[(int)npu];
-    weight = weight * PU_weight;
+    if (PU_weight < 20.0) {
+      weight = weight * PU_weight;
+    }
 
     // Add Trigger PT_Mass and PNet Scale Factors
     double eff_data = 0;
