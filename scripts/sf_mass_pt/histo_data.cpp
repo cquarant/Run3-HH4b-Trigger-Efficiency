@@ -683,8 +683,8 @@ void histo_data(
     // ParticleNetLegacy
     Float_t FatJet1PNetLegacy_XbbVsQCD =
         FatJet1PNetLegacy_Xbb / (FatJet1PNetLegacy_Xbb + FatJet1PNetLegacy_QCD + 1e-12);
-    _FatJet1_tag_PNetLegacy_Xbb->Fill(FatJet1PNetLegacy_Xbb, weight);
-    _FatJet1_tag_PNetLegacy_XbbVsQCD->Fill(FatJet1PNetLegacy_XbbVsQCD, weight);
+    _FatJet1_tag_PNetLegacy_Xbb->Fill(FatJet1PNetLegacy_Xbb);
+    _FatJet1_tag_PNetLegacy_XbbVsQCD->Fill(FatJet1PNetLegacy_XbbVsQCD);
     _FatJet1_tag_PNetLegacy_Xcc->Fill(FatJet1PNetLegacy_Xcc);
     _FatJet1_tag_PNetLegacy_Xqq->Fill(FatJet1PNetLegacy_Xqq);
     _FatJet1_tag_PNetLegacy_QCD->Fill(FatJet1PNetLegacy_QCD);
