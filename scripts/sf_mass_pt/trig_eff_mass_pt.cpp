@@ -172,58 +172,58 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   TFile *fData = new TFile(hist_data_path.c_str());
   TFile *fMC = new TFile(hist_mc_path.c_str());
 
-  TH2D *_mc_tag = (TH2D *)fMC->Get("FatJet1_tag_Mass_Pt");
-  TH2D *_mc_probe = (TH2D *)fMC->Get("FatJet1_probe_Mass_Pt");
-  TH2D *_data_tag = (TH2D *)fData->Get("FatJet1_tag_Mass_Pt");
-  TH2D *_data_probe = (TH2D *)fData->Get("FatJet1_probe_Mass_Pt");
+  TH2D *_mc_all = (TH2D *)fMC->Get("ProbeJet_all_Mass_Pt");
+  TH2D *_mc_pass = (TH2D *)fMC->Get("ProbeJet_pass_Mass_Pt");
+  TH2D *_data_all = (TH2D *)fData->Get("ProbeJet_all_Mass_Pt");
+  TH2D *_data_pass = (TH2D *)fData->Get("ProbeJet_pass_Mass_Pt");
 
-  if (!_mc_tag || !_mc_probe || !_data_tag || !_data_probe) {
+  if (!_mc_all || !_mc_pass || !_data_all || !_data_pass) {
     std::cerr << "Error: could not find histograms in input files" << std::endl;
     return;
   }
 
-  _mc_tag->Rebin2D(rebPT, rebM);
-  _mc_probe->Rebin2D(rebPT, rebM);
-  _mc_probe->Sumw2();
-  _mc_probe->Divide(_mc_tag);
+  _mc_all->Rebin2D(rebPT, rebM);
+  _mc_pass->Rebin2D(rebPT, rebM);
+  _mc_pass->Sumw2();
+  _mc_pass->Divide(_mc_all);
 
-  _data_tag->Rebin2D(rebPT, rebM);
-  _data_probe->Rebin2D(rebPT, rebM);
-  _data_probe->Sumw2();
-  _data_probe->Divide(_data_tag);
+  _data_all->Rebin2D(rebPT, rebM);
+  _data_pass->Rebin2D(rebPT, rebM);
+  _data_pass->Sumw2();
+  _data_pass->Divide(_data_all);
 
   // Draw Data
   std::string x_axis_title = "FatJet m_{SD} [GeV]";
   std::string y_axis_title = "FatJet p_{T} [GeV]";
 
-  set_histo_style(_data_probe, plot_title, x_axis_title, y_axis_title, 0, 1.2);
+  set_histo_style(_data_pass, plot_title, x_axis_title, y_axis_title, 0, 1.2);
   c1->cd();
-  _data_probe->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
-  _data_probe->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
-  _data_probe->Draw("colz text e");
+  _data_pass->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
+  _data_pass->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
+  _data_pass->Draw("colz text e");
   c1->SaveAs(figure_data_path.c_str());
 
   // Draw MC
-  set_histo_style(_mc_probe, plot_title, x_axis_title, y_axis_title, 0, 1.2);
+  set_histo_style(_mc_pass, plot_title, x_axis_title, y_axis_title, 0, 1.2);
   c2->cd();
-  _mc_probe->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
-  _mc_probe->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
-  _mc_probe->Draw("colz text e");
+  _mc_pass->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
+  _mc_pass->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
+  _mc_pass->Draw("colz text e");
   c2->SaveAs(figure_mc_path.c_str());
 
   // Fill histograms and compute scale factors
-  for (int i = 0; i <= _data_probe->GetNbinsX(); i++) {
-    for (int j = 0; j <= _data_probe->GetNbinsY(); j++) {
-      _eff_data->SetBinContent(i, j, _data_probe->GetBinContent(i, j));
-      _eff_data->SetBinError(i, j, _data_probe->GetBinError(i, j));
-      _eff_mc->SetBinContent(i, j, _mc_probe->GetBinContent(i, j));
-      _eff_mc->SetBinError(i, j, _mc_probe->GetBinError(i, j));
+  for (int i = 0; i <= _data_pass->GetNbinsX(); i++) {
+    for (int j = 0; j <= _data_pass->GetNbinsY(); j++) {
+      _eff_data->SetBinContent(i, j, _data_pass->GetBinContent(i, j));
+      _eff_data->SetBinError(i, j, _data_pass->GetBinError(i, j));
+      _eff_mc->SetBinContent(i, j, _mc_pass->GetBinContent(i, j));
+      _eff_mc->SetBinError(i, j, _mc_pass->GetBinError(i, j));
 
       // Calculate scale factors
-      double data_eff = _data_probe->GetBinContent(i, j);
-      double mc_eff = _mc_probe->GetBinContent(i, j);
-      double data_err = _data_probe->GetBinError(i, j);
-      double mc_err = _mc_probe->GetBinError(i, j);
+      double data_eff = _data_pass->GetBinContent(i, j);
+      double mc_eff = _mc_pass->GetBinContent(i, j);
+      double data_err = _data_pass->GetBinError(i, j);
+      double mc_err = _mc_pass->GetBinError(i, j);
 
       if (mc_eff > 0) {
         double sf = data_eff / mc_eff;

@@ -71,76 +71,76 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
     TFile* fMC = new TFile(mc_path.c_str());
 
     // Define variables
-    // TString tag_var = "ProbeJet_all_GloParT_XbbVsQCD";
-    // TString probe_var = "ProbeJet_pass_GloParT_XbbVsQCD";
-    // TString tag_var = "ProbeJet_all_PNetLegacy_XbbVsQCD";
-    // TString probe_var = "ProbeJet_pass_PNetLegacy_XbbVsQCD";
-    TString tag_var = "ProbeJet_all_" + tagger_name + "_XbbVsQCD";
-    TString probe_var = "ProbeJet_pass_" + tagger_name + "_XbbVsQCD";
+    // TString tag_var = "FatJet1_tag_GloParT_XbbVsQCD";
+    // TString probe_var = "FatJet1_probe_GloParT_XbbVsQCD";
+    // TString tag_var = "FatJet1_tag_PNetLegacy_XbbVsQCD";
+    // TString probe_var = "FatJet1_probe_PNetLegacy_XbbVsQCD";
+    TString tag_var = "FatJet1_tag_" + tagger_name + "_XbbVsQCD";
+    TString probe_var = "FatJet1_probe_" + tagger_name + "_XbbVsQCD";
 
     // Get original histograms
-    TH1D* _mc_all_orig = (TH1D*)fMC->Get(tag_var);
-    TH1D* _mc_pass_orig = (TH1D*)fMC->Get(probe_var);
-    TH1D* _data_all_orig = (TH1D*)fData->Get(tag_var);
-    TH1D* _data_pass_orig = (TH1D*)fData->Get(probe_var);
+    TH1D* _mc_tag_orig = (TH1D*)fMC->Get(tag_var);
+    TH1D* _mc_probe_orig = (TH1D*)fMC->Get(probe_var);
+    TH1D* _data_tag_orig = (TH1D*)fData->Get(tag_var);
+    TH1D* _data_probe_orig = (TH1D*)fData->Get(probe_var);
 
     // Check if histograms exist
-    if (!_mc_all_orig || !_mc_pass_orig || !_data_all_orig || !_data_pass_orig) {
+    if (!_mc_tag_orig || !_mc_probe_orig || !_data_tag_orig || !_data_probe_orig) {
         std::cerr << "Error: could not find histograms in input files" << std::endl;
         return;
     }
 
     // Create new histograms with desired binning
-    TH1D* _mc_all = new TH1D("mc_all", "MC Tag", nBins, xbb_bins);
-    TH1D* _mc_pass = new TH1D("mc_pass", "MC Probe", nBins, xbb_bins);
-    TH1D* _data_all = new TH1D("data_all", "Data Tag", nBins, xbb_bins);
-    TH1D* _data_pass = new TH1D("data_pass", "Data Probe", nBins, xbb_bins);
+    TH1D* _mc_tag = new TH1D("mc_tag", "MC Tag", nBins, xbb_bins);
+    TH1D* _mc_probe = new TH1D("mc_probe", "MC Probe", nBins, xbb_bins);
+    TH1D* _data_tag = new TH1D("data_tag", "Data Tag", nBins, xbb_bins);
+    TH1D* _data_probe = new TH1D("data_probe", "Data Probe", nBins, xbb_bins);
 
     // Fill new histograms
-    for (int i = 1; i <= _mc_all_orig->GetNbinsX(); i++) {
-        double x = _mc_all_orig->GetBinCenter(i);
-        double content = _mc_all_orig->GetBinContent(i);
-        double error = _mc_all_orig->GetBinError(i);
-        _mc_all->Fill(x, content);
-        int newBin = _mc_all->FindBin(x);
-        _mc_all->SetBinError(newBin, error);
+    for (int i = 1; i <= _mc_tag_orig->GetNbinsX(); i++) {
+        double x = _mc_tag_orig->GetBinCenter(i);
+        double content = _mc_tag_orig->GetBinContent(i);
+        double error = _mc_tag_orig->GetBinError(i);
+        _mc_tag->Fill(x, content);
+        int newBin = _mc_tag->FindBin(x);
+        _mc_tag->SetBinError(newBin, error);
     }
 
-    for (int i = 1; i <= _mc_pass_orig->GetNbinsX(); i++) {
-        double x = _mc_pass_orig->GetBinCenter(i);
-        double content = _mc_pass_orig->GetBinContent(i);
-        double error = _mc_pass_orig->GetBinError(i);
-        _mc_pass->Fill(x, content);
-        int newBin = _mc_pass->FindBin(x);
-        _mc_pass->SetBinError(newBin, error);
+    for (int i = 1; i <= _mc_probe_orig->GetNbinsX(); i++) {
+        double x = _mc_probe_orig->GetBinCenter(i);
+        double content = _mc_probe_orig->GetBinContent(i);
+        double error = _mc_probe_orig->GetBinError(i);
+        _mc_probe->Fill(x, content);
+        int newBin = _mc_probe->FindBin(x);
+        _mc_probe->SetBinError(newBin, error);
     }
 
-    for (int i = 1; i <= _data_all_orig->GetNbinsX(); i++) {
-        double x = _data_all_orig->GetBinCenter(i);
-        double content = _data_all_orig->GetBinContent(i);
-        double error = _data_all_orig->GetBinError(i);
-        _data_all->Fill(x, content);
-        int newBin = _data_all->FindBin(x);
-        _data_all->SetBinError(newBin, error);
+    for (int i = 1; i <= _data_tag_orig->GetNbinsX(); i++) {
+        double x = _data_tag_orig->GetBinCenter(i);
+        double content = _data_tag_orig->GetBinContent(i);
+        double error = _data_tag_orig->GetBinError(i);
+        _data_tag->Fill(x, content);
+        int newBin = _data_tag->FindBin(x);
+        _data_tag->SetBinError(newBin, error);
     }
 
-    for (int i = 1; i <= _data_pass_orig->GetNbinsX(); i++) {
-        double x = _data_pass_orig->GetBinCenter(i);
-        double content = _data_pass_orig->GetBinContent(i);
-        double error = _data_pass_orig->GetBinError(i);
-        _data_pass->Fill(x, content);
-        int newBin = _data_pass->FindBin(x);
-        _data_pass->SetBinError(newBin, error);
+    for (int i = 1; i <= _data_probe_orig->GetNbinsX(); i++) {
+        double x = _data_probe_orig->GetBinCenter(i);
+        double content = _data_probe_orig->GetBinContent(i);
+        double error = _data_probe_orig->GetBinError(i);
+        _data_probe->Fill(x, content);
+        int newBin = _data_probe->FindBin(x);
+        _data_probe->SetBinError(newBin, error);
     }
 
     // Calculate efficiencies
-    TH1D* _eff_mc = (TH1D*)_mc_pass->Clone("eff_MC");
+    TH1D* _eff_mc = (TH1D*)_mc_probe->Clone("Eff_MC");
     _eff_mc->Sumw2();
-    _eff_mc->Divide(_mc_all);
+    _eff_mc->Divide(_mc_tag);
 
-    TH1D* _eff_data = (TH1D*)_data_pass->Clone("eff_Data");
+    TH1D* _eff_data = (TH1D*)_data_probe->Clone("Eff_Data");
     _eff_data->Sumw2();
-    _eff_data->Divide(_data_all);
+    _eff_data->Divide(_data_tag);
 
     // Calculate scale factors
     TH1D* _SF_TXbb = (TH1D*)_eff_data->Clone("SF_TXbb");
@@ -226,10 +226,10 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
     f->Close();
 
     // Clean up
-    delete _mc_all;
-    delete _mc_pass;
-    delete _data_all;
-    delete _data_pass;
+    delete _mc_tag;
+    delete _mc_probe;
+    delete _data_tag;
+    delete _data_probe;
     delete _eff_mc;
     delete _eff_data;
     delete _SF_TXbb;
