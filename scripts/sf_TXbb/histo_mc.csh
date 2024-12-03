@@ -77,6 +77,7 @@ get_era_paths() {
 process_ttbar() {
     local era=$1
     echo "Processing TTBar samples for era: ${era}..."
+    local year=${era:0:4}
     
     # Get paths specific to TTBar processing
     get_era_paths ${era} "ttbar" || return 1
@@ -96,7 +97,7 @@ process_ttbar() {
         local output_path=${TMP_DIR}/Histograms_${era}_MC_TTtoLNu2Q_${channel}.root
         
         echo "Processing TTBar for channel: ${channel}"
-        root -l -b -q "histo_mc.cpp(\"${ttbar_type}\", \"${channel}\", \"${ttbar_file}\", \
+        root -l -b -q "histo_mc.cpp(\"${year}\", \"${ttbar_type}\", \"${channel}\", \"${ttbar_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${sf_path}\", \"${param_path}\", \
             \"${jec_path_ak4}\", \"${jec_path_ak8}\")"
     done
@@ -108,6 +109,7 @@ process_ttbar() {
 process_qcd() {
     local era=$1
     echo "Processing QCD samples for era: ${era}..."
+    local year=${era:0:4}
     
     # Get paths specific to QCD processing
     get_era_paths ${era} "qcd" || return 1
@@ -137,7 +139,7 @@ process_qcd() {
         local output_path=${TMP_DIR}/Histograms_${era}_MC_QCD-4Jets_HT-${ht_bin}.root
         local qcd_type="QCD_HT_${ht_bin}"
 
-        root -l -b -q "histo_mc.cpp(\"${qcd_type}\", \"${channel}\", \"${sample_file}\", \
+        root -l -b -q "histo_mc.cpp(\"${year}\", \"${qcd_type}\", \"${channel}\", \"${sample_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${sf_path}\", \"${param_path}\", \
             \"${jec_path_ak4}\", \"${jec_path_ak8}\")"
     done
