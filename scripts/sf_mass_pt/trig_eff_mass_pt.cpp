@@ -178,72 +178,60 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   TH2D *_data_pass = (TH2D *)fData->Get("ProbeJet_pass_Mass_Pt");
 
   if (!_mc_all || !_mc_pass || !_data_all || !_data_pass) {
-    std::cerr << "Error: could not find histograms in input files" << std::endl;
-    return;
+      std::cerr << "Error: could not find histograms in input files" << std::endl;
+      return;
   }
 
+  // Enable automatic error calculation for all histograms
+  _mc_all->Sumw2();
+  _mc_pass->Sumw2();
+  _data_all->Sumw2();
+  _data_pass->Sumw2();
+  _eff_data->Sumw2();
+  _eff_mc->Sumw2();
+  _sf->Sumw2();
+
+  // Apply rebinning
   _mc_all->Rebin2D(rebPT, rebM);
   _mc_pass->Rebin2D(rebPT, rebM);
-  _mc_pass->Sumw2();
-  _mc_pass->Divide(_mc_all);
-
   _data_all->Rebin2D(rebPT, rebM);
   _data_pass->Rebin2D(rebPT, rebM);
-  _data_pass->Sumw2();
-  _data_pass->Divide(_data_all);
 
-  // Draw Data
+  // Calculate efficiencies with automatic error propagation
+  _eff_data->Divide(_data_pass, _data_all, 1.0, 1.0, "B");  // "B" for binomial errors
+  _eff_mc->Divide(_mc_pass, _mc_all, 1.0, 1.0, "B");
+
+  // Calculate scale factors with automatic error propagation
+  _sf->Divide(_eff_data, _eff_mc);
+
+  // Draw Data efficiency
   std::string x_axis_title = "FatJet m_{SD} [GeV]";
   std::string y_axis_title = "FatJet p_{T} [GeV]";
 
-  set_histo_style(_data_pass, plot_title, x_axis_title, y_axis_title, 0, 1.2);
+  set_histo_style(_eff_data, plot_title, x_axis_title, y_axis_title, 0, 1.2);
   c1->cd();
-  _data_pass->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
-  _data_pass->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
-  _data_pass->Draw("colz text e");
+  _eff_data->GetXaxis()->SetRangeUser(x_min, x_max);
+  _eff_data->GetYaxis()->SetRangeUser(y_min, y_max);
+  _eff_data->Draw("colz text e");
   c1->SaveAs(figure_data_path.c_str());
 
-  // Draw MC
-  set_histo_style(_mc_pass, plot_title, x_axis_title, y_axis_title, 0, 1.2);
+  // Draw MC efficiency
+  set_histo_style(_eff_mc, plot_title, x_axis_title, y_axis_title, 0, 1.2);
   c2->cd();
-  _mc_pass->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
-  _mc_pass->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
-  _mc_pass->Draw("colz text e");
+  _eff_mc->GetXaxis()->SetRangeUser(x_min, x_max);
+  _eff_mc->GetYaxis()->SetRangeUser(y_min, y_max);
+  _eff_mc->Draw("colz text e");
   c2->SaveAs(figure_mc_path.c_str());
-
-  // Fill histograms and compute scale factors
-  for (int i = 0; i <= _data_pass->GetNbinsX(); i++) {
-    for (int j = 0; j <= _data_pass->GetNbinsY(); j++) {
-      _eff_data->SetBinContent(i, j, _data_pass->GetBinContent(i, j));
-      _eff_data->SetBinError(i, j, _data_pass->GetBinError(i, j));
-      _eff_mc->SetBinContent(i, j, _mc_pass->GetBinContent(i, j));
-      _eff_mc->SetBinError(i, j, _mc_pass->GetBinError(i, j));
-
-      // Calculate scale factors
-      double data_eff = _data_pass->GetBinContent(i, j);
-      double mc_eff = _mc_pass->GetBinContent(i, j);
-      double data_err = _data_pass->GetBinError(i, j);
-      double mc_err = _mc_pass->GetBinError(i, j);
-
-      if (mc_eff > 0) {
-        double sf = data_eff / mc_eff;
-        // Error propagation for ratio
-        double sf_err =
-            sf * sqrt(pow(data_err / data_eff, 2) + pow(mc_err / mc_eff, 2));
-        _sf->SetBinContent(i, j, sf);
-        _sf->SetBinError(i, j, sf_err);
-      }
-    }
-  }
 
   // Draw Scale Factors
   set_histo_style(_sf, plot_title, x_axis_title, y_axis_title, 0.5, 1.5);
   c3->cd();
-  _sf->GetXaxis()->SetRangeUser(x_min, x_max); // Set x-axis range
-  _sf->GetYaxis()->SetRangeUser(y_min, y_max); // Set y-axis range
+  _sf->GetXaxis()->SetRangeUser(x_min, x_max);
+  _sf->GetYaxis()->SetRangeUser(y_min, y_max);
   _sf->Draw("colz text e");
   c3->SaveAs(figure_sf_path.c_str());
 
+  // Write to output file
   f->cd();
   _eff_data->Write();
   _eff_mc->Write();
