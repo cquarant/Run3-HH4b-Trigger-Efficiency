@@ -26,16 +26,6 @@ std::string to_lower(std::string str) {
   return str;
 }
 
-std::string extract_year(const std::string &run_tag) {
-  if (run_tag == "2022C" || run_tag == "2022D" || run_tag == "2022E" || run_tag == "2022F" || run_tag == "2022G") {
-    return "2022";
-  } else if (run_tag == "2023C" || run_tag == "2023D") {
-    return "2023";
-  } else {
-    throw std::runtime_error("Unsupported era: " + run_tag);
-  }
-}
-
 // D-phi
 double phi_dist(double a, double b) {
   if (fabs(a - b) > 3.14159265) {
@@ -53,6 +43,7 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
 void histo_data(
+    const std::string &year,                 // 2022, 2023
     const std::string &run_tag,              // e.g. 2023C, 2023D
     const std::string &channel,              // e.g. Muon, EGamma, JetMET
     const std::string &sample_path,          // path to the root file
@@ -97,7 +88,6 @@ void histo_data(
 
   gSystem->Load("libFWCoreFWLite.so");
 
-  std::string year = extract_year(run_tag);
   std::string channel_lower = to_lower(channel);
   std::cout << "Run tag: " << run_tag << std::endl;
   std::cout << "Channel: " << channel << std::endl;
@@ -836,11 +826,12 @@ void histo_data(
       continue;
     }
 
+
     bool matched_to_AK8PFJet230_SoftDropMass40 = false;
     for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
       if ((Trigger_Object_bit[itrg] & 4) == 4) {
         double dR = get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
-                            Trigger_Object_phi[itrg]);
+                          Trigger_Object_phi[itrg]);
         if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
           matched_to_AK8PFJet230_SoftDropMass40 = true;
           break;
@@ -848,28 +839,34 @@ void histo_data(
       }
     }
 
-    bool matched_to_AK8PFJet250 = false;
-    for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
-      if (Trigger_Object_bit[itrg] == 1) {
-        double dR = get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
-                            Trigger_Object_phi[itrg]);
-        if (dR < 0.4 && Trigger_Object_pt[itrg] > 250) {
-          matched_to_AK8PFJet250 = true;
-          break;
-        }
-      }
-    }
-
-    if (!matched_to_AK8PFJet230_SoftDropMass40 || !matched_to_AK8PFJet250) {
+    if (!matched_to_AK8PFJet230_SoftDropMass40) {
       continue;
     }
 
     bool probe_pass = false;
     if (year == "2022") {
+      // $CMSSW_RELEASE_BASE/src/PhysicsTools/NanoAOD/python/triggerObjects_cff.py
+      bool matched_to_AK8PFJet250 = false;
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
+        if (Trigger_Object_bit[itrg] == 1) {
+          double dR = get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
+                            Trigger_Object_phi[itrg]);
+          if (dR < 0.4 && Trigger_Object_pt[itrg] > 250) {
+            matched_to_AK8PFJet250 = true;
+            break;
+          }
+        }
+      }
+
+      if (!matched_to_AK8PFJet250) {
+        continue;
+      }
+
       for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
         if ((Trigger_Object_bit[itrg] & 12) == 12) {
-          double dR = get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
-                              Trigger_Object_phi[itrg]);
+          double dR =
+              get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
+                     Trigger_Object_phi[itrg]);
           if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
             probe_pass = true;
             break;
@@ -878,9 +875,11 @@ void histo_data(
       }
     } else if (year == "2023") {
       // bool match_qcd = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
-      // bool match_egamma = HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 11;
-      // bool match_muon = HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 13;
-      // if (channel_lower == "egamma" or channel_lower == "electron") {
+      // bool match_egamma =
+      // HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 &&
+      // abs(lep1_Id) == 11; bool match_muon =
+      // HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) ==
+      // 13; if (channel_lower == "egamma" or channel_lower == "electron") {
       //   probe_pass = match_egamma;
       // } else if (channel_lower == "muon") {
       //   probe_pass = match_muon;

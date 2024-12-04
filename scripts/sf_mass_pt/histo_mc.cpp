@@ -165,15 +165,80 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
+// JEC and JER
+struct JetCorrectionResult {
+  Float_t corrected_pt;
+  Float_t corrected_massSD;
+};
+
+JetCorrectionResult applyJEC(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi,
+                             Float_t jet_rawFactor, Float_t jet_massSD,
+                             FactorizedJetCorrector *corrector,
+                             bool correct_mass = true) {
+  JetCorrectionResult result{jet_pt, jet_massSD};
+
+  if (jet_pt > 0) {
+    Float_t raw_pt = jet_pt * (1.0 - jet_rawFactor);
+    corrector->setJetPt(raw_pt);
+    corrector->setJetEta(jet_eta);
+    corrector->setJetPhi(jet_phi);
+    Float_t correction_factor = corrector->getCorrection();
+
+    result.corrected_pt = raw_pt * correction_factor;
+    if (correct_mass) {
+      result.corrected_massSD =
+          jet_massSD * (1.0 - jet_rawFactor) * correction_factor;
+    }
+  }
+
+  return result;
+}
+
+JetCorrectionResult
+applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
+         const JME::JetResolution &resolution_pt,
+         const JME::JetResolutionScaleFactor &resolution_pt_sf, Float_t rho,
+         const Float_t *genJetPts, const Float_t *genJetEtas,
+         const Float_t *genJetPhis, int nGenJets) {
+
+  // Get resolution and scale factors
+  JME::JetParameters JerPARAM = {{JME::Binning::JetPt, jet_pt},
+                                 {JME::Binning::JetEta, jet_eta},
+                                 {JME::Binning::Rho, rho}};
+
+  Float_t resolution = resolution_pt.getResolution(JerPARAM);
+  Float_t resolution_sf = resolution_pt_sf.getScaleFactor(JerPARAM);
+
+  // Calculate smearing
+  const Float_t MAX_DELTA_R = 0.2;
+  Float_t smearFactor = 1.0;
+
+  for (int nGJ = 0; nGJ < nGenJets; nGJ++) {
+    Float_t delta_R = get_dR(jet_eta, jet_phi, genJetEtas[nGJ], genJetPhis[nGJ]);
+    Float_t pt_diff_ratio = fabs(jet_pt - genJetPts[nGJ]) / jet_pt;
+    Float_t resolution_threshold = 3 * resolution;
+
+    if (delta_R < MAX_DELTA_R && pt_diff_ratio < resolution_threshold) {
+      smearFactor = 1.0 + (resolution_sf - 1.0) * (jet_pt - genJetPts[nGJ]) / jet_pt;
+      break;
+    }
+  }
+
+  // Apply smearing
+  return JetCorrectionResult{jet_pt * smearFactor, jet_massSD * smearFactor};
+}
+
 void histo_mc(
-    const std::string &data_type,    // Example: TTtoLNu2Q, QCD_HT100to200
-    const std::string &channel,      // Muon, EGamma, leptonic
-    const std::string &sample_path,  // path to the root file
-    const std::string &output_path,  // path to the output root file
-    const std::string &pu_path,      // path to the pileup reweighting file
-    const std::string &param_path,   // path to the parameters file
-    const std::string &jec_path_ak4, // path to th  e AK4 JEC txt file
-    const std::string &jec_path_ak8  // path to the AK8 JEC txt file
+    const std::string &year,        // 2022, 2023
+    const std::string &data_type,   // Example: TTtoLNu2Q, QCD_HT100to200
+    const std::string &channel,     // Muon, EGamma, leptonic
+    const std::string &sample_path, // path to the root file
+    const std::string &output_path, // path to the output root file
+    const std::string &pu_path,     // path to the pileup reweighting file
+    const std::string &param_path,  // path to the parameters file
+    const std::string &jec_path,    // path to the AK8 JEC txt file
+    const std::string &jer_path,    // path to the AK8 JER txt file
+    const std::string &jer_path_sf  // path to the AK8 JER SF txt file
 ) {
   gSystem->Load("libFWCoreFWLite.so");
 
@@ -184,8 +249,9 @@ void histo_mc(
   std::cout << "Output Path: " << output_path << std::endl;
   std::cout << "PU Path: " << pu_path << std::endl;
   std::cout << "Param Path: " << param_path << std::endl;
-  std::cout << "AK4 JEC Path: " << jec_path_ak4 << std::endl;
-  std::cout << "AK8 JEC Path: " << jec_path_ak8 << std::endl;
+  std::cout << "JEC Path: " << jec_path << std::endl;
+  std::cout << "JER Path: " << jer_path << std::endl;
+  std::cout << "JER SF Path: " << jer_path_sf << std::endl;
 
   // parse ParamDict
   ParamDict param_dict;
@@ -197,12 +263,13 @@ void histo_mc(
 
   // JEC
   vector<JetCorrectorParameters> vPar;
-  vPar.push_back(JetCorrectorParameters(jec_path_ak4.c_str()));
+  vPar.push_back(JetCorrectorParameters(jec_path.c_str()));
   FactorizedJetCorrector *corrector = new FactorizedJetCorrector(vPar);
 
-  vector<JetCorrectorParameters> vParAK8;
-  vParAK8.push_back(JetCorrectorParameters(jec_path_ak8.c_str()));
-  FactorizedJetCorrector *corrector_AK8 = new FactorizedJetCorrector(vParAK8);
+  // JER
+  JME::JetResolution resolution_pt = JME::JetResolution(jer_path.c_str());
+  JME::JetResolutionScaleFactor resolution_pt_sf =
+      JME::JetResolutionScaleFactor(jer_path_sf.c_str());
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
@@ -543,9 +610,11 @@ void histo_mc(
 
   // FatJet 3 kinematics
   Float_t FatJet3_pt;
-  Float_t FatJet3_rawFactor;
   Float_t FatJet3_eta;
   Float_t FatJet3_phi;
+  Float_t FatJet3_Mass;
+  Float_t FatJet3_MassSD;
+  Float_t FatJet3_rawFactor;
 
   Int_t nGenJet;
   Float_t GenJet_eta[ARR_SIZE];
@@ -713,9 +782,11 @@ void histo_mc(
 
   // FatJet 3 kinematics
   InputTree->SetBranchAddress("fatJet3_pt", &FatJet3_pt);
-  InputTree->SetBranchAddress("fatJet3_rawFactor", &FatJet3_rawFactor);
   InputTree->SetBranchAddress("fatJet3_eta", &FatJet3_eta);
   InputTree->SetBranchAddress("fatJet3_phi", &FatJet3_phi);
+  InputTree->SetBranchAddress("fatJet3_mass", &FatJet3_Mass);
+  InputTree->SetBranchAddress("fatJet3_msoftdrop", &FatJet3_MassSD);
+  InputTree->SetBranchAddress("fatJet3_rawFactor", &FatJet3_rawFactor);
 
   // gen-level jets
   InputTree->SetBranchAddress("nGenJet", &nGenJet);
@@ -768,33 +839,45 @@ void histo_mc(
       throw std::invalid_argument("Invalid channel: " + channel);
     }
 
-    // FatJets correction and selection
-    if (FatJet1_pt > 0) {
-      double raw_FatJet1_pt = FatJet1_pt * (1.0 - FatJet1_rawFactor);
-      corrector_AK8->setJetPt(raw_FatJet1_pt);
-      corrector_AK8->setJetEta(FatJet1_eta);
-      corrector_AK8->setJetPhi(FatJet1_phi);
-      double corr = corrector_AK8->getCorrection();
-      FatJet1_pt = raw_FatJet1_pt * corr;
-      FatJet1_MassSD = FatJet1_MassSD * (1.0 - FatJet1_rawFactor) * corr;
-    }
-    if (FatJet2_pt > 0) {
-      double raw_FatJet2_pt = FatJet2_pt * (1.0 - FatJet2_rawFactor);
-      corrector_AK8->setJetPt(raw_FatJet2_pt);
-      corrector_AK8->setJetEta(FatJet2_eta);
-      corrector_AK8->setJetPhi(FatJet2_phi);
-      double corr = corrector_AK8->getCorrection();
-      FatJet2_pt = raw_FatJet2_pt * corr;
-      FatJet2_MassSD = FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * corr;
-    }
-    if (FatJet3_pt > 0) {
-      double raw_FatJet3_pt = FatJet3_pt * (1.0 - FatJet3_rawFactor);
-      corrector_AK8->setJetPt(raw_FatJet3_pt);
-      corrector_AK8->setJetEta(FatJet3_eta);
-      corrector_AK8->setJetPhi(FatJet3_phi);
-      double corr = corrector_AK8->getCorrection();
-      FatJet3_pt = raw_FatJet3_pt * corr;
-    }
+    // FatJets correction (JEC and JER)
+    JetCorrectionResult jec1 =
+        applyJEC(FatJet1_pt, FatJet1_eta, FatJet1_phi, FatJet1_rawFactor,
+                 FatJet1_MassSD, corrector);
+    FatJet1_pt = jec1.corrected_pt;
+    FatJet1_MassSD = jec1.corrected_massSD;
+
+    JetCorrectionResult jer1 =
+        applyJER(FatJet1_pt, FatJet1_eta, FatJet1_phi, FatJet1_MassSD,
+                 resolution_pt, resolution_pt_sf, rho, GenJetAK8_pt,
+                 GenJetAK8_eta, GenJetAK8_phi, nGenJetAK8);
+    FatJet1_pt = jer1.corrected_pt;
+    FatJet1_MassSD = jer1.corrected_massSD;
+
+    JetCorrectionResult jec2 =
+        applyJEC(FatJet2_pt, FatJet2_eta, FatJet2_phi, FatJet2_rawFactor,
+                 FatJet2_MassSD, corrector);
+    FatJet2_pt = jec2.corrected_pt;
+    FatJet2_MassSD = jec2.corrected_massSD;
+
+    JetCorrectionResult jer2 =
+        applyJER(FatJet2_pt, FatJet2_eta, FatJet2_phi, FatJet2_MassSD,
+                 resolution_pt, resolution_pt_sf, rho, GenJetAK8_pt,
+                 GenJetAK8_eta, GenJetAK8_phi, nGenJetAK8);
+    FatJet2_pt = jer2.corrected_pt;
+    FatJet2_MassSD = jer2.corrected_massSD;
+
+    JetCorrectionResult jec3 =
+        applyJEC(FatJet3_pt, FatJet3_eta, FatJet3_phi, FatJet3_rawFactor,
+                 FatJet3_MassSD, corrector);
+    FatJet3_pt = jec3.corrected_pt;
+    FatJet3_MassSD = jec3.corrected_massSD;
+
+    JetCorrectionResult jer3 =
+        applyJER(FatJet3_pt, FatJet3_eta, FatJet3_phi, FatJet3_MassSD,
+                 resolution_pt, resolution_pt_sf, rho, GenJetAK8_pt,
+                 GenJetAK8_eta, GenJetAK8_phi, nGenJetAK8);
+    FatJet3_pt = jer3.corrected_pt;
+    FatJet3_MassSD = jer3.corrected_massSD;
 
     // Tag and Probe
     if (channel_lower == "jetmet" or channel_lower == "qcd") {
@@ -853,15 +936,9 @@ void histo_mc(
       ProbeJetGloParT_massVis = FatJet2GloParT_massVis;
 
     } else {
-      // EGamma, Muon, Lepton (EGamma + Muon)
-
       // Leptonic channel
+      // EGamma, Muon, Lepton (EGamma + Muon)
       if (lep1_Pt <= 50 || fabs(lep1_Eta) >= 2.4) {
-        continue;
-      }
-
-      // Probe jet requirements
-      if (FatJet1_pt <= 160 || fabs(FatJet1_eta) >= 2.5) {
         continue;
       }
 
@@ -946,6 +1023,7 @@ void histo_mc(
       continue;
     }
 
+    bool probe_pass = false;
     bool matched_to_AK8PFJet230_SoftDropMass40 = false;
     for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
       if ((Trigger_Object_bit[itrg] & 4) == 4) {
@@ -958,20 +1036,27 @@ void histo_mc(
       }
     }
 
-    bool matched_to_AK8PFJet250 = false;
-    for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
-      if (Trigger_Object_bit[itrg] == 1) {
-        double dR = get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
-                           Trigger_Object_phi[itrg]);
-        if (dR < 0.4 && Trigger_Object_pt[itrg] > 250) {
-          matched_to_AK8PFJet250 = true;
-          break;
+    if (year == "2022") {
+      // $CMSSW_RELEASE_BASE/src/PhysicsTools/NanoAOD/python/triggerObjects_cff.py
+      bool matched_to_AK8PFJet250 = false;
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
+        if (Trigger_Object_bit[itrg] == 1) {
+          double dR =
+              get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
+                     Trigger_Object_phi[itrg]);
+          if (dR < 0.4 && Trigger_Object_pt[itrg] > 250) {
+            matched_to_AK8PFJet250 = true;
+            break;
+          }
         }
       }
+      probe_pass =
+          matched_to_AK8PFJet230_SoftDropMass40 && matched_to_AK8PFJet250;
+    } else if (year == "2023") {
+      probe_pass = matched_to_AK8PFJet230_SoftDropMass40;
+    } else {
+      throw std::invalid_argument("Invalid year: " + year);
     }
-
-    bool probe_pass =
-        matched_to_AK8PFJet230_SoftDropMass40 && matched_to_AK8PFJet250;
 
     // weight
     weight = (weight / SumGenWeights) * xsec * param_dict.Lumi;

@@ -3,7 +3,7 @@
 # Check if CMSSW_BASE is set
 if [ -z "${CMSSW_BASE}" ]; then
     echo "CMSSW_BASE is not set. Please set it first."
-    return
+    exit 1
 fi
 
 # Directory setup
@@ -12,6 +12,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 OUTPUT_DIR=${SCRIPT_DIR}/output
 TMP_DIR=${SCRIPT_DIR}/tmp
 mkdir -p ${OUTPUT_DIR} ${TMP_DIR}
+
 SAMPLE_DIR="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
 
 # Era Configuration
@@ -22,12 +23,19 @@ declare -A era_runs=(
     ["2023BPix"]="2023D"
 )
 
-# JEC configurations
+# JEC/JER configurations
 declare -A jec_configs=(
     ["2023"]="Summer23Prompt23_V1_MC"
     ["2023BPix"]="Summer23BPixPrompt23_V1_MC"
     ["2022"]="Summer22_22Sep2023_V2_MC"
     ["2022EE"]="Summer22EE_22Sep2023_V2_MC"
+)
+
+declare -A jer_configs=(
+    ["2023"]="Summer23Prompt23_RunCv1234_JRV1_MC"
+    ["2023BPix"]="Summer23BPixPrompt23_RunD_JRV1_MC"
+    ["2022"]="Summer22_22Sep2023_JRV1_MC"
+    ["2022EE"]="Summer22EE_22Sep2023_JRV1_MC"
 )
 
 get_era_paths() {
@@ -39,22 +47,25 @@ get_era_paths() {
             pu_path="${PROJ_ROOT}/pileups/pu_2023C.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            jer_base="${PROJ_ROOT}/JERs/${jer_configs[${era}]}"
             ;;
         "2023BPix")
-            # Use same structure as 2023 but with BPix specific paths
             pu_path="${PROJ_ROOT}/pileups/pu_2023D.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_2023.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            jer_base="${PROJ_ROOT}/JERs/${jer_configs[${era}]}"
             ;;
         "2022")
             pu_path="${PROJ_ROOT}/pileups/pu_2022CD.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            jer_base="${PROJ_ROOT}/JERs/${jer_configs[${era}]}"
             ;;
         "2022EE")
             pu_path="${PROJ_ROOT}/pileups/pu_2022EFG.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            jer_base="${PROJ_ROOT}/JERs/${jer_configs[${era}]}"
             ;;
         *)
             echo "Error: Invalid era ${era}"
@@ -62,15 +73,18 @@ get_era_paths() {
             ;;
     esac
     
-    # Set JEC paths
-    jec_path_ak4="${jec_base}/${jec_configs[${era}]}_L2Relative_AK4PFPuppi.txt"
-    jec_path_ak8="${jec_base}/${jec_configs[${era}]}_L2Relative_AK8PFPuppi.txt"
+    # Set JEC path
+    jec_path="${jec_base}/${jec_configs[${era}]}_L2Relative_AK8PFPuppi.txt"
+    
+    # Set JER paths
+    jer_path="${jer_base}/${jer_configs[${era}]}_PtResolution_AK8PFPuppi.txt"
+    jer_path_sf="${jer_base}/${jer_configs[${era}]}_SF_AK8PFPuppi.txt"
 
-    # Trigger efficiency paths (as a function of mass and pt)
+    # Set efficiency path
     if [ "$process" == "ttbar" ]; then
-        sf_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_${era}_TTbar.root"
+        eff_mass_pt_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_${era}_TTbar.root"
     else
-        sf_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_${era}_QCD.root"
+        eff_mass_pt_path="${PROJ_ROOT}/scripts/sf_mass_pt/output/efficiency_mass_pt_${era}_QCD.root"
     fi
 }
 
@@ -98,8 +112,8 @@ process_ttbar() {
         
         echo "Processing TTBar for channel: ${channel}"
         root -l -b -q "histo_mc.cpp(\"${year}\", \"${ttbar_type}\", \"${channel}\", \"${ttbar_file}\", \
-            \"${output_path}\", \"${pu_path}\", \"${sf_path}\", \"${param_path}\", \
-            \"${jec_path_ak4}\", \"${jec_path_ak8}\")"
+            \"${output_path}\", \"${pu_path}\", \"${eff_mass_pt_path}\", \"${param_path}\", \
+            \"${jec_path}\", \"${jer_path}\", \"${jer_path_sf}\")"
     done
     
     cp ${TMP_DIR}/Histograms_${era}_MC_TTtoLNu2Q_Leptonic.root \
@@ -140,8 +154,8 @@ process_qcd() {
         local qcd_type="QCD_HT_${ht_bin}"
 
         root -l -b -q "histo_mc.cpp(\"${year}\", \"${qcd_type}\", \"${channel}\", \"${sample_file}\", \
-            \"${output_path}\", \"${pu_path}\", \"${sf_path}\", \"${param_path}\", \
-            \"${jec_path_ak4}\", \"${jec_path_ak8}\")"
+            \"${output_path}\", \"${pu_path}\", \"${eff_mass_pt_path}\", \"${param_path}\", \
+            \"${jec_path}\", \"${jer_path}\", \"${jer_path_sf}\")"
     done
     
     # Combine all QCD samples
@@ -176,6 +190,7 @@ process_era() {
     echo "MC processing for era ${era} completed successfully!"
 }
 
+# check args
 if [ $# -ne 1 ]; then
     # process all eras
     eras=("2022" "2022EE" "2023" "2023BPix")
@@ -188,4 +203,3 @@ else
     # process single era
     process_era $1
 fi
-

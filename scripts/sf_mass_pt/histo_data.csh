@@ -90,7 +90,7 @@ process_single_file() {
 
     echo "Processing ${era} ${channel} ${run_tag}${input_version} with ${jec_config} JECs"
     echo "Input file: ${sample_path}"
-    root -l -b -q "histo_data.cpp(\"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\")"
+    root -l -b -q "histo_data.cpp(\"${year}\", \"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\")"
 }
 
 process_era() {

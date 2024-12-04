@@ -31,6 +31,14 @@ declare -A jec_configs=(
     ["2022EE"]="Summer22EE_22Sep2023_V2_MC"
 )
 
+# JER configurations
+declare -A jer_configs=(
+    ["2023"]="Summer23Prompt23_RunCv1234_JRV1_MC"
+    ["2023BPix"]="Summer23BPixPrompt23_RunD_JRV1_MC"
+    ["2022"]="Summer22_22Sep2023_JRV1_MC"
+    ["2022EE"]="Summer22EE_22Sep2023_JRV1_MC"
+)
+
 get_era_paths() {
     local era=$1
     local process=$2  # "ttbar" or "qcd"
@@ -40,22 +48,25 @@ get_era_paths() {
             pu_path="${PROJ_ROOT}/pileups/pu_2023C.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            jer_base="${PROJ_ROOT}/JERs/${jer_configs[${era}]}"
             ;;
         "2023BPix")
-            # Use same structure as 2023 but with BPix specific paths
             pu_path="${PROJ_ROOT}/pileups/pu_2023D.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_2023.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            jer_base="${PROJ_ROOT}/JERs/${jer_configs[${era}]}"
             ;;
         "2022")
             pu_path="${PROJ_ROOT}/pileups/pu_2022CD.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            jer_base="${PROJ_ROOT}/JERs/${jer_configs[${era}]}"
             ;;
         "2022EE")
             pu_path="${PROJ_ROOT}/pileups/pu_2022EFG.txt"
             param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
+            jer_base="${PROJ_ROOT}/JERs/${jer_configs[${era}]}"
             ;;
         *)
             echo "Error: Invalid era ${era}"
@@ -63,14 +74,18 @@ get_era_paths() {
             ;;
     esac
     
-    # Set JEC paths
-    jec_path_ak4="${jec_base}/${jec_configs[${era}]}_L2Relative_AK4PFPuppi.txt"
-    jec_path_ak8="${jec_base}/${jec_configs[${era}]}_L2Relative_AK8PFPuppi.txt"
+    # Set JEC path
+    jec_path="${jec_base}/${jec_configs[${era}]}_L2Relative_AK8PFPuppi.txt"
+
+    # Set JER paths
+    jer_path="${jer_base}/${jer_configs[${era}]}_PtResolution_AK8PFPuppi.txt"
+    jer_path_sf="${jer_base}/${jer_configs[${era}]}_SF_AK8PFPuppi.txt"
 }
 
 process_ttbar() {
     local era=$1
     echo "Processing TTBar samples for era: ${era}..."
+    local year=${era:0:4}
     
     # Get paths specific to TTBar processing
     get_era_paths ${era} "ttbar" || return 1
@@ -90,9 +105,13 @@ process_ttbar() {
         local output_path=${TMP_DIR}/Histograms_${era}_MC_TTtoLNu2Q_${channel}.root
         
         echo "Processing TTBar for channel: ${channel}"
-        root -l -b -q "histo_mc.cpp(\"${ttbar_type}\", \"${channel}\", \"${ttbar_file}\", \
-            \"${output_path}\", \"${pu_path}\", \"${param_path}\", \
-            \"${jec_path_ak4}\", \"${jec_path_ak8}\")"
+        echo "Using JER paths:"
+        echo "Resolution: ${jer_path}"
+        echo "Scale factors: ${jer_path_sf}"
+        
+        root -l -b -q "histo_mc.cpp(\"${year}\", \"${ttbar_type}\", \"${channel}\", \"${ttbar_file}\", \
+            \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
+            \"${jer_path}\", \"${jer_path_sf}\")"
     done
     
     cp ${TMP_DIR}/Histograms_${era}_MC_TTtoLNu2Q_Leptonic.root \
@@ -102,6 +121,7 @@ process_ttbar() {
 process_qcd() {
     local era=$1
     echo "Processing QCD samples for era: ${era}..."
+    local year=${era:0:4}
     
     # Get paths specific to QCD processing
     get_era_paths ${era} "qcd" || return 1
@@ -127,13 +147,16 @@ process_qcd() {
 
         echo "Processing QCD HT bin: ${ht_bin}"
         echo "Sample file: ${sample_file}"
+        echo "Using JER paths:"
+        echo "Resolution: ${jer_path}"
+        echo "Scale factors: ${jer_path_sf}"
 
         local output_path=${TMP_DIR}/Histograms_${era}_MC_QCD-4Jets_HT-${ht_bin}.root
         local qcd_type="QCD_HT_${ht_bin}"
 
-        root -l -b -q "histo_mc.cpp(\"${qcd_type}\", \"${channel}\", \"${sample_file}\", \
-            \"${output_path}\", \"${pu_path}\", \"${param_path}\", \
-            \"${jec_path_ak4}\", \"${jec_path_ak8}\")"
+        root -l -b -q "histo_mc.cpp(\"${year}\", \"${qcd_type}\", \"${channel}\", \"${sample_file}\", \
+            \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
+            \"${jer_path}\", \"${jer_path_sf}\")"
     done
     
     # Combine all QCD samples

@@ -42,7 +42,36 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
+struct JetCorrectionResult {
+  Float_t corrected_pt;
+  Float_t corrected_massSD;
+};
+
+JetCorrectionResult applyJEC(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi,
+                             Float_t jet_rawFactor, Float_t jet_massSD,
+                             FactorizedJetCorrector *corrector,
+                             bool correct_mass = true) {
+  JetCorrectionResult result{jet_pt, jet_massSD};
+
+  if (jet_pt > 0) {
+    Float_t raw_pt = jet_pt * (1.0 - jet_rawFactor);
+    corrector->setJetPt(raw_pt);
+    corrector->setJetEta(jet_eta);
+    corrector->setJetPhi(jet_phi);
+    Float_t correction_factor = corrector->getCorrection();
+
+    result.corrected_pt = raw_pt * correction_factor;
+    if (correct_mass) {
+      result.corrected_massSD =
+          jet_massSD * (1.0 - jet_rawFactor) * correction_factor;
+    }
+  }
+
+  return result;
+}
+
 void histo_data(
+    const std::string &year,                 // 2022, 2023
     const std::string &run_tag,              // e.g. 2023C, 2023D
     const std::string &channel,              // e.g. Muon, EGamma, JetMET
     const std::string &sample_path,          // path to the root file
@@ -99,7 +128,7 @@ void histo_data(
   vector<JetCorrectorParameters> vPar_AK8;
   vPar_AK8.push_back(JetCorrectorParameters(jec_path_L2Relative.c_str()));
   vPar_AK8.push_back(JetCorrectorParameters(jec_path_L2L3Residual.c_str()));
-  FactorizedJetCorrector *corrector_AK8 = new FactorizedJetCorrector(vPar_AK8);
+  FactorizedJetCorrector *corrector = new FactorizedJetCorrector(vPar_AK8);
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
@@ -437,9 +466,11 @@ void histo_data(
 
   // FatJet 3 kinematics
   Float_t FatJet3_pt;
-  Float_t FatJet3_rawFactor;
   Float_t FatJet3_eta;
   Float_t FatJet3_phi;
+  Float_t FatJet3_Mass;
+  Float_t FatJet3_MassSD;
+  Float_t FatJet3_rawFactor;
 
   InputTree->SetBranchAddress("run", &run);
   InputTree->SetBranchAddress("lumi", &lumi);
@@ -603,9 +634,11 @@ void histo_data(
 
   // FatJet 3 kinematics
   InputTree->SetBranchAddress("fatJet3_pt", &FatJet3_pt);
-  InputTree->SetBranchAddress("fatJet3_rawFactor", &FatJet3_rawFactor);
   InputTree->SetBranchAddress("fatJet3_eta", &FatJet3_eta);
   InputTree->SetBranchAddress("fatJet3_phi", &FatJet3_phi);
+  InputTree->SetBranchAddress("fatJet3_mass", &FatJet3_Mass);
+  InputTree->SetBranchAddress("fatJet3_msoftdrop", &FatJet3_MassSD);
+  InputTree->SetBranchAddress("fatJet3_rawFactor", &FatJet3_rawFactor);
 
   // Trigger Objects
   TTree *InputTree_TrgObj = (TTree *)f1->Get("tree_TrgObj");
@@ -658,61 +691,24 @@ void histo_data(
       continue;
     }
 
-    // FatJets correction and selection
-    if (FatJet1_pt > 0) {
-      double raw_FatJet1_pt = FatJet1_pt * (1.0 - FatJet1_rawFactor);
-      corrector_AK8->setJetPt(raw_FatJet1_pt);
-      corrector_AK8->setJetEta(FatJet1_eta);
-      corrector_AK8->setJetPhi(FatJet1_phi);
-      double corr = corrector_AK8->getCorrection();
-      FatJet1_pt = raw_FatJet1_pt * corr;
-      FatJet1_MassSD = FatJet1_MassSD * (1.0 - FatJet1_rawFactor) * corr;
-    }
-    if (FatJet2_pt > 0) {
-      double raw_FatJet2_pt = FatJet2_pt * (1.0 - FatJet2_rawFactor);
-      corrector_AK8->setJetPt(raw_FatJet2_pt);
-      corrector_AK8->setJetEta(FatJet2_eta);
-      corrector_AK8->setJetPhi(FatJet2_phi);
-      double corr = corrector_AK8->getCorrection();
-      FatJet2_pt = raw_FatJet2_pt * corr;
-      FatJet2_MassSD = FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * corr;
-    }
-    if (FatJet3_pt > 0) {
-      double raw_FatJet3_pt = FatJet3_pt * (1.0 - FatJet3_rawFactor);
-      corrector_AK8->setJetPt(raw_FatJet3_pt);
-      corrector_AK8->setJetEta(FatJet3_eta);
-      corrector_AK8->setJetPhi(FatJet3_phi);
-      double corr = corrector_AK8->getCorrection();
-      FatJet3_pt = raw_FatJet3_pt * corr;
-    }
+    // FatJets correction (JEC)
+    JetCorrectionResult jec1 =
+        applyJEC(FatJet1_pt, FatJet1_eta, FatJet1_phi, FatJet1_rawFactor,
+                 FatJet1_MassSD, corrector);
+    FatJet1_pt = jec1.corrected_pt;
+    FatJet1_MassSD = jec1.corrected_massSD;
 
-    // FatJets correction and selection
-    if (FatJet1_pt > 0) {
-      double raw_FatJet1_pt = FatJet1_pt * (1.0 - FatJet1_rawFactor);
-      corrector_AK8->setJetPt(raw_FatJet1_pt);
-      corrector_AK8->setJetEta(FatJet1_eta);
-      corrector_AK8->setJetPhi(FatJet1_phi);
-      double corr = corrector_AK8->getCorrection();
-      FatJet1_pt = raw_FatJet1_pt * corr;
-      FatJet1_MassSD = FatJet1_MassSD * (1.0 - FatJet1_rawFactor) * corr;
-    }
-    if (FatJet2_pt > 0) {
-      double raw_FatJet2_pt = FatJet2_pt * (1.0 - FatJet2_rawFactor);
-      corrector_AK8->setJetPt(raw_FatJet2_pt);
-      corrector_AK8->setJetEta(FatJet2_eta);
-      corrector_AK8->setJetPhi(FatJet2_phi);
-      double corr = corrector_AK8->getCorrection();
-      FatJet2_pt = raw_FatJet2_pt * corr;
-      FatJet2_MassSD = FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * corr;
-    }
-    if (FatJet3_pt > 0) {
-      double raw_FatJet3_pt = FatJet3_pt * (1.0 - FatJet3_rawFactor);
-      corrector_AK8->setJetPt(raw_FatJet3_pt);
-      corrector_AK8->setJetEta(FatJet3_eta);
-      corrector_AK8->setJetPhi(FatJet3_phi);
-      double corr = corrector_AK8->getCorrection();
-      FatJet3_pt = raw_FatJet3_pt * corr;
-    }
+    JetCorrectionResult jec2 =
+        applyJEC(FatJet2_pt, FatJet2_eta, FatJet2_phi, FatJet2_rawFactor,
+                 FatJet2_MassSD, corrector);
+    FatJet2_pt = jec2.corrected_pt;
+    FatJet2_MassSD = jec2.corrected_massSD;
+
+    JetCorrectionResult jec3 =
+        applyJEC(FatJet3_pt, FatJet3_eta, FatJet3_phi, FatJet3_rawFactor,
+                 FatJet3_MassSD, corrector);
+    FatJet3_pt = jec3.corrected_pt;
+    FatJet3_MassSD = jec3.corrected_massSD;
 
     // Tag and Probe
     if (channel_lower == "jetmet" or channel_lower == "qcd") {
@@ -771,15 +767,9 @@ void histo_data(
       ProbeJetGloParT_massVis = FatJet2GloParT_massVis;
 
     } else {
-      // EGamma, Muon, Lepton (EGamma + Muon)
-
       // Leptonic channel
+      // EGamma, Muon, Lepton (EGamma + Muon)
       if (lep1_Pt <= 50 || fabs(lep1_Eta) >= 2.4) {
-        continue;
-      }
-
-      // Probe jet requirements
-      if (FatJet1_pt <= 160 || fabs(FatJet1_eta) >= 2.5) {
         continue;
       }
 
@@ -864,6 +854,7 @@ void histo_data(
       continue;
     }
 
+    bool probe_pass = false;
     bool matched_to_AK8PFJet230_SoftDropMass40 = false;
     for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
       if ((Trigger_Object_bit[itrg] & 4) == 4) {
@@ -876,20 +867,25 @@ void histo_data(
       }
     }
 
-    bool matched_to_AK8PFJet250 = false;
-    for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
-      if (Trigger_Object_bit[itrg] == 1) {
-        double dR = get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
-                           Trigger_Object_phi[itrg]);
-        if (dR < 0.4 && Trigger_Object_pt[itrg] > 250) {
-          matched_to_AK8PFJet250 = true;
-          break;
+    if (year == "2022") {
+      // $CMSSW_RELEASE_BASE/src/PhysicsTools/NanoAOD/python/triggerObjects_cff.py
+      bool matched_to_AK8PFJet250 = false;
+      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
+        if (Trigger_Object_bit[itrg] == 1) {
+          double dR = get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
+                            Trigger_Object_phi[itrg]);
+          if (dR < 0.4 && Trigger_Object_pt[itrg] > 250) {
+            matched_to_AK8PFJet250 = true;
+            break;
+          }
         }
       }
-    }
-
-    bool probe_pass =
-        matched_to_AK8PFJet230_SoftDropMass40 && matched_to_AK8PFJet250;
+      probe_pass = matched_to_AK8PFJet230_SoftDropMass40 && matched_to_AK8PFJet250;
+    } else if (year == "2023") {
+      probe_pass = matched_to_AK8PFJet230_SoftDropMass40;
+    } else {
+      throw std::invalid_argument("Invalid year: " + year);
+    } 
 
     // Fill histograms
     // FatJet 1
