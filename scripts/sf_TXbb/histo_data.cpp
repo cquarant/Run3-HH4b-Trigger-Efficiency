@@ -849,11 +849,7 @@ void histo_data(
           continue;
         if (FatJet2_pt > 200 && FatJet2_MassSD > 50)
           continue;
-        if (lep1_Pt < 50)
-          continue;
-        if (lep2_Pt > 30)
-          continue;
-        if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
+        if (lep1_Pt < 50 || lep2_Pt > 30)
           continue;
         if (MET < 50)
           continue;
