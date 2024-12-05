@@ -984,8 +984,8 @@ void histo_mc(
       bool HLT_pass = false;
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
         // QCD-specific 2022 requirements
-        if (FatJet1_pt <= 300 || fabs(FatJet1_eta) >= 1.5 ||
-            FatJet1_MassSD <= 50)
+        if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 1.5 ||
+            FatJet1_MassSD < 50)
           continue;
         if (isVBFtag)
           continue;
@@ -1040,8 +1040,8 @@ void histo_mc(
     } else if (year == "2023") {
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
         // QCD-specific 2023 requirements
-        if (FatJet1_pt <= 250 || fabs(FatJet1_eta) >= 2.4 ||
-            FatJet1_MassSD <= 50)
+        if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 ||
+            FatJet1_MassSD < 50)
           continue;
         if (lep1_Pt > 20.0)
           continue;

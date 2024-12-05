@@ -728,20 +728,27 @@ void histo_data(
     InputTree_TrgObj->GetEntry(i);
 
     // HLT Selection
+    bool HLT_QCD = HLT_AK8PFJet230_SoftDropMass40;
+    bool HLT_ele = (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11);
+    bool HLT_mu = (HLT_IsoMu27 && fabs(lep1_Id) == 13);
     if (channel_lower == "egamma" or channel_lower == "electron") {
-      if (!(HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11)) {
+      if (!HLT_ele) {
         continue;
       }
     } else if (channel_lower == "muon") {
-      if (!(HLT_IsoMu27 && fabs(lep1_Id) == 13)) {
+      if (!HLT_mu) {
+        continue;
+      }
+    } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
+      if (!HLT_ele && !HLT_mu) {
         continue;
       }
     } else if (channel_lower == "jetmet" or channel_lower == "qcd") {
-      if (HLT_AK8PFJet230_SoftDropMass40 == 0) {
+      if (!HLT_QCD) {
         continue;
       }
     } else {
-      throw std::invalid_argument("Invalid channel");
+      throw std::invalid_argument("Invalid channel: " + channel);
     }
 
     // JSON certification
@@ -782,8 +789,8 @@ void histo_data(
     // Tag and Probe
     if (channel_lower == "jetmet" or channel_lower == "qcd") {
       // Tag jet requirements
-      if (FatJet1_pt <= 300 || fabs(FatJet1_eta) >= 2.5 ||
-          FatJet1_MassSD <= 80) {
+      if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 2.5 ||
+          FatJet1_MassSD < 80) {
         continue;
       }
       // lepton requirements
@@ -792,7 +799,7 @@ void histo_data(
       }
 
       // Back-to-back requirement
-      if (phi_dist(FatJet1_phi, FatJet2_phi) <= 2.5) {
+      if (phi_dist(FatJet1_phi, FatJet2_phi) < 2.5) {
         continue;
       }
 
@@ -843,19 +850,19 @@ void histo_data(
       ProbeJetGloParT_massRes = FatJet2GloParT_massRes;
       ProbeJetGloParT_massVis = FatJet2GloParT_massVis;
 
-      if (ProbeJet_pt <= 160 || fabs(ProbeJet_eta) >= 2.5) {
+      if (ProbeJet_pt < 160 || fabs(ProbeJet_eta) > 2.5) {
         continue;
       }
 
     } else {
       // Leptonic channel
       // EGamma, Muon, Lepton (EGamma + Muon)
-      if (lep1_Pt <= 55 || lep2_Pt > 30 || fabs(lep1_Eta) >= 2.4) {
+      if (lep1_Pt < 55 || lep2_Pt > 30 || fabs(lep1_Eta) > 2.4) {
         continue;
       }
 
       // Back-to-back requirement
-      if (phi_dist(FatJet1_phi, lep1_Phi) <= 2.0) {
+      if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0) {
         continue;
       }
 
@@ -863,7 +870,7 @@ void histo_data(
       if (FatJet2_pt > 180) {
         continue;
       }
-      if (MET <= 50) {
+      if (MET < 50) {
         continue;
       }
 
@@ -908,7 +915,7 @@ void histo_data(
       ProbeJetGloParT_massRes = FatJet1GloParT_massRes;
       ProbeJetGloParT_massVis = FatJet1GloParT_massVis;
 
-      if (ProbeJet_pt <= 160 || fabs(ProbeJet_eta) >= 2.5) {
+      if (ProbeJet_pt < 160 || fabs(ProbeJet_eta) > 2.5) {
         continue;
       }
 
