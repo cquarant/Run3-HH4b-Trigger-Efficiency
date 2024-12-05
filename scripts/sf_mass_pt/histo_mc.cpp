@@ -165,6 +165,75 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
+bool checkTriggerMatching(Int_t NTrigger_Objects, 
+                          const Float_t* Trigger_Object_pt, const Float_t* Trigger_Object_eta,
+                          const Float_t* Trigger_Object_phi, const Int_t* Trigger_Object_bit,
+                          float jet_eta, float jet_phi, int required_bits, float pt_threshold) {
+    for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
+        if ((Trigger_Object_bit[itrg] & required_bits) == required_bits) {
+            double dR = get_dR(jet_eta, jet_phi, Trigger_Object_eta[itrg], Trigger_Object_phi[itrg]);
+            if (dR < 0.4 && Trigger_Object_pt[itrg] > pt_threshold) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool checkTriggerMatching(Int_t NTrigger_Objects, 
+                          const Float_t* Trigger_Object_pt, const Float_t* Trigger_Object_eta,
+                          const Float_t* Trigger_Object_phi, const Int_t* Trigger_Object_bit,
+                          float jet_eta, float jet_phi, float pt_threshold) {
+    for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
+        if (Trigger_Object_bit[itrg] == 1) {
+            double dR = get_dR(jet_eta, jet_phi, Trigger_Object_eta[itrg], Trigger_Object_phi[itrg]);
+            if (dR < 0.4 && Trigger_Object_pt[itrg] > pt_threshold) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool checkAK4JetRequirements(Float_t j1_pt, Float_t j1_eta, Float_t j1_phi,
+                             Float_t j2_pt, Float_t j2_eta, Float_t j2_phi,
+                             Float_t fj_eta, Float_t fj_phi, Float_t lep_eta,
+                             Float_t lep_phi) {
+  double dR_J1FJ = -1;
+  double dR_J1L = 10;
+  if (j1_pt > 40) {
+    dR_J1FJ = get_dR(j1_eta, j1_phi, fj_eta, fj_phi);
+    dR_J1L = get_dR(j1_eta, j1_phi, lep_eta, lep_phi);
+  }
+
+  double dR_J2FJ = -1;
+  double dR_J2L = 10;
+  if (j2_pt > 40) {
+    dR_J2FJ = get_dR(j2_eta, j2_phi, fj_eta, fj_phi);
+    dR_J2L = get_dR(j2_eta, j2_phi, lep_eta, lep_phi);
+  }
+
+  // Find max and min distances
+  double dR_JFJ_Max = dR_J1FJ;
+  double dR_JFJ_Min = dR_J2FJ;
+  double dR_JmaxL = dR_J1L;
+  if (dR_J2FJ > dR_J1FJ) {
+    dR_JFJ_Max = dR_J2FJ;
+    dR_JFJ_Min = dR_J1FJ;
+    dR_JmaxL = dR_J2L;
+  }
+
+  // Apply cuts
+  if (dR_JFJ_Max < 1.5)
+    return false;
+  if (dR_J1L <= 0.4 || dR_J2L <= 0.4)
+    return false;
+  if (dR_JmaxL > 3.5)
+    return false;
+
+  return true;
+}
+
 // JEC and JER
 struct JetCorrectionResult {
   Float_t corrected_pt;
@@ -212,16 +281,26 @@ applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
   // Calculate smearing
   const Float_t MAX_DELTA_R = 0.2;
   Float_t smearFactor = 1.0;
+  bool gen_matched = false;
 
   for (int nGJ = 0; nGJ < nGenJets; nGJ++) {
-    Float_t delta_R = get_dR(jet_eta, jet_phi, genJetEtas[nGJ], genJetPhis[nGJ]);
+    Float_t delta_R =
+        get_dR(jet_eta, jet_phi, genJetEtas[nGJ], genJetPhis[nGJ]);
     Float_t pt_diff_ratio = fabs(jet_pt - genJetPts[nGJ]) / jet_pt;
     Float_t resolution_threshold = 3 * resolution;
 
-    if (delta_R < MAX_DELTA_R && pt_diff_ratio < resolution_threshold) {
-      smearFactor = 1.0 + (resolution_sf - 1.0) * (jet_pt - genJetPts[nGJ]) / jet_pt;
+    if (!gen_matched && delta_R < MAX_DELTA_R &&
+        pt_diff_ratio < resolution_threshold) {
+      smearFactor =
+          1.0 + (resolution_sf - 1.0) * (jet_pt - genJetPts[nGJ]) / jet_pt;
+      gen_matched = true;
       break;
     }
+  }
+
+  if (!gen_matched && resolution_sf > 1.0) {
+    double sigma = resolution * sqrt(resolution_sf * resolution_sf - 1);
+    smearFactor = 1.0 + gRandom->Gaus(0, sigma);
   }
 
   // Apply smearing
@@ -817,22 +896,23 @@ void histo_mc(
     InputTree_TrgObj->GetEntry(i);
 
     // HLT Selection
-    bool EGamma = (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11);
-    bool Muon = (HLT_IsoMu27 && fabs(lep1_Id) == 13);
+    bool HLT_QCD = HLT_AK8PFJet230_SoftDropMass40;
+    bool HLT_ele = (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11);
+    bool HLT_mu = (HLT_IsoMu27 && fabs(lep1_Id) == 13);
     if (channel_lower == "egamma" or channel_lower == "electron") {
-      if (!EGamma) {
+      if (!HLT_ele) {
         continue;
       }
     } else if (channel_lower == "muon") {
-      if (!Muon) {
+      if (!HLT_mu) {
         continue;
       }
     } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
-      if (!EGamma && !Muon) {
+      if (!HLT_ele && !HLT_mu) {
         continue;
       }
     } else if (channel_lower == "jetmet" or channel_lower == "qcd") {
-      if (HLT_AK8PFJet230_SoftDropMass40 == 0) {
+      if (!HLT_QCD) {
         continue;
       }
     } else {
@@ -881,12 +961,13 @@ void histo_mc(
 
     // Tag and Probe
     if (channel_lower == "jetmet" or channel_lower == "qcd") {
-      // Tag jet (FatJet1) requirements
+      // Tag jet requirements
       if (FatJet1_pt <= 300 || fabs(FatJet1_eta) >= 2.5 ||
           FatJet1_MassSD <= 80) {
         continue;
       }
-      if (isVBFtag) {
+      // lepton requirements
+      if (lep1_Pt > 20.0) {
         continue;
       }
 
@@ -896,7 +977,14 @@ void histo_mc(
       }
 
       // No additional jets
-      if (FatJet3_pt > 160) {
+      if (FatJet3_pt > 150) {
+        continue;
+      }
+
+      bool tag_matched = checkTriggerMatching(
+          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+          Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 4, 100);
+      if (!tag_matched) {
         continue;
       }
 
@@ -935,10 +1023,14 @@ void histo_mc(
       ProbeJetGloParT_massRes = FatJet2GloParT_massRes;
       ProbeJetGloParT_massVis = FatJet2GloParT_massVis;
 
+      if (ProbeJet_pt <= 160 || fabs(ProbeJet_eta) >= 2.5) {
+        continue;
+      }
+
     } else {
       // Leptonic channel
       // EGamma, Muon, Lepton (EGamma + Muon)
-      if (lep1_Pt <= 50 || fabs(lep1_Eta) >= 2.4) {
+      if (lep1_Pt <= 55 || lep2_Pt > 30 || fabs(lep1_Eta) >= 2.4) {
         continue;
       }
 
@@ -948,36 +1040,16 @@ void histo_mc(
       }
 
       // No additional jets
-      if (FatJet2_pt > 160) {
-        continue;
-      }
-      if (lep2_Pt > 30) {
+      if (FatJet2_pt > 180) {
         continue;
       }
       if (MET <= 50) {
         continue;
       }
 
-      bool has_valid_tagged_AK4Jet = false;
-      if (Jet1_Pt > 40 && fabs(Jet1_Eta) < 2.4) {
-        double dR_J1_FJ = get_dR(Jet1_Eta, Jet1_Phi, FatJet1_eta, FatJet1_phi);
-        double dR_J1_L = get_dR(Jet1_Eta, Jet1_Phi, lep1_Eta, lep1_Phi);
-
-        if (dR_J1_FJ > 1.5 && dR_J1_L > 0.5) {
-          has_valid_tagged_AK4Jet = true;
-        }
-      }
-
-      if (!has_valid_tagged_AK4Jet && Jet2_Pt > 40 && fabs(Jet2_Eta) < 2.4) {
-        double dR_J2_FJ = get_dR(Jet2_Eta, Jet2_Phi, FatJet1_eta, FatJet1_phi);
-        double dR_J2_L = get_dR(Jet2_Eta, Jet2_Phi, lep1_Eta, lep1_Phi);
-
-        if (dR_J2_FJ > 1.5 && dR_J2_L > 0.5) {
-          has_valid_tagged_AK4Jet = true;
-        }
-      }
-
-      if (!has_valid_tagged_AK4Jet) {
+      if (!checkAK4JetRequirements(Jet1_Pt, Jet1_Eta, Jet1_Phi, Jet2_Pt,
+                                   Jet2_Eta, Jet2_Phi, FatJet1_eta, FatJet1_phi,
+                                   lep1_Eta, lep1_Phi)) {
         continue;
       }
 
@@ -1016,42 +1088,30 @@ void histo_mc(
       ProbeJetGloParT_massRes = FatJet1GloParT_massRes;
       ProbeJetGloParT_massVis = FatJet1GloParT_massVis;
 
+      if (ProbeJet_pt <= 160 || fabs(ProbeJet_eta) >= 2.5) {
+        continue;
+      }
+
     } // end if
 
-    // Probe jet requirements
-    if (ProbeJet_pt <= 160 || fabs(ProbeJet_eta) >= 2.5) {
-      continue;
-    }
-
+    // Probe jet matching
     bool probe_pass = false;
-    bool matched_to_AK8PFJet230_SoftDropMass40 = false;
-    for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
-      if ((Trigger_Object_bit[itrg] & 4) == 4) {
-        double dR = get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
-                           Trigger_Object_phi[itrg]);
-        if (dR < 0.4 && Trigger_Object_pt[itrg] > 100) {
-          matched_to_AK8PFJet230_SoftDropMass40 = true;
-          break;
-        }
-      }
-    }
+    bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
+        NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+        Trigger_Object_bit, ProbeJet_eta, ProbeJet_phi, 4, 100);
 
     if (year == "2022") {
       // $CMSSW_RELEASE_BASE/src/PhysicsTools/NanoAOD/python/triggerObjects_cff.py
-      bool matched_to_AK8PFJet250 = false;
-      for (int itrg = 0; itrg < NTrigger_Objects; itrg++) {
-        if (Trigger_Object_bit[itrg] == 1) {
-          double dR =
-              get_dR(ProbeJet_eta, ProbeJet_phi, Trigger_Object_eta[itrg],
-                     Trigger_Object_phi[itrg]);
-          if (dR < 0.4 && Trigger_Object_pt[itrg] > 250) {
-            matched_to_AK8PFJet250 = true;
-            break;
-          }
-        }
+      if (matched_to_AK8PFJet230_SoftDropMass40) {
+        bool matched_to_AK8PFJet250 = checkTriggerMatching(
+            NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+            Trigger_Object_bit, ProbeJet_eta, ProbeJet_phi, 250);
+        probe_pass =
+            matched_to_AK8PFJet230_SoftDropMass40 & matched_to_AK8PFJet250;
+      } else {
+        probe_pass = false;
       }
-      probe_pass =
-          matched_to_AK8PFJet230_SoftDropMass40 && matched_to_AK8PFJet250;
+
     } else if (year == "2023") {
       probe_pass = matched_to_AK8PFJet230_SoftDropMass40;
     } else {

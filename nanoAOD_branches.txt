@@ -1,0 +1,1258 @@
+******************************************************************************
+*Tree    :tree      :                                                        *
+*Entries :   804868 : Total =       958717043 bytes  File  Size =  277711694 *
+*        :          : Tree compression factor =   3.46                       *
+******************************************************************************
+*Br    0 :weight    : weight/F                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =      94773 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  34.51     *
+*............................................................................*
+*Br    1 :run       : run/i                                                  *
+*Entries :   804868 : Total  Size=    3283039 bytes  File Size  =     102857 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  31.78     *
+*............................................................................*
+*Br    2 :lumi      : lumi/i                                                 *
+*Entries :   804868 : Total  Size=    3283746 bytes  File Size  =     190143 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  17.19     *
+*............................................................................*
+*Br    3 :event     : event/l                                                *
+*Entries :   804868 : Total  Size=    6503933 bytes  File Size  =    3839247 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.69     *
+*............................................................................*
+*Br    4 :npu       : npu/F                                                  *
+*Entries :   804868 : Total  Size=    3283039 bytes  File Size  =      92318 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  35.41     *
+*............................................................................*
+*Br    5 :rho       : rho/F                                                  *
+*Entries :   804868 : Total  Size=    3283039 bytes  File Size  =    2896954 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.13     *
+*............................................................................*
+*Br    6 :NJets     : NJets/I                                                *
+*Entries :   804868 : Total  Size=    3284453 bytes  File Size  =     623465 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   5.25     *
+*............................................................................*
+*Br    7 :MET       : MET/F                                                  *
+*Entries :   804868 : Total  Size=    3283039 bytes  File Size  =    2943461 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.11     *
+*............................................................................*
+*Br    8 :fatJet1_pt : fatJet1_pt/F                                          *
+*Entries :   804868 : Total  Size=    3287988 bytes  File Size  =    1942726 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.69     *
+*............................................................................*
+*Br    9 :fatJet1_eta : fatJet1_eta/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =    2366447 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.38     *
+*............................................................................*
+*Br   10 :fatJet1_phi : fatJet1_phi/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =    2352596 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.39     *
+*............................................................................*
+*Br   11 :fatJet1_mass : fatJet1_mass/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =    1937590 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.69     *
+*............................................................................*
+*Br   12 :fatJet1_msoftdrop : fatJet1_msoftdrop/F                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =    1956626 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.68     *
+*............................................................................*
+*Br   13 :fatJet1_btagDDBvLV2 : fatJet1_btagDDBvLV2/F                        *
+*Entries :   804868 : Total  Size=    3294351 bytes  File Size  =    2207115 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.49     *
+*............................................................................*
+*Br   14 :fatJet1_btagDDCvBV2 : fatJet1_btagDDCvBV2/F                        *
+*Entries :   804868 : Total  Size=    3294351 bytes  File Size  =    1991977 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.65     *
+*............................................................................*
+*Br   15 :fatJet1_btagDDCvLV2 : fatJet1_btagDDCvLV2/F                        *
+*Entries :   804868 : Total  Size=    3294351 bytes  File Size  =    2149077 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.53     *
+*............................................................................*
+*Br   16 :fatJet1_btagDeepB : fatJet1_btagDeepB/F                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =    2042634 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.61     *
+*............................................................................*
+*Br   17 :fatJet1_particleNetWithMass_H4qvsQCD :                             *
+*         | fatJet1_particleNetWithMass_H4qvsQCD/F                           *
+*Entries :   804868 : Total  Size=    3306370 bytes  File Size  =    2240368 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.47     *
+*............................................................................*
+*Br   18 :fatJet1_particleNetWithMass_HbbvsQCD :                             *
+*         | fatJet1_particleNetWithMass_HbbvsQCD/F                           *
+*Entries :   804868 : Total  Size=    3306370 bytes  File Size  =    2223909 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.48     *
+*............................................................................*
+*Br   19 :fatJet1_particleNetWithMass_HccvsQCD :                             *
+*         | fatJet1_particleNetWithMass_HccvsQCD/F                           *
+*Entries :   804868 : Total  Size=    3306370 bytes  File Size  =    2184523 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.51     *
+*............................................................................*
+*Br   20 :fatJet1_particleNetWithMass_QCD : fatJet1_particleNetWithMass_QCD/F*
+*Entries :   804868 : Total  Size=    3302835 bytes  File Size  =    2122151 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.55     *
+*............................................................................*
+*Br   21 :fatJet1_particleNetWithMass_TvsQCD :                               *
+*         | fatJet1_particleNetWithMass_TvsQCD/F                             *
+*Entries :   804868 : Total  Size=    3304956 bytes  File Size  =    2235349 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.47     *
+*............................................................................*
+*Br   22 :fatJet1_particleNetWithMass_WvsQCD :                               *
+*         | fatJet1_particleNetWithMass_WvsQCD/F                             *
+*Entries :   804868 : Total  Size=    3304956 bytes  File Size  =    2122686 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.55     *
+*............................................................................*
+*Br   23 :fatJet1_particleNetWithMass_ZvsQCD :                               *
+*         | fatJet1_particleNetWithMass_ZvsQCD/F                             *
+*Entries :   804868 : Total  Size=    3304956 bytes  File Size  =    2127386 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.55     *
+*............................................................................*
+*Br   24 :fatJet1_particleNet_QCD : fatJet1_particleNet_QCD/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =    1995202 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.65     *
+*............................................................................*
+*Br   25 :fatJet1_particleNet_QCD0HF : fatJet1_particleNet_QCD0HF/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    2084162 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.58     *
+*............................................................................*
+*Br   26 :fatJet1_particleNet_QCD1HF : fatJet1_particleNet_QCD1HF/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    2042161 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.61     *
+*............................................................................*
+*Br   27 :fatJet1_particleNet_QCD2HF : fatJet1_particleNet_QCD2HF/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    2102657 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.56     *
+*............................................................................*
+*Br   28 :fatJet1_particleNet_XbbVsQCD : fatJet1_particleNet_XbbVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    2211233 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.49     *
+*............................................................................*
+*Br   29 :fatJet1_particleNet_XccVsQCD : fatJet1_particleNet_XccVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    2135237 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.54     *
+*............................................................................*
+*Br   30 :fatJet1_particleNet_XggVsQCD : fatJet1_particleNet_XggVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    2093717 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.57     *
+*............................................................................*
+*Br   31 :fatJet1_particleNet_XqqVsQCD : fatJet1_particleNet_XqqVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    2141257 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.53     *
+*............................................................................*
+*Br   32 :fatJet1_particleNet_massCorr : fatJet1_particleNet_massCorr/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    1734726 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.89     *
+*............................................................................*
+*Br   33 :fatJet1_globalParT_QCD0HF : fatJet1_globalParT_QCD0HF/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =    2115195 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.55     *
+*............................................................................*
+*Br   34 :fatJet1_globalParT_QCD1HF : fatJet1_globalParT_QCD1HF/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =    2099197 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.56     *
+*............................................................................*
+*Br   35 :fatJet1_globalParT_QCD2HF : fatJet1_globalParT_QCD2HF/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =    2141502 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.53     *
+*............................................................................*
+*Br   36 :fatJet1_globalParT_TopW : fatJet1_globalParT_TopW/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =    2134559 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.54     *
+*............................................................................*
+*Br   37 :fatJet1_globalParT_TopbW : fatJet1_globalParT_TopbW/F              *
+*Entries :   804868 : Total  Size=    3297886 bytes  File Size  =    2168905 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.51     *
+*............................................................................*
+*Br   38 :fatJet1_globalParT_TopbWev : fatJet1_globalParT_TopbWev/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    2216764 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.48     *
+*............................................................................*
+*Br   39 :fatJet1_globalParT_TopbWmv : fatJet1_globalParT_TopbWmv/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    2178930 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.51     *
+*............................................................................*
+*Br   40 :fatJet1_globalParT_TopbWq : fatJet1_globalParT_TopbWq/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =    2187503 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.50     *
+*............................................................................*
+*Br   41 :fatJet1_globalParT_TopbWqq : fatJet1_globalParT_TopbWqq/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    2181060 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.51     *
+*............................................................................*
+*Br   42 :fatJet1_globalParT_TopbWtauhv : fatJet1_globalParT_TopbWtauhv/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =    2185891 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.50     *
+*............................................................................*
+*Br   43 :fatJet1_globalParT_Xbb : fatJet1_globalParT_Xbb/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    2199405 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.49     *
+*............................................................................*
+*Br   44 :fatJet1_globalParT_XbbVsQCD : fatJet1_globalParT_XbbVsQCD/F        *
+*Entries :   804868 : Total  Size=    3300007 bytes  File Size  =    2212200 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.49     *
+*............................................................................*
+*Br   45 :fatJet1_globalParT_Xcc : fatJet1_globalParT_Xcc/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    2178370 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.51     *
+*............................................................................*
+*Br   46 :fatJet1_globalParT_Xcs : fatJet1_globalParT_Xcs/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    2186048 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.50     *
+*............................................................................*
+*Br   47 :fatJet1_globalParT_Xgg : fatJet1_globalParT_Xgg/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    2185362 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.50     *
+*............................................................................*
+*Br   48 :fatJet1_globalParT_Xqq : fatJet1_globalParT_Xqq/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    2186721 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.50     *
+*............................................................................*
+*Br   49 :fatJet1_globalParT_Xtauhtaue : fatJet1_globalParT_Xtauhtaue/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    2228873 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.47     *
+*............................................................................*
+*Br   50 :fatJet1_globalParT_Xtauhtauh : fatJet1_globalParT_Xtauhtauh/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    2224652 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.48     *
+*............................................................................*
+*Br   51 :fatJet1_globalParT_Xtauhtaum : fatJet1_globalParT_Xtauhtaum/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    2202632 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.49     *
+*............................................................................*
+*Br   52 :fatJet1_globalParT_massRes : fatJet1_globalParT_massRes/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    1837262 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.79     *
+*............................................................................*
+*Br   53 :fatJet1_globalParT_massVis : fatJet1_globalParT_massVis/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    1800767 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.82     *
+*............................................................................*
+*Br   54 :fatJet1_n2b1 : fatJet1_n2b1/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =    1810151 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.81     *
+*............................................................................*
+*Br   55 :fatJet1_n3b1 : fatJet1_n3b1/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =    1573054 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.08     *
+*............................................................................*
+*Br   56 :fatJet1_Tau3OverTau2 : fatJet1_Tau3OverTau2/F                      *
+*Entries :   804868 : Total  Size=    3295058 bytes  File Size  =    2824435 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.16     *
+*............................................................................*
+*Br   57 :fatJet1_rawFactor : fatJet1_rawFactor/F                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =    1470099 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.23     *
+*............................................................................*
+*Br   58 :fatJet1_HasMuon : fatJet1_HasMuon/O                                *
+*Entries :   804868 : Total  Size=     876913 bytes  File Size  =     115651 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   7.46     *
+*............................................................................*
+*Br   59 :fatJet1_HasElectron : fatJet1_HasElectron/O                        *
+*Entries :   804868 : Total  Size=     879741 bytes  File Size  =     269218 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.21     *
+*............................................................................*
+*Br   60 :fatJet1_HasBJetMedium : fatJet1_HasBJetMedium/O                    *
+*Entries :   804868 : Total  Size=     881155 bytes  File Size  =     219782 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.94     *
+*............................................................................*
+*Br   61 :fatJet1_OppositeHemisphereHasBJet :                                *
+*         | fatJet1_OppositeHemisphereHasBJet/O                              *
+*Entries :   804868 : Total  Size=     889639 bytes  File Size  =     191892 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   4.56     *
+*............................................................................*
+*Br   62 :fatJet1_subJetIdx1_pt : fatJet1_subJetIdx1_pt/F                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =    1960349 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.67     *
+*............................................................................*
+*Br   63 :fatJet1_subJetIdx1_eta : fatJet1_subJetIdx1_eta/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    2377136 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.38     *
+*............................................................................*
+*Br   64 :fatJet1_subJetIdx1_phi : fatJet1_subJetIdx1_phi/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    2360876 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.39     *
+*............................................................................*
+*Br   65 :fatJet1_subJetIdx1_mass : fatJet1_subJetIdx1_mass/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =    1995946 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.64     *
+*............................................................................*
+*Br   66 :fatJet1_subJetIdx2_pt : fatJet1_subJetIdx2_pt/F                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =    2007035 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.63     *
+*............................................................................*
+*Br   67 :fatJet1_subJetIdx2_eta : fatJet1_subJetIdx2_eta/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    2376853 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.38     *
+*............................................................................*
+*Br   68 :fatJet1_subJetIdx2_phi : fatJet1_subJetIdx2_phi/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    2360443 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.39     *
+*............................................................................*
+*Br   69 :fatJet1_subJetIdx2_mass : fatJet1_subJetIdx2_mass/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =    1985937 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.65     *
+*............................................................................*
+*Br   70 :fatJet1_subJetIdx2 : fatJet1_subJetIdx2/I                          *
+*Entries :   804868 : Total  Size=    3293644 bytes  File Size  =     766507 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   4.28     *
+*............................................................................*
+*Br   71 :fatJet1_subJetIdx1 : fatJet1_subJetIdx1/I                          *
+*Entries :   804868 : Total  Size=    3293644 bytes  File Size  =     161587 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  20.29     *
+*............................................................................*
+*Br   72 :fatJet1_subJetIdx2 : fatJet1_subJetIdx2/I                          *
+*Entries :   804868 : Total  Size=    3293644 bytes  File Size  =     766507 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   4.28     *
+*............................................................................*
+*Br   73 :fatJet1_jetId : fatJet1_jetId/I                                    *
+*Entries :   804868 : Total  Size=    3290109 bytes  File Size  =     135666 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  24.15     *
+*............................................................................*
+*Br   74 :fatJet1_electronIdx3SJ : fatJet1_electronIdx3SJ/I                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     571360 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   5.74     *
+*............................................................................*
+*Br   75 :fatJet1_muonIdx3SJ : fatJet1_muonIdx3SJ/I                          *
+*Entries :   804868 : Total  Size=    3293644 bytes  File Size  =     361797 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   9.06     *
+*............................................................................*
+*Br   76 :fatJet1_nConstituents : fatJet1_nConstituents/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =    1168694 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.81     *
+*............................................................................*
+*Br   77 :fatJet1_hadronFlavour : fatJet1_hadronFlavour/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     103035 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  31.85     *
+*............................................................................*
+*Br   78 :fatJet1_GenMatchIndex : fatJet1_GenMatchIndex/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     103725 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  31.63     *
+*............................................................................*
+*Br   79 :fatJet1_nBHadrons : fatJet1_nBHadrons/I                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     100192 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  32.72     *
+*............................................................................*
+*Br   80 :fatJet1_nCHadrons : fatJet1_nCHadrons/I                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     100198 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  32.72     *
+*............................................................................*
+*Br   81 :fatJet1_particleNetLegacy_Xbb : fatJet1_particleNetLegacy_Xbb/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =    2204991 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.49     *
+*............................................................................*
+*Br   82 :fatJet1_particleNetLegacy_Xcc : fatJet1_particleNetLegacy_Xcc/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =    2133835 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.54     *
+*............................................................................*
+*Br   83 :fatJet1_particleNetLegacy_Xqq : fatJet1_particleNetLegacy_Xqq/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =    2125135 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.55     *
+*............................................................................*
+*Br   84 :fatJet1_particleNetLegacy_QCD : fatJet1_particleNetLegacy_QCD/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =    2042741 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.61     *
+*............................................................................*
+*Br   85 :fatJet1_particleNetLegacy_QCDb : fatJet1_particleNetLegacy_QCDb/F  *
+*Entries :   804868 : Total  Size=    3302128 bytes  File Size  =    2128446 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.54     *
+*............................................................................*
+*Br   86 :fatJet1_particleNetLegacy_QCDbb : fatJet1_particleNetLegacy_QCDbb/F*
+*Entries :   804868 : Total  Size=    3302835 bytes  File Size  =    2200894 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.49     *
+*............................................................................*
+*Br   87 :fatJet1_particleNetLegacy_QCDothers :                              *
+*         | fatJet1_particleNetLegacy_QCDothers/F                            *
+*Entries :   804868 : Total  Size=    3305663 bytes  File Size  =    2114830 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.56     *
+*............................................................................*
+*Br   88 :fatJet1_particleNetLegacy_mass : fatJet1_particleNetLegacy_mass/F  *
+*Entries :   804868 : Total  Size=    3302128 bytes  File Size  =    1961751 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.68     *
+*............................................................................*
+*Br   89 :fatJet2_pt : fatJet2_pt/F                                          *
+*Entries :   804868 : Total  Size=    3287988 bytes  File Size  =     945829 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.46     *
+*............................................................................*
+*Br   90 :fatJet2_eta : fatJet2_eta/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =    1060247 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.09     *
+*............................................................................*
+*Br   91 :fatJet2_phi : fatJet2_phi/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =    1057773 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.10     *
+*............................................................................*
+*Br   92 :fatJet2_mass : fatJet2_mass/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =     945095 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.47     *
+*............................................................................*
+*Br   93 :fatJet2_msoftdrop : fatJet2_msoftdrop/F                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     947965 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.46     *
+*............................................................................*
+*Br   94 :fatJet2_btagDDBvLV2 : fatJet2_btagDDBvLV2/F                        *
+*Entries :   804868 : Total  Size=    3294351 bytes  File Size  =    1006690 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.26     *
+*............................................................................*
+*Br   95 :fatJet2_btagDDCvBV2 : fatJet2_btagDDCvBV2/F                        *
+*Entries :   804868 : Total  Size=    3294351 bytes  File Size  =     960195 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.42     *
+*............................................................................*
+*Br   96 :fatJet2_btagDDCvLV2 : fatJet2_btagDDCvLV2/F                        *
+*Entries :   804868 : Total  Size=    3294351 bytes  File Size  =     992081 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.31     *
+*............................................................................*
+*Br   97 :fatJet2_btagDeepB : fatJet2_btagDeepB/F                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     965996 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.39     *
+*............................................................................*
+*Br   98 :fatJet2_particleNetWithMass_H4qvsQCD :                             *
+*         | fatJet2_particleNetWithMass_H4qvsQCD/F                           *
+*Entries :   804868 : Total  Size=    3306370 bytes  File Size  =    1020805 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.22     *
+*............................................................................*
+*Br   99 :fatJet2_particleNetWithMass_HbbvsQCD :                             *
+*         | fatJet2_particleNetWithMass_HbbvsQCD/F                           *
+*Entries :   804868 : Total  Size=    3306370 bytes  File Size  =    1019584 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.23     *
+*............................................................................*
+*Br  100 :fatJet2_particleNetWithMass_HccvsQCD :                             *
+*         | fatJet2_particleNetWithMass_HccvsQCD/F                           *
+*Entries :   804868 : Total  Size=    3306370 bytes  File Size  =    1008657 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.26     *
+*............................................................................*
+*Br  101 :fatJet2_particleNetWithMass_QCD : fatJet2_particleNetWithMass_QCD/F*
+*Entries :   804868 : Total  Size=    3302835 bytes  File Size  =     993529 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.31     *
+*............................................................................*
+*Br  102 :fatJet2_particleNetWithMass_TvsQCD :                               *
+*         | fatJet2_particleNetWithMass_TvsQCD/F                             *
+*Entries :   804868 : Total  Size=    3304956 bytes  File Size  =    1020196 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.23     *
+*............................................................................*
+*Br  103 :fatJet2_particleNetWithMass_WvsQCD :                               *
+*         | fatJet2_particleNetWithMass_WvsQCD/F                             *
+*Entries :   804868 : Total  Size=    3304956 bytes  File Size  =     997315 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.30     *
+*............................................................................*
+*Br  104 :fatJet2_particleNetWithMass_ZvsQCD :                               *
+*         | fatJet2_particleNetWithMass_ZvsQCD/F                             *
+*Entries :   804868 : Total  Size=    3304956 bytes  File Size  =     997071 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.30     *
+*............................................................................*
+*Br  105 :fatJet2_particleNet_QCD : fatJet2_particleNet_QCD/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =     956827 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.43     *
+*............................................................................*
+*Br  106 :fatJet2_particleNet_QCD0HF : fatJet2_particleNet_QCD0HF/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     986780 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.33     *
+*............................................................................*
+*Br  107 :fatJet2_particleNet_QCD1HF : fatJet2_particleNet_QCD1HF/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     969828 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.39     *
+*............................................................................*
+*Br  108 :fatJet2_particleNet_QCD2HF : fatJet2_particleNet_QCD2HF/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     983779 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.34     *
+*............................................................................*
+*Br  109 :fatJet2_particleNet_XbbVsQCD : fatJet2_particleNet_XbbVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    1010856 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.25     *
+*............................................................................*
+*Br  110 :fatJet2_particleNet_XccVsQCD : fatJet2_particleNet_XccVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     995731 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.30     *
+*............................................................................*
+*Br  111 :fatJet2_particleNet_XggVsQCD : fatJet2_particleNet_XggVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     981528 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.35     *
+*............................................................................*
+*Br  112 :fatJet2_particleNet_XqqVsQCD : fatJet2_particleNet_XqqVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     997677 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.29     *
+*............................................................................*
+*Br  113 :fatJet2_particleNet_massCorr : fatJet2_particleNet_massCorr/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     903271 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.64     *
+*............................................................................*
+*Br  114 :fatJet2_globalParT_QCD0HF : fatJet2_globalParT_QCD0HF/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =     991916 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.31     *
+*............................................................................*
+*Br  115 :fatJet2_globalParT_QCD1HF : fatJet2_globalParT_QCD1HF/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =     984639 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.34     *
+*............................................................................*
+*Br  116 :fatJet2_globalParT_QCD2HF : fatJet2_globalParT_QCD2HF/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =     992961 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.31     *
+*............................................................................*
+*Br  117 :fatJet2_globalParT_TopW : fatJet2_globalParT_TopW/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =     989164 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.32     *
+*............................................................................*
+*Br  118 :fatJet2_globalParT_TopbW : fatJet2_globalParT_TopbW/F              *
+*Entries :   804868 : Total  Size=    3297886 bytes  File Size  =     999420 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.29     *
+*............................................................................*
+*Br  119 :fatJet2_globalParT_TopbWev : fatJet2_globalParT_TopbWev/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    1010101 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.25     *
+*............................................................................*
+*Br  120 :fatJet2_globalParT_TopbWmv : fatJet2_globalParT_TopbWmv/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    1002601 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.28     *
+*............................................................................*
+*Br  121 :fatJet2_globalParT_TopbWq : fatJet2_globalParT_TopbWq/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =    1003795 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.27     *
+*............................................................................*
+*Br  122 :fatJet2_globalParT_TopbWqq : fatJet2_globalParT_TopbWqq/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =    1003008 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.27     *
+*............................................................................*
+*Br  123 :fatJet2_globalParT_TopbWtauhv : fatJet2_globalParT_TopbWtauhv/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =    1005427 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.27     *
+*............................................................................*
+*Br  124 :fatJet2_globalParT_Xbb : fatJet2_globalParT_Xbb/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    1006387 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.26     *
+*............................................................................*
+*Br  125 :fatJet2_globalParT_XbbVsQCD : fatJet2_globalParT_XbbVsQCD/F        *
+*Entries :   804868 : Total  Size=    3300007 bytes  File Size  =    1012187 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.25     *
+*............................................................................*
+*Br  126 :fatJet2_globalParT_Xcc : fatJet2_globalParT_Xcc/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    1000723 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.28     *
+*............................................................................*
+*Br  127 :fatJet2_globalParT_Xcs : fatJet2_globalParT_Xcs/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    1002936 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.27     *
+*............................................................................*
+*Br  128 :fatJet2_globalParT_Xgg : fatJet2_globalParT_Xgg/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     998337 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.29     *
+*............................................................................*
+*Br  129 :fatJet2_globalParT_Xqq : fatJet2_globalParT_Xqq/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    1003496 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.27     *
+*............................................................................*
+*Br  130 :fatJet2_globalParT_Xtauhtaue : fatJet2_globalParT_Xtauhtaue/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    1012663 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.25     *
+*............................................................................*
+*Br  131 :fatJet2_globalParT_Xtauhtauh : fatJet2_globalParT_Xtauhtauh/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    1012894 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.24     *
+*............................................................................*
+*Br  132 :fatJet2_globalParT_Xtauhtaum : fatJet2_globalParT_Xtauhtaum/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =    1007292 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.26     *
+*............................................................................*
+*Br  133 :fatJet2_globalParT_massRes : fatJet2_globalParT_massRes/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     926486 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.55     *
+*............................................................................*
+*Br  134 :fatJet2_globalParT_massVis : fatJet2_globalParT_massVis/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     920396 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.57     *
+*............................................................................*
+*Br  135 :fatJet2_n2b1 : fatJet2_n2b1/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =     907438 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.61     *
+*............................................................................*
+*Br  136 :fatJet2_n3b1 : fatJet2_n3b1/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =     838987 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.90     *
+*............................................................................*
+*Br  137 :fatJet2_Tau3OverTau2 : fatJet2_Tau3OverTau2/F                      *
+*Entries :   804868 : Total  Size=    3295058 bytes  File Size  =    1233752 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.66     *
+*............................................................................*
+*Br  138 :fatJet2_rawFactor : fatJet2_rawFactor/F                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     821651 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.99     *
+*............................................................................*
+*Br  139 :fatJet2_HasMuon : fatJet2_HasMuon/O                                *
+*Entries :   804868 : Total  Size=     876913 bytes  File Size  =      92440 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   9.33     *
+*............................................................................*
+*Br  140 :fatJet2_HasElectron : fatJet2_HasElectron/O                        *
+*Entries :   804868 : Total  Size=     879741 bytes  File Size  =     192745 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   4.49     *
+*............................................................................*
+*Br  141 :fatJet2_HasBJetMedium : fatJet2_HasBJetMedium/O                    *
+*Entries :   804868 : Total  Size=     881155 bytes  File Size  =     163727 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   5.29     *
+*............................................................................*
+*Br  142 :fatJet2_OppositeHemisphereHasBJet :                                *
+*         | fatJet2_OppositeHemisphereHasBJet/O                              *
+*Entries :   804868 : Total  Size=     889639 bytes  File Size  =     170274 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   5.14     *
+*............................................................................*
+*Br  143 :fatJet2_subJetIdx1_pt : fatJet2_subJetIdx1_pt/F                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     951509 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.45     *
+*............................................................................*
+*Br  144 :fatJet2_subJetIdx1_eta : fatJet2_subJetIdx1_eta/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    1068539 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.07     *
+*............................................................................*
+*Br  145 :fatJet2_subJetIdx1_phi : fatJet2_subJetIdx1_phi/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    1065178 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.08     *
+*............................................................................*
+*Br  146 :fatJet2_subJetIdx1_mass : fatJet2_subJetIdx1_mass/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =     960926 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.42     *
+*............................................................................*
+*Br  147 :fatJet2_subJetIdx2_pt : fatJet2_subJetIdx2_pt/F                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     961465 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.41     *
+*............................................................................*
+*Br  148 :fatJet2_subJetIdx2_eta : fatJet2_subJetIdx2_eta/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    1068396 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.07     *
+*............................................................................*
+*Br  149 :fatJet2_subJetIdx2_phi : fatJet2_subJetIdx2_phi/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =    1065803 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.08     *
+*............................................................................*
+*Br  150 :fatJet2_subJetIdx2_mass : fatJet2_subJetIdx2_mass/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =     959251 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.42     *
+*............................................................................*
+*Br  151 :fatJet2_hadronFlavour : fatJet2_hadronFlavour/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     395226 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.30     *
+*............................................................................*
+*Br  152 :fatJet2_jetId : fatJet2_jetId/I                                    *
+*Entries :   804868 : Total  Size=    3290109 bytes  File Size  =     396769 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.26     *
+*............................................................................*
+*Br  153 :fatJet2_electronIdx3SJ : fatJet2_electronIdx3SJ/I                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     532375 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   6.16     *
+*............................................................................*
+*Br  154 :fatJet2_muonIdx3SJ : fatJet2_muonIdx3SJ/I                          *
+*Entries :   804868 : Total  Size=    3293644 bytes  File Size  =     489340 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   6.70     *
+*............................................................................*
+*Br  155 :fatJet2_nConstituents : fatJet2_nConstituents/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     733347 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   4.47     *
+*............................................................................*
+*Br  156 :fatJet2_hadronFlavour : fatJet2_hadronFlavour/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     395226 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.30     *
+*............................................................................*
+*Br  157 :fatJet2_GenMatchIndex : fatJet2_GenMatchIndex/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     398539 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.23     *
+*............................................................................*
+*Br  158 :fatJet2_nBHadrons : fatJet2_nBHadrons/I                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     393640 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.33     *
+*............................................................................*
+*Br  159 :fatJet2_nCHadrons : fatJet2_nCHadrons/I                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     393307 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.34     *
+*............................................................................*
+*Br  160 :fatJet2_particleNetLegacy_Xbb : fatJet2_particleNetLegacy_Xbb/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =    1010651 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.25     *
+*............................................................................*
+*Br  161 :fatJet2_particleNetLegacy_Xcc : fatJet2_particleNetLegacy_Xcc/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =     995476 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.30     *
+*............................................................................*
+*Br  162 :fatJet2_particleNetLegacy_Xqq : fatJet2_particleNetLegacy_Xqq/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =     997062 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.30     *
+*............................................................................*
+*Br  163 :fatJet2_particleNetLegacy_QCD : fatJet2_particleNetLegacy_QCD/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =     972761 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.38     *
+*............................................................................*
+*Br  164 :fatJet2_particleNetLegacy_QCDb : fatJet2_particleNetLegacy_QCDb/F  *
+*Entries :   804868 : Total  Size=    3302128 bytes  File Size  =     992400 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.31     *
+*............................................................................*
+*Br  165 :fatJet2_particleNetLegacy_QCDbb : fatJet2_particleNetLegacy_QCDbb/F*
+*Entries :   804868 : Total  Size=    3302835 bytes  File Size  =    1011116 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.25     *
+*............................................................................*
+*Br  166 :fatJet2_particleNetLegacy_QCDothers :                              *
+*         | fatJet2_particleNetLegacy_QCDothers/F                            *
+*Entries :   804868 : Total  Size=    3305663 bytes  File Size  =     997486 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.30     *
+*............................................................................*
+*Br  167 :fatJet2_particleNetLegacy_mass : fatJet2_particleNetLegacy_mass/F  *
+*Entries :   804868 : Total  Size=    3302128 bytes  File Size  =     958671 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.43     *
+*............................................................................*
+*Br  168 :fatJet3_pt : fatJet3_pt/F                                          *
+*Entries :   804868 : Total  Size=    3287988 bytes  File Size  =     259295 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.63     *
+*............................................................................*
+*Br  169 :fatJet3_eta : fatJet3_eta/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =     274262 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.94     *
+*............................................................................*
+*Br  170 :fatJet3_phi : fatJet3_phi/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =     273363 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.98     *
+*............................................................................*
+*Br  171 :fatJet3_mass : fatJet3_mass/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =     261178 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.54     *
+*............................................................................*
+*Br  172 :fatJet3_msoftdrop : fatJet3_msoftdrop/F                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     264885 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.38     *
+*............................................................................*
+*Br  173 :fatJet3_btagDDBvLV2 : fatJet3_btagDDBvLV2/F                        *
+*Entries :   804868 : Total  Size=    3294351 bytes  File Size  =     267947 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.24     *
+*............................................................................*
+*Br  174 :fatJet3_btagDDCvBV2 : fatJet3_btagDDCvBV2/F                        *
+*Entries :   804868 : Total  Size=    3294351 bytes  File Size  =     265828 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.34     *
+*............................................................................*
+*Br  175 :fatJet3_btagDDCvLV2 : fatJet3_btagDDCvLV2/F                        *
+*Entries :   804868 : Total  Size=    3294351 bytes  File Size  =     267921 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.24     *
+*............................................................................*
+*Br  176 :fatJet3_btagDeepB : fatJet3_btagDeepB/F                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     265808 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.33     *
+*............................................................................*
+*Br  177 :fatJet3_particleNetWithMass_H4qvsQCD :                             *
+*         | fatJet3_particleNetWithMass_H4qvsQCD/F                           *
+*Entries :   804868 : Total  Size=    3306370 bytes  File Size  =     279759 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.77     *
+*............................................................................*
+*Br  178 :fatJet3_particleNetWithMass_HbbvsQCD :                             *
+*         | fatJet3_particleNetWithMass_HbbvsQCD/F                           *
+*Entries :   804868 : Total  Size=    3306370 bytes  File Size  =     279421 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.78     *
+*............................................................................*
+*Br  179 :fatJet3_particleNetWithMass_HccvsQCD :                             *
+*         | fatJet3_particleNetWithMass_HccvsQCD/F                           *
+*Entries :   804868 : Total  Size=    3306370 bytes  File Size  =     279794 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.77     *
+*............................................................................*
+*Br  180 :fatJet3_particleNetWithMass_QCD : fatJet3_particleNetWithMass_QCD/F*
+*Entries :   804868 : Total  Size=    3302835 bytes  File Size  =     275649 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.93     *
+*............................................................................*
+*Br  181 :fatJet3_particleNetWithMass_TvsQCD :                               *
+*         | fatJet3_particleNetWithMass_TvsQCD/F                             *
+*Entries :   804868 : Total  Size=    3304956 bytes  File Size  =     278628 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.81     *
+*............................................................................*
+*Br  182 :fatJet3_particleNetWithMass_WvsQCD :                               *
+*         | fatJet3_particleNetWithMass_WvsQCD/F                             *
+*Entries :   804868 : Total  Size=    3304956 bytes  File Size  =     278348 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.82     *
+*............................................................................*
+*Br  183 :fatJet3_particleNetWithMass_ZvsQCD :                               *
+*         | fatJet3_particleNetWithMass_ZvsQCD/F                             *
+*Entries :   804868 : Total  Size=    3304956 bytes  File Size  =     277836 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.84     *
+*............................................................................*
+*Br  184 :fatJet3_particleNet_QCD : fatJet3_particleNet_QCD/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =     268522 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.23     *
+*............................................................................*
+*Br  185 :fatJet3_particleNet_QCD0HF : fatJet3_particleNet_QCD0HF/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     272054 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.07     *
+*............................................................................*
+*Br  186 :fatJet3_particleNet_QCD1HF : fatJet3_particleNet_QCD1HF/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     271279 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.11     *
+*............................................................................*
+*Br  187 :fatJet3_particleNet_QCD2HF : fatJet3_particleNet_QCD2HF/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     271678 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.09     *
+*............................................................................*
+*Br  188 :fatJet3_particleNet_XbbVsQCD : fatJet3_particleNet_XbbVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     273997 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.99     *
+*............................................................................*
+*Br  189 :fatJet3_particleNet_XccVsQCD : fatJet3_particleNet_XccVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     273654 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.01     *
+*............................................................................*
+*Br  190 :fatJet3_particleNet_XggVsQCD : fatJet3_particleNet_XggVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     273572 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.01     *
+*............................................................................*
+*Br  191 :fatJet3_particleNet_XqqVsQCD : fatJet3_particleNet_XqqVsQCD/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     273493 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.02     *
+*............................................................................*
+*Br  192 :fatJet3_particleNet_massCorr : fatJet3_particleNet_massCorr/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     266430 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.33     *
+*............................................................................*
+*Br  193 :fatJet3_globalParT_QCD0HF : fatJet3_globalParT_QCD0HF/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =     271160 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.11     *
+*............................................................................*
+*Br  194 :fatJet3_globalParT_QCD1HF : fatJet3_globalParT_QCD1HF/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =     271504 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.10     *
+*............................................................................*
+*Br  195 :fatJet3_globalParT_QCD2HF : fatJet3_globalParT_QCD2HF/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =     271790 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.08     *
+*............................................................................*
+*Br  196 :fatJet3_globalParT_TopW : fatJet3_globalParT_TopW/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =     270669 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.13     *
+*............................................................................*
+*Br  197 :fatJet3_globalParT_TopbW : fatJet3_globalParT_TopbW/F              *
+*Entries :   804868 : Total  Size=    3297886 bytes  File Size  =     270946 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.12     *
+*............................................................................*
+*Br  198 :fatJet3_globalParT_TopbWev : fatJet3_globalParT_TopbWev/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     272570 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.05     *
+*............................................................................*
+*Br  199 :fatJet3_globalParT_TopbWmv : fatJet3_globalParT_TopbWmv/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     272458 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.06     *
+*............................................................................*
+*Br  200 :fatJet3_globalParT_TopbWq : fatJet3_globalParT_TopbWq/F            *
+*Entries :   804868 : Total  Size=    3298593 bytes  File Size  =     271761 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.08     *
+*............................................................................*
+*Br  201 :fatJet3_globalParT_TopbWqq : fatJet3_globalParT_TopbWqq/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     272815 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.04     *
+*............................................................................*
+*Br  202 :fatJet3_globalParT_TopbWtauhv : fatJet3_globalParT_TopbWtauhv/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =     275003 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.95     *
+*............................................................................*
+*Br  203 :fatJet3_globalParT_Xbb : fatJet3_globalParT_Xbb/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     269628 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.17     *
+*............................................................................*
+*Br  204 :fatJet3_globalParT_XbbVsQCD : fatJet3_globalParT_XbbVsQCD/F        *
+*Entries :   804868 : Total  Size=    3300007 bytes  File Size  =     273047 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.03     *
+*............................................................................*
+*Br  205 :fatJet3_globalParT_Xcc : fatJet3_globalParT_Xcc/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     269936 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.16     *
+*............................................................................*
+*Br  206 :fatJet3_globalParT_Xcs : fatJet3_globalParT_Xcs/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     270212 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.15     *
+*............................................................................*
+*Br  207 :fatJet3_globalParT_Xgg : fatJet3_globalParT_Xgg/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     269871 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.16     *
+*............................................................................*
+*Br  208 :fatJet3_globalParT_Xqq : fatJet3_globalParT_Xqq/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     269725 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.17     *
+*............................................................................*
+*Br  209 :fatJet3_globalParT_Xtauhtaue : fatJet3_globalParT_Xtauhtaue/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     274226 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.98     *
+*............................................................................*
+*Br  210 :fatJet3_globalParT_Xtauhtauh : fatJet3_globalParT_Xtauhtauh/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     274486 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.97     *
+*............................................................................*
+*Br  211 :fatJet3_globalParT_Xtauhtaum : fatJet3_globalParT_Xtauhtaum/F      *
+*Entries :   804868 : Total  Size=    3300714 bytes  File Size  =     274154 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.99     *
+*............................................................................*
+*Br  212 :fatJet3_globalParT_massRes : fatJet3_globalParT_massRes/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     268534 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.23     *
+*............................................................................*
+*Br  213 :fatJet3_globalParT_massVis : fatJet3_globalParT_massVis/F          *
+*Entries :   804868 : Total  Size=    3299300 bytes  File Size  =     267933 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.26     *
+*............................................................................*
+*Br  214 :fatJet3_n2b1 : fatJet3_n2b1/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =     258096 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.69     *
+*............................................................................*
+*Br  215 :fatJet3_n3b1 : fatJet3_n3b1/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =     236589 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  13.84     *
+*............................................................................*
+*Br  216 :fatJet3_Tau3OverTau2 : fatJet3_Tau3OverTau2/F                      *
+*Entries :   804868 : Total  Size=    3295058 bytes  File Size  =     297860 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.01     *
+*............................................................................*
+*Br  217 :fatJet3_rawFactor : fatJet3_rawFactor/F                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     247770 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  13.23     *
+*............................................................................*
+*Br  218 :fatJet3_HasMuon : fatJet3_HasMuon/O                                *
+*Entries :   804868 : Total  Size=     876913 bytes  File Size  =      80315 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  10.74     *
+*............................................................................*
+*Br  219 :fatJet3_HasElectron : fatJet3_HasElectron/O                        *
+*Entries :   804868 : Total  Size=     879741 bytes  File Size  =      99313 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.71     *
+*............................................................................*
+*Br  220 :fatJet3_HasBJetMedium : fatJet3_HasBJetMedium/O                    *
+*Entries :   804868 : Total  Size=     881155 bytes  File Size  =      96443 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.99     *
+*............................................................................*
+*Br  221 :fatJet3_OppositeHemisphereHasBJet :                                *
+*         | fatJet3_OppositeHemisphereHasBJet/O                              *
+*Entries :   804868 : Total  Size=     889639 bytes  File Size  =     161356 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   5.42     *
+*............................................................................*
+*Br  222 :fatJet3_subJetIdx1_pt : fatJet3_subJetIdx1_pt/F                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     266892 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.29     *
+*............................................................................*
+*Br  223 :fatJet3_subJetIdx1_eta : fatJet3_subJetIdx1_eta/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     282160 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.63     *
+*............................................................................*
+*Br  224 :fatJet3_subJetIdx1_phi : fatJet3_subJetIdx1_phi/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     281828 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.65     *
+*............................................................................*
+*Br  225 :fatJet3_subJetIdx1_mass : fatJet3_subJetIdx1_mass/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =     269743 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.17     *
+*............................................................................*
+*Br  226 :fatJet3_subJetIdx2_pt : fatJet3_subJetIdx2_pt/F                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     268622 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.22     *
+*............................................................................*
+*Br  227 :fatJet3_subJetIdx2_eta : fatJet3_subJetIdx2_eta/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     281749 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.65     *
+*............................................................................*
+*Br  228 :fatJet3_subJetIdx2_phi : fatJet3_subJetIdx2_phi/F                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     281511 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.66     *
+*............................................................................*
+*Br  229 :fatJet3_subJetIdx2_mass : fatJet3_subJetIdx2_mass/F                *
+*Entries :   804868 : Total  Size=    3297179 bytes  File Size  =     269998 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.16     *
+*............................................................................*
+*Br  230 :fatJet3_hadronFlavour : fatJet3_hadronFlavour/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     191256 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  17.16     *
+*............................................................................*
+*Br  231 :fatJet3_jetId : fatJet3_jetId/I                                    *
+*Entries :   804868 : Total  Size=    3290109 bytes  File Size  =     187649 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  17.46     *
+*............................................................................*
+*Br  232 :fatJet3_electronIdx3SJ : fatJet3_electronIdx3SJ/I                  *
+*Entries :   804868 : Total  Size=    3296472 bytes  File Size  =     206422 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  15.90     *
+*............................................................................*
+*Br  233 :fatJet3_muonIdx3SJ : fatJet3_muonIdx3SJ/I                          *
+*Entries :   804868 : Total  Size=    3293644 bytes  File Size  =     199513 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  16.44     *
+*............................................................................*
+*Br  234 :fatJet3_nConstituents : fatJet3_nConstituents/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     236237 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  13.89     *
+*............................................................................*
+*Br  235 :fatJet3_hadronFlavour : fatJet3_hadronFlavour/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     191256 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  17.16     *
+*............................................................................*
+*Br  236 :fatJet3_GenMatchIndex : fatJet3_GenMatchIndex/I                    *
+*Entries :   804868 : Total  Size=    3295765 bytes  File Size  =     192582 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  17.04     *
+*............................................................................*
+*Br  237 :fatJet3_nBHadrons : fatJet3_nBHadrons/I                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     188633 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  17.38     *
+*............................................................................*
+*Br  238 :fatJet3_nCHadrons : fatJet3_nCHadrons/I                            *
+*Entries :   804868 : Total  Size=    3292937 bytes  File Size  =     189021 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  17.34     *
+*............................................................................*
+*Br  239 :fatJet3_particleNetLegacy_Xbb : fatJet3_particleNetLegacy_Xbb/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =     274927 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.96     *
+*............................................................................*
+*Br  240 :fatJet3_particleNetLegacy_Xcc : fatJet3_particleNetLegacy_Xcc/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =     274678 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.97     *
+*............................................................................*
+*Br  241 :fatJet3_particleNetLegacy_Xqq : fatJet3_particleNetLegacy_Xqq/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =     274517 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.97     *
+*............................................................................*
+*Br  242 :fatJet3_particleNetLegacy_QCD : fatJet3_particleNetLegacy_QCD/F    *
+*Entries :   804868 : Total  Size=    3301421 bytes  File Size  =     273814 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  12.00     *
+*............................................................................*
+*Br  243 :fatJet3_particleNetLegacy_QCDb : fatJet3_particleNetLegacy_QCDb/F  *
+*Entries :   804868 : Total  Size=    3302128 bytes  File Size  =     275407 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.94     *
+*............................................................................*
+*Br  244 :fatJet3_particleNetLegacy_QCDbb : fatJet3_particleNetLegacy_QCDbb/F*
+*Entries :   804868 : Total  Size=    3302835 bytes  File Size  =     276245 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.90     *
+*............................................................................*
+*Br  245 :fatJet3_particleNetLegacy_QCDothers :                              *
+*         | fatJet3_particleNetLegacy_QCDothers/F                            *
+*Entries :   804868 : Total  Size=    3305663 bytes  File Size  =     278526 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.82     *
+*............................................................................*
+*Br  246 :fatJet3_particleNetLegacy_mass : fatJet3_particleNetLegacy_mass/F  *
+*Entries :   804868 : Total  Size=    3302128 bytes  File Size  =     274375 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.98     *
+*............................................................................*
+*Br  247 :isVBFtag  : isVBFtag/I                                             *
+*Entries :   804868 : Total  Size=    3286574 bytes  File Size  =     161043 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  20.32     *
+*............................................................................*
+*Br  248 :dijetmass : dijetmass/F                                            *
+*Entries :   804868 : Total  Size=    3287281 bytes  File Size  =    1523014 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.15     *
+*............................................................................*
+*Br  249 :vbfjet1_Pt : vbfjet1_Pt/F                                          *
+*Entries :   804868 : Total  Size=    3287988 bytes  File Size  =    1121576 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.92     *
+*............................................................................*
+*Br  250 :vbfjet1_Eta : vbfjet1_Eta/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =    1254524 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.61     *
+*............................................................................*
+*Br  251 :vbfjet1_Phi : vbfjet1_Phi/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =    1247387 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.62     *
+*............................................................................*
+*Br  252 :vbfjet1_Mass : vbfjet1_Mass/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =    1113316 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.94     *
+*............................................................................*
+*Br  253 :vbfjet2_Pt : vbfjet2_Pt/F                                          *
+*Entries :   804868 : Total  Size=    3287988 bytes  File Size  =    1115200 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.94     *
+*............................................................................*
+*Br  254 :vbfjet2_Eta : vbfjet2_Eta/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =    1254944 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.61     *
+*............................................................................*
+*Br  255 :vbfjet2_Phi : vbfjet2_Phi/F                                        *
+*Entries :   804868 : Total  Size=    3288695 bytes  File Size  =    1246878 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.63     *
+*............................................................................*
+*Br  256 :vbfjet2_Mass : vbfjet2_Mass/F                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =    1112648 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.94     *
+*............................................................................*
+*Br  257 :jet1Pt    : jet1Pt/F                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =     867318 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.77     *
+*............................................................................*
+*Br  258 :jet1Eta   : jet1Eta/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =     958512 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.41     *
+*............................................................................*
+*Br  259 :jet1Phi   : jet1Phi/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =     954601 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.43     *
+*............................................................................*
+*Br  260 :jet1_rawFactor : jet1_rawFactor/F                                  *
+*Entries :   804868 : Total  Size=    3290816 bytes  File Size  =     781627 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   4.19     *
+*............................................................................*
+*Br  261 :jet2Pt    : jet2Pt/F                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =     296875 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.02     *
+*............................................................................*
+*Br  262 :jet2Eta   : jet2Eta/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =     314671 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  10.40     *
+*............................................................................*
+*Br  263 :jet2Phi   : jet2Phi/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =     314294 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  10.41     *
+*............................................................................*
+*Br  264 :jet2_rawFactor : jet2_rawFactor/F                                  *
+*Entries :   804868 : Total  Size=    3290816 bytes  File Size  =     285914 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  11.46     *
+*............................................................................*
+*Br  265 :jet3Pt    : jet3Pt/F                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =     112263 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  29.14     *
+*............................................................................*
+*Br  266 :jet3Eta   : jet3Eta/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =     113914 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  28.72     *
+*............................................................................*
+*Br  267 :jet3Phi   : jet3Phi/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =     113869 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  28.73     *
+*............................................................................*
+*Br  268 :jet3_rawFactor : jet3_rawFactor/F                                  *
+*Entries :   804868 : Total  Size=    3290816 bytes  File Size  =     114547 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  28.60     *
+*............................................................................*
+*Br  269 :jet4Pt    : jet4Pt/F                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =      94736 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  34.53     *
+*............................................................................*
+*Br  270 :jet4Eta   : jet4Eta/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =      95464 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  34.27     *
+*............................................................................*
+*Br  271 :jet4Phi   : jet4Phi/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =      95466 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  34.27     *
+*............................................................................*
+*Br  272 :jet4_rawFactor : jet4_rawFactor/F                                  *
+*Entries :   804868 : Total  Size=    3290816 bytes  File Size  =     100067 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  32.74     *
+*............................................................................*
+*Br  273 :lep1Pt    : lep1Pt/F                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =    1469147 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.23     *
+*............................................................................*
+*Br  274 :lep1Eta   : lep1Eta/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =    1235840 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.65     *
+*............................................................................*
+*Br  275 :lep1Phi   : lep1Phi/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =    1240693 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.64     *
+*............................................................................*
+*Br  276 :lep1Id    : lep1Id/I                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =     534433 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   6.12     *
+*............................................................................*
+*Br  277 :lep2Pt    : lep2Pt/F                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =     203627 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  16.06     *
+*............................................................................*
+*Br  278 :lep2Eta   : lep2Eta/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =     197263 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  16.58     *
+*............................................................................*
+*Br  279 :lep2Phi   : lep2Phi/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =     197055 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  16.60     *
+*............................................................................*
+*Br  280 :lep2Id    : lep2Id/I                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =     150237 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  21.77     *
+*............................................................................*
+*Br  281 :nBTaggedJets : nBTaggedJets/I                                      *
+*Entries :   804868 : Total  Size=    3289402 bytes  File Size  =     409394 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.00     *
+*............................................................................*
+*Br  282 :pho1Pt    : pho1Pt/F                                               *
+*Entries :   804868 : Total  Size=    3285160 bytes  File Size  =    1796259 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   1.82     *
+*............................................................................*
+*Br  283 :pho1Eta   : pho1Eta/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =    1466171 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.23     *
+*............................................................................*
+*Br  284 :pho1Phi   : pho1Phi/F                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =    1463268 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   2.24     *
+*............................................................................*
+*Br  285 :HLT_Ele32_WPTight_Gsf : HLT_Ele32_WPTight_Gsf/O                    *
+*Entries :   804868 : Total  Size=     881155 bytes  File Size  =     240616 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.60     *
+*............................................................................*
+*Br  286 :HLT_IsoMu27 : HLT_IsoMu27/O                                        *
+*Entries :   804868 : Total  Size=     874085 bytes  File Size  =      97386 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.83     *
+*............................................................................*
+*Br  287 :HLT_Mu50  : HLT_Mu50/O                                             *
+*Entries :   804868 : Total  Size=     871964 bytes  File Size  =     124382 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   6.89     *
+*............................................................................*
+*Br  288 :HLT_AK8PFJet425_SoftDropMass40 : HLT_AK8PFJet425_SoftDropMass40/O  *
+*Entries :   804868 : Total  Size=     887518 bytes  File Size  =     278780 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.13     *
+*............................................................................*
+*Br  289 :HLT_AK8PFJet230_SoftDropMass40 : HLT_AK8PFJet230_SoftDropMass40/O  *
+*Entries :   804868 : Total  Size=     887518 bytes  File Size  =     139225 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   6.27     *
+*............................................................................*
+*Br  290 :HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06 :                        *
+*         | HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06/O                      *
+*Entries :   804868 : Total  Size=     895295 bytes  File Size  =      97468 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   9.04     *
+*............................................................................*
+*Br  291 :HLT_IsoMu50_AK8PFJet230_SoftDropMass40 :                           *
+*         | HLT_IsoMu50_AK8PFJet230_SoftDropMass40/O                         *
+*Entries :   804868 : Total  Size=     893174 bytes  File Size  =     107633 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.16     *
+*............................................................................*
+*Br  292 :HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 :                *
+*         | HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06/O              *
+*Entries :   804868 : Total  Size=     900951 bytes  File Size  =     103237 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   8.59     *
+*............................................................................*
+*Br  293 :HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40 :          *
+*         | HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40/O        *
+*Entries :   804868 : Total  Size=     905193 bytes  File Size  =     296863 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   3.00     *
+*............................................................................*
+*Br  294 :HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 : *
+*         | HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06/O*
+*Entries :   804868 : Total  Size=     912970 bytes  File Size  =     114955 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=   7.81     *
+*............................................................................*
+*Br  295 :nGenJetAK8 : nGenJetAK8/I                                          *
+*Entries :   804868 : Total  Size=    3287988 bytes  File Size  =      90642 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  36.12     *
+*............................................................................*
+*Br  296 :GenJetAK8_eta : GenJetAK8_eta[nGenJetAK8]/F                        *
+*Entries :   804868 : Total  Size=    3295844 bytes  File Size  =     100351 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  32.70     *
+*............................................................................*
+*Br  297 :GenJetAK8_phi : GenJetAK8_phi[nGenJetAK8]/F                        *
+*Entries :   804868 : Total  Size=    3295844 bytes  File Size  =     100351 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  32.70     *
+*............................................................................*
+*Br  298 :GenJetAK8_pt : GenJetAK8_pt[nGenJetAK8]/F                          *
+*Entries :   804868 : Total  Size=    3295137 bytes  File Size  =      99650 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  32.92     *
+*............................................................................*
+*Br  299 :GenJetAK8_mass : GenJetAK8_mass[nGenJetAK8]/F                      *
+*Entries :   804868 : Total  Size=    3296551 bytes  File Size  =     101054 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  32.48     *
+*............................................................................*
+*Br  300 :nGenJet   : nGenJet/I                                              *
+*Entries :   804868 : Total  Size=    3285867 bytes  File Size  =      88533 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  36.95     *
+*............................................................................*
+*Br  301 :GenJet_eta : GenJet_eta[nGenJet]/F                                 *
+*Entries :   804868 : Total  Size=    3293711 bytes  File Size  =      98243 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  33.38     *
+*............................................................................*
+*Br  302 :GenJet_phi : GenJet_phi[nGenJet]/F                                 *
+*Entries :   804868 : Total  Size=    3293711 bytes  File Size  =      98243 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  33.38     *
+*............................................................................*
+*Br  303 :GenJet_pt : GenJet_pt[nGenJet]/F                                   *
+*Entries :   804868 : Total  Size=    3293004 bytes  File Size  =      97541 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  33.61     *
+*............................................................................*
+*Br  304 :GenJet_mass : GenJet_mass[nGenJet]/F                               *
+*Entries :   804868 : Total  Size=    3294418 bytes  File Size  =      98944 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  33.15     *
+*............................................................................*
+*Br  305 :GenJet_partonFlavour : GenJet_partonFlavour[nGenJet]/I             *
+*Entries :   804868 : Total  Size=    3300774 bytes  File Size  =     105252 *
+*Baskets :      703 : Basket Size=      32000 bytes  Compression=  31.22     *
+*............................................................................*
