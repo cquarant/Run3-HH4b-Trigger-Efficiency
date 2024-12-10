@@ -92,7 +92,7 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
     _eff_mc->Sumw2();
     _eff_mc->Divide(_mc_all);
 
-    TH1D* _eff_data = (TH1D*)_data_pass->Clone("eff_Data");
+    TH1D* _eff_data = (TH1D*)_data_pass->Clone("eff_data");
     _eff_data->Sumw2();
     _eff_data->Divide(_data_all);
 
@@ -124,7 +124,7 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
     
     // Draw upper pad (efficiency)
     pad1->cd();
-    set_histo_style_1D(_eff_data, "", "Efficiency", 0.0, 1.2);
+    set_histo_style_1D(_eff_data, "", "Efficiency", 0.0, 1.0);
     
     _eff_data->SetMarkerStyle(20);  // Filled circle
     _eff_data->SetMarkerColor(kRed);

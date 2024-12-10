@@ -7,9 +7,9 @@ fi
 PROJ_ROOT="${CMSSW_BASE}/src"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 OUTPUT_DIR=${SCRIPT_DIR}/output
-TMP_DIR=${SCRIPT_DIR}/tmp
-FIG_DIR=${SCRIPT_DIR}/figures
-FIG_TMP_DIR=${SCRIPT_DIR}/figures
+TMP_DIR=${SCRIPT_DIR}/txbb_tmp
+FIG_DIR=${SCRIPT_DIR}/txbb_figures
+FIG_TMP_DIR=${SCRIPT_DIR}/txbb_figures
 mkdir -p ${OUTPUT_DIR}
 mkdir -p ${FIG_DIR}
 mkdir -p ${FIG_TMP_DIR}

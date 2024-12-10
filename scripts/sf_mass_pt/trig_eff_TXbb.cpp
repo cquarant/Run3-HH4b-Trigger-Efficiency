@@ -58,89 +58,43 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
                    const std::string& tagger_name, const std::string& output_root_path, 
                    const std::string& figure_path) {
     
-    // Define the binning
-    const int nBins = 20;
-    Double_t xbb_bins[21] = {
-        0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45,
-        0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0
-    };
-
+    const int rebin = 4;
+    
     // Open files
     TFile* f = new TFile(output_root_path.c_str(), "RECREATE");
     TFile* fData = new TFile(data_path.c_str());
     TFile* fMC = new TFile(mc_path.c_str());
 
     // Define variables
-    // TString tag_var = "FatJet1_tag_GloParT_XbbVsQCD";
-    // TString probe_var = "FatJet1_probe_GloParT_XbbVsQCD";
-    // TString tag_var = "FatJet1_tag_PNetLegacy_XbbVsQCD";
-    // TString probe_var = "FatJet1_probe_PNetLegacy_XbbVsQCD";
-    TString tag_var = "FatJet1_tag_" + tagger_name + "_XbbVsQCD";
-    TString probe_var = "FatJet1_probe_" + tagger_name + "_XbbVsQCD";
+    TString tag_var = "ProbeJet_all_" + tagger_name + "_XbbVsQCD";
+    TString probe_var = "ProbeJet_pass_" + tagger_name + "_XbbVsQCD";
 
-    // Get original histograms
-    TH1D* _mc_tag_orig = (TH1D*)fMC->Get(tag_var);
-    TH1D* _mc_probe_orig = (TH1D*)fMC->Get(probe_var);
-    TH1D* _data_tag_orig = (TH1D*)fData->Get(tag_var);
-    TH1D* _data_probe_orig = (TH1D*)fData->Get(probe_var);
+    // Get histograms
+    TH1D* _mc_all = (TH1D*)fMC->Get(tag_var);
+    TH1D* _mc_pass = (TH1D*)fMC->Get(probe_var);
+    TH1D* _data_all = (TH1D*)fData->Get(tag_var);
+    TH1D* _data_pass = (TH1D*)fData->Get(probe_var);
 
     // Check if histograms exist
-    if (!_mc_tag_orig || !_mc_probe_orig || !_data_tag_orig || !_data_probe_orig) {
+    if (!_mc_all || !_mc_pass || !_data_all || !_data_pass) {
         std::cerr << "Error: could not find histograms in input files" << std::endl;
         return;
     }
 
-    // Create new histograms with desired binning
-    TH1D* _mc_tag = new TH1D("mc_tag", "MC Tag", nBins, xbb_bins);
-    TH1D* _mc_probe = new TH1D("mc_probe", "MC Probe", nBins, xbb_bins);
-    TH1D* _data_tag = new TH1D("data_tag", "Data Tag", nBins, xbb_bins);
-    TH1D* _data_probe = new TH1D("data_probe", "Data Probe", nBins, xbb_bins);
-
-    // Fill new histograms
-    for (int i = 1; i <= _mc_tag_orig->GetNbinsX(); i++) {
-        double x = _mc_tag_orig->GetBinCenter(i);
-        double content = _mc_tag_orig->GetBinContent(i);
-        double error = _mc_tag_orig->GetBinError(i);
-        _mc_tag->Fill(x, content);
-        int newBin = _mc_tag->FindBin(x);
-        _mc_tag->SetBinError(newBin, error);
-    }
-
-    for (int i = 1; i <= _mc_probe_orig->GetNbinsX(); i++) {
-        double x = _mc_probe_orig->GetBinCenter(i);
-        double content = _mc_probe_orig->GetBinContent(i);
-        double error = _mc_probe_orig->GetBinError(i);
-        _mc_probe->Fill(x, content);
-        int newBin = _mc_probe->FindBin(x);
-        _mc_probe->SetBinError(newBin, error);
-    }
-
-    for (int i = 1; i <= _data_tag_orig->GetNbinsX(); i++) {
-        double x = _data_tag_orig->GetBinCenter(i);
-        double content = _data_tag_orig->GetBinContent(i);
-        double error = _data_tag_orig->GetBinError(i);
-        _data_tag->Fill(x, content);
-        int newBin = _data_tag->FindBin(x);
-        _data_tag->SetBinError(newBin, error);
-    }
-
-    for (int i = 1; i <= _data_probe_orig->GetNbinsX(); i++) {
-        double x = _data_probe_orig->GetBinCenter(i);
-        double content = _data_probe_orig->GetBinContent(i);
-        double error = _data_probe_orig->GetBinError(i);
-        _data_probe->Fill(x, content);
-        int newBin = _data_probe->FindBin(x);
-        _data_probe->SetBinError(newBin, error);
-    }
+    // Rebin histograms
+    _mc_all->Rebin(rebin);
+    _mc_pass->Rebin(rebin);
+    _data_all->Rebin(rebin);
+    _data_pass->Rebin(rebin);
 
     // Calculate efficiencies
-    TH1D* _eff_mc = (TH1D*)_mc_probe->Clone("Eff_MC");
+    TH1D* _eff_mc = (TH1D*)_mc_pass->Clone("eff_MC");
     _eff_mc->Sumw2();
-    _eff_mc->Divide(_mc_tag);
+    _eff_mc->Divide(_mc_all);
 
-    TH1D* _eff_data = (TH1D*)_data_probe->Clone("Eff_Data");
+    TH1D* _eff_data = (TH1D*)_data_pass->Clone("eff_Data");
     _eff_data->Sumw2();
-    _eff_data->Divide(_data_tag);
+    _eff_data->Divide(_data_all);
 
     // Calculate scale factors
     TH1D* _SF_TXbb = (TH1D*)_eff_data->Clone("SF_TXbb");
@@ -170,7 +124,7 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
     
     // Draw upper pad (efficiency)
     pad1->cd();
-    set_histo_style_1D(_eff_data, "", "Efficiency", 0.0, 1.0);
+    set_histo_style_1D(_eff_data, "", "Efficiency", 0.0, 1.2);
     
     _eff_data->SetMarkerStyle(20);  // Filled circle
     _eff_data->SetMarkerColor(kRed);
@@ -185,7 +139,6 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
     _eff_mc->Draw("EP SAME");
     
     // Add legend
-    // TLegend* legend = new TLegend(0.7, 0.2, 0.9, 0.35);
     TLegend* legend = new TLegend(0.2, 0.7, 0.4, 0.82);
     legend->SetBorderSize(0);
     legend->SetFillStyle(0);
@@ -226,13 +179,6 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
     f->Close();
 
     // Clean up
-    delete _mc_tag;
-    delete _mc_probe;
-    delete _data_tag;
-    delete _data_probe;
-    delete _eff_mc;
-    delete _eff_data;
-    delete _SF_TXbb;
     delete legend;
     delete line;
     delete pad1;

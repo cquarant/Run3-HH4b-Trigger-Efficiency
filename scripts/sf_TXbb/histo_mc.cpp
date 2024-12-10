@@ -350,8 +350,8 @@ void histo_mc(
 
   // scale factors
   TFile *f_SF_mass_pt = new TFile(eff_mass_pt_path.c_str());
-  TH2D *_eff_data = (TH2D *)f_SF_mass_pt->Get("Eff_Data");
-  TH2D *_eff_mc = (TH2D *)f_SF_mass_pt->Get("Eff_MC");
+  TH2D *_eff_data = (TH2D *)f_SF_mass_pt->Get("eff_data");
+  TH2D *_eff_mc = (TH2D *)f_SF_mass_pt->Get("eff_MC");
 
   // JEC
   vector<JetCorrectorParameters> vPar;
@@ -575,6 +575,7 @@ void histo_mc(
 
   Bool_t HLT_AK8PFJet230_SoftDropMass40;
   Bool_t HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
+  Bool_t HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35;
 
   Float_t MET;
 
@@ -744,6 +745,9 @@ void histo_mc(
                               &HLT_AK8PFJet230_SoftDropMass40);
   InputTree->SetBranchAddress("HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06",
                               &HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06);
+  InputTree->SetBranchAddress(
+      "HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35",
+      &HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35);
 
   InputTree->SetBranchAddress("lep1Pt", &lep1_Pt);
   InputTree->SetBranchAddress("lep1Eta", &lep1_Eta);
@@ -973,33 +977,47 @@ void histo_mc(
     FatJet3_MassSD = jer3.corrected_massSD;
 
     // Tag and Probe section
-    bool HLT_pass_QCD = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
+    bool probe_pass = false;
+    bool HLT_pass_QCD = false;
+    if (year == "2022") {
+      // TODO: Add 2022 HLTs
+      // HLT_pass_QCD = HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35;
+      HLT_pass_QCD = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
+    } else if (year == "2023") {
+      HLT_pass_QCD = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
+    } else {
+      throw std::invalid_argument("Invalid year: " + year);
+    }
+    // HLT pass for electron and muon: only for 2023
     bool HLT_pass_ele =
         HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06 &&
         abs(lep1_Id) == 11;
     bool HLT_pass_mu =
         HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06 && abs(lep1_Id) == 13;
-    bool probe_pass = false;
+      
+    bool HLT_pass = false;
+    if (channel_lower == "jetmet" or channel_lower == "qcd") {
+      HLT_pass = HLT_pass_QCD;
+    } else if (channel_lower == "egamma" or channel_lower == "electron") {
+      HLT_pass = HLT_pass_ele;
+    } else if (channel_lower == "muon") {
+      HLT_pass = HLT_pass_mu;
+    } else {
+      HLT_pass = HLT_pass_ele || HLT_pass_mu;
+    } 
+    
     if (year == "2022") {
-      bool HLT_pass = false;
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
         // QCD-specific 2022 requirements
-        if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 1.5 ||
-            FatJet1_MassSD < 50)
+        if (FatJet1_pt < 270 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
           continue;
-        if (isVBFtag)
-          continue;
-
-        HLT_pass = HLT_pass_QCD;
       } else {
         // Leptonic-specific 2022 requirements
         if (FatJet1_pt < 270 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
           continue;
         if (FatJet2_pt > 200 && FatJet2_MassSD > 50)
           continue;
-        if (lep1_Pt < 55)
-          continue;
-        if (lep2_Pt > 30)
+        if (lep1_Pt < 55 || lep2_Pt > 30)
           continue;
         if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
           continue;
@@ -1010,14 +1028,6 @@ void histo_mc(
                                      Jet2_Eta, Jet2_Phi, FatJet1_eta,
                                      FatJet1_phi, lep1_Eta, lep1_Phi)) {
           continue;
-        }
-
-        if (channel_lower == "egamma" or channel_lower == "electron") {
-          HLT_pass = HLT_pass_ele;
-        } else if (channel_lower == "muon") {
-          HLT_pass = HLT_pass_mu;
-        } else {
-          HLT_pass = HLT_pass_ele || HLT_pass_mu;
         }
       }
       bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
@@ -1036,8 +1046,13 @@ void histo_mc(
           NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
           Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 12, 100);
 
-      probe_pass = matched_to_PNetBB & HLT_pass;
+      if (channel_lower == "jetmet" or channel_lower == "qcd") {
+        probe_pass = matched_to_PNetBB && HLT_pass;
+      } else {
+        probe_pass = matched_to_PNetBB;
+      }
     } else if (year == "2023") {
+      
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
         // QCD-specific 2023 requirements
         if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 ||
@@ -1047,19 +1062,13 @@ void histo_mc(
           continue;
         if (FatJet3_pt > 200)
           continue;
-
-        probe_pass = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
       } else {
         // Leptonic-specific 2023 requirements
         if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
           continue;
         if (FatJet2_pt > 200 && FatJet2_MassSD > 50)
           continue;
-        if (lep1_Pt < 50)
-          continue;
-        if (lep2_Pt > 30)
-          continue;
-        if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
+        if (lep1_Pt < 50 || lep2_Pt > 30)
           continue;
         if (MET < 50)
           continue;
@@ -1069,34 +1078,28 @@ void histo_mc(
                                      FatJet1_phi, lep1_Eta, lep1_Phi)) {
           continue;
         }
-
-        bool HLT_pass = false;
-        if (channel_lower == "egamma" or channel_lower == "electron") {
-          HLT_pass = HLT_pass_ele;
-        } else if (channel_lower == "muon") {
-          HLT_pass = HLT_pass_mu;
-        } else {
-          HLT_pass = HLT_pass_ele || HLT_pass_mu;
-        }
-
-        probe_pass = HLT_pass;
       }
+
+      probe_pass = HLT_pass;
 
       // 2023 common requirements
       bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
           NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
           Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 4,
           100);
+      
       if (!matched_to_AK8PFJet230_SoftDropMass40)
         continue;
 
-      // Veto events where FatJet2 matches trigger
-      bool fatjet2_matched = checkTriggerMatching(
-          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
-          Trigger_Object_bit, FatJet2_eta, FatJet2_phi, 4,
-          100);
-      if (fatjet2_matched)
-        continue;
+      if (channel_lower == "jetmet" or channel_lower == "qcd") {
+        // Veto events where FatJet2 matches trigger
+        bool fatjet2_matched = checkTriggerMatching(
+            NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+            Trigger_Object_bit, FatJet2_eta, FatJet2_phi, 4,
+            100);
+        if (fatjet2_matched)
+          continue;
+      }
     }
 
     // always use pT leading FatJet as probe
@@ -1143,7 +1146,7 @@ void histo_mc(
 
     // Add Trigger PT_Mass and PNet Scale Factors
     double eff_data = 0;
-    double eff_mc = 0;
+    double eff_MC = 0;
 
     Int_t bin_mass = _eff_data->GetXaxis()->FindBin(ProbeJet_MassSD);
     Int_t bin_pt = _eff_data->GetYaxis()->FindBin(ProbeJet_pt);
@@ -1154,13 +1157,13 @@ void histo_mc(
       eff_data = eff_data_bin;
     }
 
-    eff_mc = 1.0;
+    eff_MC = 1.0;
     double eff_mc_bin = _eff_mc->GetBinContent(bin_mass, bin_pt);
     if (eff_mc_bin > 0) {
-      eff_mc = eff_mc_bin;
+      eff_MC = eff_mc_bin;
     }
 
-    double SF_mass_pt = eff_data / eff_mc;
+    double SF_mass_pt = eff_data / eff_MC;
 
     if (SF_mass_pt > 0 && SF_mass_pt < 10) {
       weight = weight * SF_mass_pt;

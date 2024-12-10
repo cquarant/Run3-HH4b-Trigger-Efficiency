@@ -126,10 +126,10 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   Float_t bins_m[10] = {50, 60, 80, 100, 120, 150, 200, 250, 300, 350};
   int num_m_bins = 9;
 
-  TH2D *_eff_data = new TH2D("Eff_Data", "Eff_Data", num_m_bins, bins_m,
+  TH2D *_eff_data = new TH2D("eff_data", "eff_data", num_m_bins, bins_m,
                              num_pt_bins, bins_pt);
   TH2D *_eff_mc =
-      new TH2D("Eff_MC", "Eff_MC", num_m_bins, bins_m, num_pt_bins, bins_pt);
+      new TH2D("eff_MC", "eff_MC", num_m_bins, bins_m, num_pt_bins, bins_pt);
   TH2D *_sf =
       new TH2D("SF", "Scale Factors", num_m_bins, bins_m, num_pt_bins, bins_pt);
 
