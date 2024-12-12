@@ -34,7 +34,31 @@ double XSec_Wto2Q_3Jets_HT_400to600 =  299.80;
 double XSec_Wto2Q_3Jets_HT_600to800 =   63.90;
 double XSec_Wto2Q_3Jets_HT_800toInf =   31.90;
 
-double XSec_WtoLNu_2Jets           = 67710.00;
-double XSec_WtoLNu_4Jets           = 55120.00;
+double XSec_Wto2Q_2Jets_PTQQ_100to200_1J = 1517.0;
+double XSec_Wto2Q_2Jets_PTQQ_100to200_2J = 1757.0;
+double XSec_Wto2Q_2Jets_PTQQ_200to400_1J = 103.6;
+double XSec_Wto2Q_2Jets_PTQQ_200to400_2J = 227.1;
+double XSec_Wto2Q_2Jets_PTQQ_400to600_1J = 3.496;
+double XSec_Wto2Q_2Jets_PTQQ_400to600_2J = 12.75;
+double XSec_Wto2Q_2Jets_PTQQ_600_1J      = 0.4221;
+double XSec_Wto2Q_2Jets_PTQQ_600_2J      = 2.128;
+double XSec_Zto2Q_2Jets_PTQQ_100to200_1J = 302.0;
+double XSec_Zto2Q_2Jets_PTQQ_100to200_2J = 343.9;
+double XSec_Zto2Q_2Jets_PTQQ_200to400_1J = 21.64;
+double XSec_Zto2Q_2Jets_PTQQ_200to400_2J = 48.36;
+double XSec_Zto2Q_2Jets_PTQQ_400to600_1J = 0.7376;
+double XSec_Zto2Q_2Jets_PTQQ_400to600_2J = 2.683;
+double XSec_Zto2Q_2Jets_PTQQ_600_1J      = 0.08717;
+double XSec_Zto2Q_2Jets_PTQQ_600_2J      = 0.4459;
+double XSec_DYto2L_2Jets_MLL_50_0J       = 5378.0;
+double XSec_DYto2L_2Jets_MLL_50_1J       = 1017.0;
+double XSec_DYto2L_2Jets_MLL_50_2J       = 385.5;
+
+double XSec_WtoLNu_2Jets_0J = 55760.0;
+double XSec_WtoLNu_2Jets_1J = 9529.0;
+double XSec_WtoLNu_2Jets_2J = 3532.0;
+double XSec_WtoLNu_4Jets_1J = 9625.0;
+double XSec_WtoLNu_4Jets_2J = 3161.0;
+double XSec_WtoLNu_4Jets_3J = 1468.0;
 
 double XSec_GluGlutoHHto4B  = 0.02964;
