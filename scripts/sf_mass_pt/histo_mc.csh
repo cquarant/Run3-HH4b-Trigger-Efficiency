@@ -133,7 +133,7 @@ process_qcd() {
     for ht_bin in "${HT_BINS[@]}"; do
         # Handle special case for 2000toInf
         if [ "${ht_bin}" == "2000toInf" ]; then
-            search_pattern="QCD-4Jets_HT-200*.root"
+            search_pattern="QCD-4Jets_HT-2000*.root"
         else
             search_pattern="QCD-4Jets_HT-${ht_bin}*.root"
         fi

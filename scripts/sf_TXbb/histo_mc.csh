@@ -129,13 +129,12 @@ process_qcd() {
     get_era_paths ${era} "qcd" || return 1
     
     local channel="QCD"
-    # local HT_BINS=("100to200" "200to400" "400to600" "600to800" "800to1000" "1000to1200" "1200to1500" "1500to2000" "2000toInf")
     local HT_BINS=("200to400" "400to600" "600to800" "800to1000" "1000to1200" "1200to1500" "1500to2000" "2000toInf")
     
     for ht_bin in "${HT_BINS[@]}"; do
         # Handle special case for 2000toInf
         if [ "${ht_bin}" == "2000toInf" ]; then
-            search_pattern="QCD-4Jets_HT-200*.root"
+            search_pattern="QCD-4Jets_HT-2000*.root"
         else
             search_pattern="QCD-4Jets_HT-${ht_bin}*.root"
         fi

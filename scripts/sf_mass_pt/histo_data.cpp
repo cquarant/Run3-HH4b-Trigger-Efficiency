@@ -723,7 +723,7 @@ void histo_data(
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_bit", Trigger_Object_bit);
 
   // Events Loop
-  for (int i = 0; i < InputTree_TrgObj->GetEntries(); i++) {
+  for (int i = 0; i < InputTree->GetEntries(); i++) {
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
 
