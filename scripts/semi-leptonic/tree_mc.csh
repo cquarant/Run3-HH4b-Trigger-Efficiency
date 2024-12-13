@@ -277,11 +277,6 @@ process_Zto2Q() {
 process_VJ() {
     local era=$1
     local output_path="${OUTPUT_DIR}/Histograms_${era}_MC_VJ.root"
-    # check if 2023BPix
-    if [ "${era}" == "2023BPix" ]; then
-        hadd -f ${output_path} ${TMP_DIR}/Histograms_${era}_MC_Wto2Q_2Jets_PTQQ_*.root ${TMP_DIR}/Histograms_${era}_MC_WtoLNu_2Jets_*.root ${TMP_DIR}/Histograms_${era}_MC_DYto2L_2Jets_MLL_50_*.root
-        return
-    fi
     hadd -f ${output_path} ${TMP_DIR}/Histograms_${era}_MC_Wto2Q_2Jets_PTQQ_*.root ${TMP_DIR}/Histograms_${era}_MC_WtoLNu_2Jets_*.root ${TMP_DIR}/Histograms_${era}_MC_DYto2L_2Jets_MLL_50_*.root ${TMP_DIR}/Histograms_${era}_MC_Zto2Q_2Jets_PTQQ_*.root
 }
 
@@ -295,6 +290,7 @@ process_era() {
     process_DYto2L ${era}
     process_Wto2Q ${era}
     process_WtoLNu ${era}
+    process_Zto2Q ${era}
     process_VJ ${era}
 
     echo "MC processing for era ${era} completed successfully!"
