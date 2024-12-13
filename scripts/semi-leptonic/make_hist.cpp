@@ -69,7 +69,7 @@ void make_hist(
       new TH1D("FatJet2_MassSD", "FatJet2_MassSD", 500, 0, 500);
 
   TH1D *_MET = new TH1D("MET", "MET", 100, 0, 500);
-  TH1D *_lep1_Pt = new TH1D("lep1_Pt", "lep1_Pt", 300, 0, 300);
+  TH1D *_lep1_pt = new TH1D("lep1_pt", "lep1_pt", 300, 0, 300);
   TH1D *_dR_LFJ = new TH1D("dR_LFJ", "dR_LFJ", 100, 0, 10);
   TH1D *_dR_J1FJ = new TH1D("dR_J1FJ", "dR_J1FJ", 100, 0, 10);
   TH1D *_dR_J2FJ = new TH1D("dR_J2FJ", "dR_J2FJ", 100, 0, 10);
@@ -84,7 +84,7 @@ void make_hist(
   Float_t fatJet1_GloParT_XbbVsQCD;
   Float_t fatJet1_Tau3OverTau2;
   Float_t fatJet2_pt, fatJet2_eta, fatJet2_msoftdrop;
-  Float_t MET, lep1_Pt, dR_LFJ, dR_J1FJ, dR_J2FJ, dR_JmaxL;
+  Float_t MET, lep1_pt, dR_LFJ, dR_J1FJ, dR_J2FJ, dR_JmaxL;
 
   ntuples->SetBranchAddress("weight", &weight);
   ntuples->SetBranchAddress("fatJet1_pt", &fatJet1_pt);
@@ -99,7 +99,7 @@ void make_hist(
   ntuples->SetBranchAddress("fatJet2_eta", &fatJet2_eta);
   ntuples->SetBranchAddress("fatJet2_msoftdrop", &fatJet2_msoftdrop);
   ntuples->SetBranchAddress("MET", &MET);
-  ntuples->SetBranchAddress("lep1_Pt", &lep1_Pt);
+  ntuples->SetBranchAddress("lep1_pt", &lep1_pt);
   ntuples->SetBranchAddress("dR_LFJ", &dR_LFJ);
   ntuples->SetBranchAddress("dR_J1FJ", &dR_J1FJ);
   ntuples->SetBranchAddress("dR_J2FJ", &dR_J2FJ);
@@ -161,7 +161,7 @@ void make_hist(
     _FatJet2_eta->Fill(fatJet2_eta, weight);
     _FatJet2_MassSD->Fill(fatJet2_msoftdrop, weight);
     _MET->Fill(MET, weight);
-    _lep1_Pt->Fill(lep1_Pt, weight);
+    _lep1_pt->Fill(lep1_pt, weight);
     _dR_LFJ->Fill(dR_LFJ, weight);
     _dR_J1FJ->Fill(dR_J1FJ, weight);
     _dR_J2FJ->Fill(dR_J2FJ, weight);
@@ -182,7 +182,7 @@ void make_hist(
   _FatJet2_eta->Write();
   _FatJet2_MassSD->Write();
   _MET->Write();
-  _lep1_Pt->Write();
+  _lep1_pt->Write();
   _dR_LFJ->Write();
   _dR_J1FJ->Write();
   _dR_J2FJ->Write();

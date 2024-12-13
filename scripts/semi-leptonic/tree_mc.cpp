@@ -376,7 +376,6 @@ applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
 void tree_mc(
     const std::string &year,             // 2022, 2023
     const std::string &data_type,        // Example: TTtoLNu2Q, QCD_HT100to200
-    const std::string &channel,          // electron, muon, leptonic, QCD
     const std::string &sample_path,      // path to the root file
     const std::string &output_path,      // path to the output root file
     const std::string &pu_path,          // path to the pileup reweighting file
@@ -391,9 +390,7 @@ void tree_mc(
     throw std::invalid_argument("Invalid year: " + year);
   }
 
-  std::string channel_lower = to_lower(channel);
   std::cout << "Data Type: " << data_type << std::endl;
-  std::cout << "Channel: " << channel << std::endl;
   std::cout << "Sample Path: " << sample_path << std::endl;
   std::cout << "Output Path: " << output_path << std::endl;
   std::cout << "PU Path: " << pu_path << std::endl;
@@ -429,7 +426,7 @@ void tree_mc(
   Float_t T_fatJet1_ParticleNetLegacy_Xbb, T_fatJet1_ParticleNetLegacy_XbbVsQCD,
       T_fatJet1_globalParT_XbbVsQCD;
   Float_t T_fatJet2_pt, T_fatJet2_eta, T_fatJet2_msoftdrop;
-  Float_t T_MET, T_lep1_Pt, T_lep1_Eta, T_lep1_Phi, T_dR_LFJ, T_dR_JFJ_max,
+  Float_t T_MET, T_lep1_pt, T_lep1_eta, T_lep1_phi, T_dR_LFJ, T_dR_JFJ_max,
       T_dR_JFJ_min, T_dR_JmaxL;
 
   outputTree->Branch("weight", &T_weight, "weight/F");
@@ -453,9 +450,9 @@ void tree_mc(
   outputTree->Branch("fatJet2_msoftdrop", &T_fatJet2_msoftdrop,
                      "fatJet2_msoftdrop/F");
   outputTree->Branch("MET", &T_MET, "MET/F");
-  outputTree->Branch("lep1_Pt", &T_lep1_Pt, "lep1_Pt/F");
-  outputTree->Branch("lep1_Eta", &T_lep1_Eta, "lep1_Eta/F");
-  outputTree->Branch("lep1_Phi", &T_lep1_Phi, "lep1_Phi/F");
+  outputTree->Branch("lep1_pt", &T_lep1_pt, "lep1_pt/F");
+  outputTree->Branch("lep1_eta", &T_lep1_eta, "lep1_eta/F");
+  outputTree->Branch("lep1_phi", &T_lep1_phi, "lep1_phi/F");
   outputTree->Branch("dR_LFJ", &T_dR_LFJ, "dR_LFJ/F");
   outputTree->Branch("dR_J1FJ", &T_dR_JFJ_max, "dR_J1FJ/F");
   outputTree->Branch("dR_J2FJ", &T_dR_JFJ_min, "dR_J2FJ/F");
@@ -488,9 +485,9 @@ void tree_mc(
 
   Float_t MET;
 
-  Float_t lep1_Pt;
-  Float_t lep1_Eta;
-  Float_t lep1_Phi;
+  Float_t lep1_pt;
+  Float_t lep1_eta;
+  Float_t lep1_phi;
   Int_t lep1_Id;
   Float_t lep2_Pt;
   Float_t lep2_Eta;
@@ -632,9 +629,9 @@ void tree_mc(
   InputTree->SetBranchAddress("HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06",
                               &HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06);
 
-  InputTree->SetBranchAddress("lep1Pt", &lep1_Pt);
-  InputTree->SetBranchAddress("lep1Eta", &lep1_Eta);
-  InputTree->SetBranchAddress("lep1Phi", &lep1_Phi);
+  InputTree->SetBranchAddress("lep1Pt", &lep1_pt);
+  InputTree->SetBranchAddress("lep1Eta", &lep1_eta);
+  InputTree->SetBranchAddress("lep1Phi", &lep1_phi);
   InputTree->SetBranchAddress("lep1Id", &lep1_Id);
   InputTree->SetBranchAddress("lep2Pt", &lep2_Pt);
   InputTree->SetBranchAddress("lep2Eta", &lep2_Eta);
@@ -785,23 +782,10 @@ void tree_mc(
     InputTree->GetEntry(i);
 
     // HLT Selection
-    bool HLT_QCD = HLT_AK8PFJet230_SoftDropMass40;
     bool HLT_ele = (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11);
     bool HLT_mu = (HLT_IsoMu27 && fabs(lep1_Id) == 13);
-    if (channel_lower == "egamma" or channel_lower == "electron") {
-      if (!HLT_ele) {
-        continue;
-      }
-    } else if (channel_lower == "muon") {
-      if (!HLT_mu) {
-        continue;
-      }
-    } else if (channel_lower == "lepton" or channel_lower == "leptonic") {
-      if (!HLT_ele && !HLT_mu) {
-        continue;
-      }
-    } else {
-      throw std::invalid_argument("Invalid channel: " + channel);
+    if (!HLT_ele && !HLT_mu) {
+      continue;
     }
 
     // FatJets correction (JEC and JER)
@@ -844,12 +828,11 @@ void tree_mc(
     FatJet3_pt = jer3.corrected_pt;
     FatJet3_MassSD = jer3.corrected_massSD;
 
-    // Leptonic channel
-    // EGamma, Muon, Lepton (EGamma + Muon)
+    // Selection
     if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
       continue;
     }
-    if (lep1_Pt < 50 || lep2_Pt > 30 || fabs(lep1_Eta) > 2.4) {
+    if (lep1_pt < 50 || lep2_Pt > 30 || fabs(lep1_eta) > 2.4) {
       continue;
     }
     if (FatJet2_pt > 200 && FatJet2_MassSD > 50) {
@@ -859,7 +842,7 @@ void tree_mc(
       continue;
     }
 
-    double dR_LFJ = get_dR(lep1_Eta, lep1_Phi, FatJet1_eta, FatJet1_phi);
+    double dR_LFJ = get_dR(lep1_eta, lep1_phi, FatJet1_eta, FatJet1_phi);
     if (dR_LFJ < 1.5) {
       continue;
     }
@@ -868,13 +851,13 @@ void tree_mc(
     double dR_J1L = 10;
     if (Jet1_Pt > 40) {
       dR_J1FJ = get_dR(Jet1_Eta, Jet1_Phi, FatJet1_eta, FatJet1_phi);
-      dR_J1L = get_dR(Jet1_Eta, Jet1_Phi, lep1_Eta, lep1_Phi);
+      dR_J1L = get_dR(Jet1_Eta, Jet1_Phi, lep1_eta, lep1_phi);
     }
     double dR_J2FJ = -1;
     double dR_J2L = 10;
     if (Jet2_Pt > 40) {
       dR_J2FJ = get_dR(Jet2_Eta, Jet2_Phi, FatJet1_eta, FatJet1_phi);
-      dR_J2L = get_dR(Jet2_Eta, Jet2_Phi, lep1_Eta, lep1_Phi);
+      dR_J2L = get_dR(Jet2_Eta, Jet2_Phi, lep1_eta, lep1_phi);
     }
 
     double dR_JFJ_max = dR_J1FJ;
@@ -913,9 +896,9 @@ void tree_mc(
     T_fatJet2_msoftdrop = FatJet2_MassSD;
 
     T_MET = MET;
-    T_lep1_Pt = lep1_Pt;
-    T_lep1_Eta = lep1_Eta;
-    T_lep1_Phi = lep1_Phi;
+    T_lep1_pt = lep1_pt;
+    T_lep1_eta = lep1_eta;
+    T_lep1_phi = lep1_phi;
     T_dR_LFJ = dR_LFJ;
     T_dR_JFJ_max = dR_JFJ_max;
     T_dR_JFJ_min = dR_JFJ_min;

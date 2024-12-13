@@ -15,6 +15,30 @@ TREE_DIR=${SCRIPT_DIR}/trees
 mkdir -p ${SF_DIR}
 cd ${SCRIPT_DIR};
 
+MC_CHANNELS=("QCD" "TTbar" "VJ" "VV")
+
+process_data() {
+    era=$1;
+
+    local input_path="${TREE_DIR}/Histograms_${era}_data.root"
+    local output_path="${HIST_DIR}/Histograms_${era}_data.root"
+
+    # Make histograms
+    root -l -b -q "${SCRIPT_DIR}/make_hist.cpp(\"${input_path}\", \"${output_path}\")"
+}
+
+process_mc() {
+    era=$1;
+
+    for channel in "${MC_CHANNELS[@]}"; do
+        local input_path="${TREE_DIR}/Histograms_${era}_MC_${channel}.root"
+        local output_path="${HIST_DIR}/Histograms_${era}_MC_${channel}.root"
+
+        # Make histograms
+        root -l -b -q "${SCRIPT_DIR}/make_hist.cpp(\"${input_path}\", \"${output_path}\")"
+    done
+}
+
 get_paths() {
     era=$1;
 
@@ -29,20 +53,23 @@ get_paths() {
 
 process_era() {
     era=$1;
-
     get_paths $era
+
+    # prepare histograms from trees
+    process_data ${era}
+    process_mc ${era}
+
+    # derive SFs for tau3/tau2
     root -l -b -q "SF_tau32.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${path_sf_tau32}\")"
-    
-    # histogram file paths
+    # make histograms with tau32 SF to TTbar
     input_path="${TREE_DIR}/Histograms_${era}_MC_TTbar.root"
     output_path="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32.root"
-
     root -l -b -q "make_hist.cpp(\"${input_path}\", \"${output_path}\", \"${path_sf_tau32}\")"
 
-    # TXbb SF after tau32
-    path_TTbar="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32.root"
+    # derive SFs for TXbb after applying tau32 SF
+    path_TTbar="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32.root"  # after applying tau32 SF
     root -l -b -q "SF_TXbb.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${path_sf_TXbb}\")"
-
+    # make histograms with tau32 and TXbb SF to TTbar
     input_path="${TREE_DIR}/Histograms_${era}_MC_TTbar.root"
     output_path="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32_TXbb.root"
     root -l -b -q "make_hist.cpp(\"${input_path}\", \"${output_path}\", \"${path_sf_tau32}\", \"${path_sf_TXbb}\")"

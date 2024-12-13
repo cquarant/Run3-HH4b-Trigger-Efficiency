@@ -39,8 +39,6 @@ declare -A jer_configs=(
     ["2022EE"]="Summer22EE_22Sep2023_JRV1_MC"
 )
 
-channel="Leptonic"
-
 get_era_paths() {
     local era=$1
     
@@ -101,7 +99,7 @@ process_DYto2L() {
         local sample_type="DYto2L_2Jets_MLL_50_${jet}J"
         local output_path="${TMP_DIR}/Histograms_${era}_MC_DYto2L_2Jets_MLL_50_${jet}J.root"
         
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${channel}\", \"${input_file}\", \
+        root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
@@ -132,7 +130,7 @@ process_QCD() {
         local sample_type="QCD_HT_${ht_bin}"
         local output_path=${TMP_DIR}/Histograms_${era}_MC_QCD-4Jets_HT-${ht_bin}.root
 
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${channel}\", \"${input_file}\", \
+        root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
@@ -158,7 +156,7 @@ process_TTbar() {
         fi
         local output_path="${TMP_DIR}/Histograms_${era}_MC_${ttbar_type}.root"
         
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${ttbar_type}\", \"${channel}\", \"${input_file}\", \
+        root -l -b -q "tree_mc.cpp(\"${year}\", \"${ttbar_type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
@@ -189,7 +187,7 @@ process_VV() {
         fi
         local output_path="${TMP_DIR}/Histograms_${era}_MC_${type}.root"
         
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${type}\", \"${channel}\", \"${input_file}\", \
+        root -l -b -q "tree_mc.cpp(\"${year}\", \"${type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
         hadd_inputs="${hadd_inputs} ${output_path}"
@@ -217,7 +215,7 @@ process_Wto2Q() {
             local sample_type="Wto2Q_2Jets_PTQQ_${pt_bin}_${jet}J"
             local output_path="${TMP_DIR}/Histograms_${era}_MC_Wto2Q_2Jets_PTQQ_${pt_bin}_${jet}J.root"
             
-            root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${channel}\", \"${input_file}\", \
+            root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
                 \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
                 \"${jer_path}\", \"${jer_path_sf}\")"
         done
@@ -243,7 +241,7 @@ process_WtoLNu() {
         local sample_type="WtoLNu_2Jets_${jet}J"
         local output_path="${TMP_DIR}/Histograms_${era}_MC_WtoLNu_2Jets_${jet}J.root"
         
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${channel}\", \"${input_file}\", \
+        root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
@@ -267,7 +265,7 @@ process_Zto2Q() {
             local sample_type="Zto2Q_2Jets_PTQQ_${pt_bin}_${jet}J"
             local output_path="${TMP_DIR}/Histograms_${era}_MC_Zto2Q_2Jets_PTQQ_${pt_bin}_${jet}J.root"
             
-            root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${channel}\", \"${input_file}\", \
+            root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
                 \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
                 \"${jer_path}\", \"${jer_path_sf}\")"
         done
