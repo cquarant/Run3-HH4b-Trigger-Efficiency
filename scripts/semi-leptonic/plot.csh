@@ -19,11 +19,11 @@ cd ${SCRIPT_DIR};
 # Variables and their labels
 declare -A LABEL_DICT
 VARS=("lep1_pt" "FatJet1_pt" "FatJet1_MassSD" "FatJet1_GloParT_XbbVsQCD" "FatJet1_Tau3OverTau2")
-LABEL_DICT["lep1_pt"]="p_{T}^{lep} [GeV]"
-LABEL_DICT["FatJet1_pt"]="p_{T} [GeV]"
-LABEL_DICT["FatJet1_MassSD"]="m_{SD} [GeV]"
-LABEL_DICT["FatJet1_GloParT_XbbVsQCD"]="T_{Xbb}"
-LABEL_DICT["FatJet1_Tau3OverTau2"]="#tau_{3}/#tau_{2}"
+LABEL_DICT["lep1_pt"]="Lepton p_{T} [GeV]"
+LABEL_DICT["FatJet1_pt"]="FatJet p_{T} [GeV]"
+LABEL_DICT["FatJet1_MassSD"]="FatJet m_{SD} [GeV]"
+LABEL_DICT["FatJet1_GloParT_XbbVsQCD"]="FatJet T_{Xbb}"
+LABEL_DICT["FatJet1_Tau3OverTau2"]="FatJet #tau_{3}/#tau_{2}"
 
 get_paths() {
     era=$1;
@@ -49,15 +49,15 @@ process_era() {
 
         # tau32 correction
         output_path="${PLOT_DIR}/var_${era}_${var}_tau32corr.pdf"
-        path_TTbar="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32.root"
+        path_TTbar_tau32="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32.root"
         echo "Processing ${var} with tau32 correction for era ${era}"
-        root -l -b -q "plot.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
+        root -l -b -q "plot.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
 
         # tau32+TXbb correction
         output_path="${PLOT_DIR}/var_${era}_${var}_tau32TXbbcorr.pdf"
-        path_TTbar="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32_TXbb.root"
+        path_TTbar_tau32_TXbb="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32_TXbb.root"
         echo "Processing ${var} with tau32+TXbb correction for era ${era}"
-        root -l -b -q "plot.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
+        root -l -b -q "plot.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32_TXbb}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
     done
 }
 

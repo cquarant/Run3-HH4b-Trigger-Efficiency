@@ -1,5 +1,5 @@
 # Trigger Efficiency Measurement for Run-3 Boosted $HH \to b \bar{b} b \bar{b}$ Analysis at the CMS Experiment
-## Steps
+## Trigger Efficiency SFs
 1. Derive the trigger efficiencies and scale factors as a function of $(m_\mathrm{SD}, p_\mathrm{T})$: [scripts/sf_mass_pt](scripts/sf_mass_pt)
     - Run `scripts/sf_mass_pt/histo_data.csh` and `scripts/sf_mass_pt/histo_mc.csh`
     - Run `trig_eff_mass_pt.csh`
@@ -7,6 +7,11 @@
     - Run `scripts/sf_mass_pt/scripts/sf_TXbb/histo_data.csh` and `scripts/sf_TXbb/histo_mc.csh`
     - Run `scripts/sf_mass_pt/trig_eff_TXbb.csh`
 
+## Semi-Leptonic Corrections
+1. Prepare trees for the semi-leptonic corrections
+    - Run `scripts/semi-leptonic/tree_mc.csh` and `scripts/semi-leptonic/tree_data.csh`
+2. Derive the SF
+    - Run `scripts/semi-leptonic/derive_SF.csh`
 
 ## References
 - [Run-3 Analysis Twiki](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis)

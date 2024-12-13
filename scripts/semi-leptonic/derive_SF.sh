@@ -67,8 +67,8 @@ process_era() {
     root -l -b -q "make_hist.cpp(\"${input_path}\", \"${output_path}\", \"${path_sf_tau32}\")"
 
     # derive SFs for TXbb after applying tau32 SF
-    path_TTbar="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32.root"  # after applying tau32 SF
-    root -l -b -q "SF_TXbb.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${path_sf_TXbb}\")"
+    path_TTbar_tau32="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32.root"  # after applying tau32 SF
+    root -l -b -q "SF_TXbb.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32}\", \"${path_sf_TXbb}\")"
     # make histograms with tau32 and TXbb SF to TTbar
     input_path="${TREE_DIR}/Histograms_${era}_MC_TTbar.root"
     output_path="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32_TXbb.root"
