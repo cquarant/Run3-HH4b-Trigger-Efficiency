@@ -15,10 +15,42 @@
 #include "TMVA/Reader.h"
 #include "TMVA/Tools.h"
 
-void make_hist(const std::string &input_path, // path to the input root file
-               const std::string &output_path // path to the output root file
+void make_hist(
+    const std::string &input_path,         // path to the input root file
+    const std::string &output_path,        // path to the output root file
+    const std::string &sf_path_tau32 = "", // path to the Tau32 SF root file
+    const std::string &sf_path_txbb = ""   // path to the Xbb SF root file
 ) {
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
+
+  std::cout << "Input Path: " << input_path << std::endl;
+  std::cout << "Output Path: " << output_path << std::endl;
+
+  bool apply_sf_tau32 = false;
+  bool apply_sf_txbb = false;
+  TH1D *_SF_Tau32 = nullptr;
+  TH1D *_SF_Xbb = nullptr;
+  TFile *f_Tau3toTau2 = nullptr;
+  TFile *f_Xbb = nullptr;
+  if (sf_path_tau32 != "") {
+      f_Tau3toTau2 = new TFile(sf_path_tau32.c_str());
+      _SF_Tau32 = (TH1D *)f_Tau3toTau2->Get("SF");
+      if (!_SF_Tau32) {
+        throw std::runtime_error("Could not load Tau32 SF histogram");
+      }
+      std::cout << "Tau32 SF Path: " << sf_path_tau32 << std::endl;
+      apply_sf_tau32 = true;
+    }
+
+  if (sf_path_txbb != "") {
+    f_Xbb = new TFile(sf_path_txbb.c_str());
+    _SF_Xbb = (TH1D *)f_Xbb->Get("SF");
+    if (!_SF_Xbb) {
+      throw std::runtime_error("Could not load Xbb SF histogram");
+    }
+    std::cout << "Xbb SF Path: " << sf_path_txbb << std::endl;
+    apply_sf_txbb = true;
+  }
 
   TH1D *_FatJet1_pt = new TH1D("FatJet1_pt", "FatJet1_pt", 200, 0, 1200);
   TH1D *_FatJet1_eta = new TH1D("FatJet1_eta", "FatJet1_eta", 100, -5, 5);
@@ -61,7 +93,8 @@ void make_hist(const std::string &input_path, // path to the input root file
   ntuples->SetBranchAddress("fatJet1_ParticleNetLegacy_XbbVsQCD",
                             &fatJet1_ParticleNetLegacy_XbbVsQCD);
   ntuples->SetBranchAddress("fatJet1_Tau3OverTau2", &fatJet1_Tau3OverTau2);
-  ntuples->SetBranchAddress("fatJet1_GloParT_XbbVsQCD", &fatJet1_GloParT_XbbVsQCD);
+  ntuples->SetBranchAddress("fatJet1_GloParT_XbbVsQCD",
+                            &fatJet1_GloParT_XbbVsQCD);
   ntuples->SetBranchAddress("fatJet2_pt", &fatJet2_pt);
   ntuples->SetBranchAddress("fatJet2_eta", &fatJet2_eta);
   ntuples->SetBranchAddress("fatJet2_msoftdrop", &fatJet2_msoftdrop);
@@ -76,6 +109,9 @@ void make_hist(const std::string &input_path, // path to the input root file
 
   for (int i = 0; i < ntuples->GetEntries(); i++) {
     ntuples->GetEntry(i);
+    if (weight < 0) {
+      continue;
+    }
 
     if (dR_J1FJ < 0.0 && dR_J2FJ < 0.0) {
       continue;
@@ -83,6 +119,36 @@ void make_hist(const std::string &input_path, // path to the input root file
     if (dR_JmaxL > 3.5) {
       continue;
     }
+
+    // adding Tau3OverTau2 SF
+    if (apply_sf_tau32) {
+      // double sf_tau32 = 1.0;
+      // Int_t bin_tau32 = _SF_Tau32->GetXaxis()->FindBin(fatJet1_Tau3OverTau2);
+      // if (_SF_Tau32->GetBinContent(bin_tau32) > 0) {
+      //   sf_tau32 = _SF_Tau32->GetBinContent(bin_tau32);
+      // }
+
+      // if (sf_tau32 > 0) {
+      //   // weight = weight * sf_tau32;
+      //   weight = weight * 1.0;
+      //   // std::cout << weight << " ";
+      // }
+
+    }
+
+    // // adding Xbb SF
+    // if (apply_sf_txbb) {
+    //   std::cout << "Applying Xbb SF" << std::endl;
+    //   double sf_TXbb = 1.0;
+    //   Int_t bin_TXbb = _SF_Xbb->GetXaxis()->FindBin(fatJet1_GloParT_XbbVsQCD);
+    //   if (_SF_Xbb->GetBinContent(bin_TXbb) > 0) {
+    //     sf_TXbb = _SF_Xbb->GetBinContent(bin_TXbb);
+    //   }
+
+    //   if (sf_TXbb > 0) {
+    //     weight = weight * sf_TXbb;
+    //   }
+    // }
 
     _FatJet1_pt->Fill(fatJet1_pt, weight);
     _FatJet1_eta->Fill(fatJet1_eta, weight);
@@ -102,5 +168,28 @@ void make_hist(const std::string &input_path, // path to the input root file
     _dR_JmaxL->Fill(dR_JmaxL, weight);
   }
 
+  f0->Close();  // Close input file
+  f->cd();      // Make sure we're writing to the output file
+  
+  // Write each histogram explicitly
+  _FatJet1_pt->Write();
+  _FatJet1_eta->Write();
+  _FatJet1_MassSD->Write();
+  _FatJet1_ParticleNetLegacy_XbbVsQCD->Write();
+  _FatJet1_GloParT_XbbVsQCD->Write();
+  _FatJet1_Tau3OverTau2->Write();
+  _FatJet2_pt->Write();
+  _FatJet2_eta->Write();
+  _FatJet2_MassSD->Write();
+  _MET->Write();
+  _lep1_Pt->Write();
+  _dR_LFJ->Write();
+  _dR_J1FJ->Write();
+  _dR_J2FJ->Write();
+  _dR_JmaxL->Write();
+  
   f->Write();
+  f->Close();
+  
+  delete f;
 }
