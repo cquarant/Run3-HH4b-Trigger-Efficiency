@@ -11,7 +11,7 @@ INPUT_DIR=${SCRIPT_DIR}/trees
 OUTPUT_DIR=${SCRIPT_DIR}/hists
 mkdir -p ${OUTPUT_DIR}
 
-MC_CHANNELS=("QCD" "TTbar" "VJ")
+MC_CHANNELS=("QCD" "TTbar" "VJ" "VV")
 
 process_data() {
     era=$1;
