@@ -9,7 +9,8 @@
 
 ## Semi-Leptonic Corrections
 1. Prepare trees for the semi-leptonic corrections
-    - Run `scripts/semi-leptonic/tree_mc.csh` and `scripts/semi-leptonic/tree_data.csh`
+    1. Run `scripts/semi-leptonic/tree_mc.csh` and `scripts/semi-leptonic/tree_data.csh`
+    2. Merge 2022 and 2022EE into 2022, and 2023 and 2023EE into 2023: `scripts/semi-leptonic/merge_trees.csh`
 2. Derive the SF
     - Run `scripts/semi-leptonic/derive_SF.csh`
 

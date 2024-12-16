@@ -26,50 +26,51 @@ LABEL_DICT["FatJet1_GloParT_XbbVsQCD"]="FatJet T_{Xbb}"
 LABEL_DICT["FatJet1_Tau3OverTau2"]="FatJet #tau_{3}/#tau_{2}"
 
 get_paths() {
-    era=$1;
+    year=$1;
 
-    path_data="${HIST_DIR}/Histograms_${era}_data.root"
-    path_QCD="${HIST_DIR}/Histograms_${era}_MC_QCD.root"
-    path_VV="${HIST_DIR}/Histograms_${era}_MC_VV.root"
-    path_VJ="${HIST_DIR}/Histograms_${era}_MC_VJ.root"
-    path_TTbar="${HIST_DIR}/Histograms_${era}_MC_TTbar.root"
+    path_data="${HIST_DIR}/Histograms_${year}_data.root"
+    path_QCD="${HIST_DIR}/Histograms_${year}_MC_QCD.root"
+    path_VV="${HIST_DIR}/Histograms_${year}_MC_VV.root"
+    path_VJ="${HIST_DIR}/Histograms_${year}_MC_VJ.root"
+    path_TTbar="${HIST_DIR}/Histograms_${year}_MC_TTbar.root"
 }
 
-process_era() {
-    era=$1;
+process_year() {
+    year=$1;
 
-    get_paths ${era}
+    get_paths ${year}
     
     # Loop over all variables
     for var in "${VARS[@]}"; do
         var_label="${LABEL_DICT[$var]}"
-        output_path="${PLOT_DIR}/var_${era}_${var}.pdf"
-        echo "Processing ${var} for era ${era}"
+        output_path="${PLOT_DIR}/var_${year}_${var}.pdf"
+        echo "Processing ${var} for year ${year}"
         root -l -b -q "plot.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
 
         # tau32 correction
-        output_path="${PLOT_DIR}/var_${era}_${var}_tau32corr.pdf"
-        path_TTbar_tau32="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32.root"
-        echo "Processing ${var} with tau32 correction for era ${era}"
+        output_path="${PLOT_DIR}/var_${year}_${var}_tau32corr.pdf"
+        path_TTbar_tau32="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32.root"
+        echo "Processing ${var} with tau32 correction for year ${year}"
         root -l -b -q "plot.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
 
         # tau32+TXbb correction
-        output_path="${PLOT_DIR}/var_${era}_${var}_tau32TXbbcorr.pdf"
-        path_TTbar_tau32_TXbb="${HIST_DIR}/Histograms_${era}_MC_TTbar_tau32_TXbb.root"
-        echo "Processing ${var} with tau32+TXbb correction for era ${era}"
+        output_path="${PLOT_DIR}/var_${year}_${var}_tau32TXbbcorr.pdf"
+        path_TTbar_tau32_TXbb="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32_TXbb.root"
+        echo "Processing ${var} with tau32+TXbb correction for year ${year}"
         root -l -b -q "plot.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32_TXbb}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
     done
 }
 
 if [ $# -ne 1 ]; then
-    # process all eras
-    eras=("2022" "2022EE" "2023" "2023BPix")
-    for era in "${eras[@]}"; do
-        process_era ${era} &
+    # process all years
+    # years=("2022" "2022EE" "2023" "2023BPix")
+    years=("2022" "2023")
+    for year in "${years[@]}"; do
+        process_year ${year} &
     done
     wait
     echo "All MC processing completed!"
 else
-    # process single era
-    process_era $1
+    # process single year
+    process_year $1
 fi
