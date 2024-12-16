@@ -244,7 +244,7 @@ def main(args):
             corrs[key] = corr
 
         cset = schemav2.CorrectionSet(schema_version=2, corrections=[corrs["mc"], corrs["data"]])
-        path = Path(DATA_PATH / f"fatjet_triggereff_{year}_txbbPNet_{region}.json")
+        path = Path(DATA_PATH / f"fatjet_triggereff_{year}_txbbPNetLegacy_{region}.json")
         with path.open("w") as fout:
             fout.write(cset.json(exclude_unset=True))
 
