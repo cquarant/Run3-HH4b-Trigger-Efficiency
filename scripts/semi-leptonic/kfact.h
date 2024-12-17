@@ -1,0 +1,2 @@
+#define KFACT_2023 0.859
+#define KFACT_2022 0.488

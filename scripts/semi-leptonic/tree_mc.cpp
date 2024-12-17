@@ -308,8 +308,7 @@ struct JetCorrectionResult {
 
 JetCorrectionResult applyJEC(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi,
                              Float_t jet_rawFactor, Float_t jet_massSD,
-                             FactorizedJetCorrector *corrector,
-                             bool correct_mass = true) {
+                             FactorizedJetCorrector *corrector) {
   JetCorrectionResult result{jet_pt, jet_massSD};
 
   if (jet_pt > 0) {
@@ -320,10 +319,8 @@ JetCorrectionResult applyJEC(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi,
     Float_t correction_factor = corrector->getCorrection();
 
     result.corrected_pt = raw_pt * correction_factor;
-    if (correct_mass) {
-      result.corrected_massSD =
-          jet_massSD * (1.0 - jet_rawFactor) * correction_factor;
-    }
+    result.corrected_massSD =
+        jet_massSD * (1.0 - jet_rawFactor) * correction_factor;
   }
 
   return result;

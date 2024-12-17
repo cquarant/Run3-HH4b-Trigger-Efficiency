@@ -60,7 +60,7 @@ process_year() {
     process_mc ${year}
 
     # derive SFs for tau3/tau2
-    root -l -b -q "SF_tau32.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${path_sf_tau32}\")"
+    root -l -b -q "SF_tau32.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${path_sf_tau32}\")"
     # make histograms with tau32 SF to TTbar
     input_path="${TREE_DIR}/Histograms_${year}_MC_TTbar.root"
     output_path="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32.root"
@@ -68,7 +68,7 @@ process_year() {
 
     # derive SFs for TXbb after applying tau32 SF
     path_TTbar_tau32="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32.root"  # after applying tau32 SF
-    root -l -b -q "SF_TXbb.cpp(\"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32}\", \"${path_sf_TXbb}\")"
+    root -l -b -q "SF_TXbb.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32}\", \"${path_sf_TXbb}\")"
     # make histograms with tau32 and TXbb SF to TTbar
     input_path="${TREE_DIR}/Histograms_${year}_MC_TTbar.root"
     output_path="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32_TXbb.root"

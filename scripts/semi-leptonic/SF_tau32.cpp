@@ -7,9 +7,11 @@
 #include <TH1D.h>
 #include <iostream>
 #include <math.h>
+#include "kfact.h"
 
 
 void SF_tau32(
+    const std::string &year,        // 2022, 2023
     const std::string &path_data,   // path to the data root file
     const std::string &path_QCD,    // path to the QCD root file
     const std::string &path_VV,     // path to the VV root file
@@ -88,7 +90,16 @@ void SF_tau32(
   TH1D *_VJ_var = (TH1D *)f_VJ->Get(variable);
 
   //  Float_t kfact=0.92;
-  Float_t kfact = 0.9547;
+  // Float_t kfact = 0.9547;
+  Float_t kfact;
+  if (year == "2023") {
+      kfact = KFACT_2023;
+  } else if (year == "2022") {
+      kfact = KFACT_2022;
+  } else {
+    throw std::invalid_argument("Invalid year: " + year);
+  }
+  
   _QCD_var->Scale(kfact);
   _TTbar_var->Scale(kfact);
   _VJ_var->Scale(kfact);

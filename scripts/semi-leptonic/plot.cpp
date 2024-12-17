@@ -6,14 +6,17 @@
 #include <TH1D.h>
 #include <iostream>
 #include <math.h>
+#include "kfact.h"
 
-void plot(const std::string &path_data,   // path to the data root file
+
+void plot(const std::string &year,        // 2022, 2023
+          const std::string &path_data,   // path to the data root file
           const std::string &path_QCD,    // path to the QCD root file
           const std::string &path_VV,     // path to the VV root file
           const std::string &path_VJ,     // path to the VJ root file
           const std::string &path_TTbar,  // path to the TTbar root file
-          const std::string &output_path,  // path to the output root file
-          const std::string &var,          // variable to plot
+          const std::string &output_path, // path to the output root file
+          const std::string &var,         // variable to plot
           const std::string &var_label    // jet to plot
 ) {
 
@@ -55,7 +58,15 @@ void plot(const std::string &path_data,   // path to the data root file
   TH1D *_VV_var = (TH1D *)f_VV->Get(variable);
   TH1D *_VJ_var = (TH1D *)f_VJ->Get(variable);
 
-  Float_t kfact = 0.9547;
+  // Float_t kfact = 0.9547;
+  Float_t kfact;
+  if (year == "2023") {
+      kfact = KFACT_2023;
+  } else if (year == "2022") {
+      kfact = KFACT_2022;
+  } else {
+    throw std::invalid_argument("Invalid year: " + year);
+  }
   _QCD_var->Scale(kfact);
   _TTbar_var->Scale(kfact);
   _VJ_var->Scale(kfact);
