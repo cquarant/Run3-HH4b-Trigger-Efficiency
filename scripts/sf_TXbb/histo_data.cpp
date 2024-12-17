@@ -806,15 +806,17 @@ void histo_data(
     if (year == "2022") {
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
         // QCD-specific 2022 requirements
-        if (FatJet1_pt < 270 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
+        if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 1.5 || FatJet1_MassSD < 50)
+          continue;
+        if (isVBFtag)
           continue;
       } else {
         // Leptonic-specific 2022 requirements
-        if (FatJet1_pt < 270 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
+        if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
           continue;
-        if (FatJet2_pt > 200 && FatJet2_MassSD > 50)
+        if (FatJet2_pt > 250 && FatJet2_MassSD > 50)
           continue;
-        if (lep1_Pt < 55 || lep2_Pt > 30)
+        if (lep1_Pt < 50 || lep2_Pt > 30)
           continue;
         if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
           continue;
@@ -844,7 +846,8 @@ void histo_data(
           Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 12, 100);
 
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
-        probe_pass = matched_to_PNetBB && HLT_pass;
+        // probe_pass = matched_to_PNetBB && HLT_pass;
+        probe_pass = matched_to_PNetBB;
       } else {
         probe_pass = matched_to_PNetBB;
       }
@@ -865,7 +868,11 @@ void histo_data(
           continue;
         if (FatJet2_pt > 200 && FatJet2_MassSD > 50)
           continue;
-        if (lep1_Pt < 50 || lep2_Pt > 30)
+        if (FatJet3_pt > 200)
+          continue;
+        if (lep1_Pt < 55 || lep2_Pt > 30)
+          continue;
+        if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
           continue;
         if (MET < 50)
           continue;
@@ -888,16 +895,15 @@ void histo_data(
       if (!matched_to_AK8PFJet230_SoftDropMass40)
         continue;
 
-      if (channel_lower == "jetmet" or channel_lower == "qcd") {
-        // Veto events where FatJet2 matches trigger
-        bool fatjet2_matched = checkTriggerMatching(
-            NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
-            Trigger_Object_bit, FatJet2_eta, FatJet2_phi, 4,
-            100);
-        if (fatjet2_matched)
-          continue;
-      }
+      // Veto events where FatJet2 matches trigger
+      bool fatjet2_matched = checkTriggerMatching(
+          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+          Trigger_Object_bit, FatJet2_eta, FatJet2_phi, 4,
+          100);
+      if (fatjet2_matched)
+        continue;
     }
+
 
     // always use pT leading FatJet as probe
     ProbeJet_pt = FatJet1_pt;

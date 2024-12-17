@@ -195,7 +195,7 @@ if [ $# -ne 1 ]; then
     # process all eras
     eras=("2022" "2022EE" "2023" "2023BPix")
     for era in "${eras[@]}"; do
-        process_era ${era} &
+        process_era ${era}
     done
     wait
     echo "All MC processing completed!"

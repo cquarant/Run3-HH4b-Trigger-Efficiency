@@ -800,8 +800,7 @@ void histo_data(
           FatJet1_MassSD < 80) {
         continue;
       }
-      // lepton requirements
-      if (lep1_Pt > 20.0) {
+      if (FatJet2_pt < 160) {
         continue;
       }
 
@@ -857,15 +856,20 @@ void histo_data(
       ProbeJetGloParT_massRes = FatJet2GloParT_massRes;
       ProbeJetGloParT_massVis = FatJet2GloParT_massVis;
 
-      if (ProbeJet_pt < 160 || fabs(ProbeJet_eta) > 2.5) {
-        continue;
-      }
-
     } else {
       // Leptonic channel
-      // EGamma, Muon, Lepton (EGamma + Muon)
-      if (lep1_Pt < 55 || lep2_Pt > 30 || fabs(lep1_Eta) > 2.4) {
+      if (FatJet1_pt < 160) {
         continue;
+      }
+      // EGamma, Muon, Lepton (EGamma + Muon)
+      if (year == "2022") {
+        if (lep1_Pt < 55 || lep2_Pt > 30) {
+          continue;
+        }
+      } else if (year == "2023") {
+        if (lep1_Pt < 50 || lep2_Pt > 30) {
+          continue;
+        }
       }
 
       // Back-to-back requirement
@@ -921,10 +925,6 @@ void histo_data(
       ProbeJetGloParT_XbbVsQCD = FatJet1GloParT_XbbVsQCD;
       ProbeJetGloParT_massRes = FatJet1GloParT_massRes;
       ProbeJetGloParT_massVis = FatJet1GloParT_massVis;
-
-      if (ProbeJet_pt < 160 || fabs(ProbeJet_eta) > 2.5) {
-        continue;
-      }
 
     } // end if
 

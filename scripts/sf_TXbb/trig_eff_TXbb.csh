@@ -44,7 +44,7 @@ if [ $# -ne 1 ]; then
     # process all eras
     era_tags=("2022" "2022EE" "2023" "2023BPix")
     for era_tag in ${era_tags[@]}; do
-        process_era ${era_tag} &
+        process_era ${era_tag}
     done
     wait
     echo "All done"
