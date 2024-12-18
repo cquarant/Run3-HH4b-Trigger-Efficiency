@@ -216,15 +216,6 @@ void tree_data(
   Float_t FatJet1_MassSD;
   Float_t FatJet1_rawFactor;
   Float_t FatJet1_Tau3OverTau2;
-  // Fatjet 1 ParticleNet scores
-  Float_t FatJet1PNet_QCD;
-  Float_t FatJet1PNet_QCD0HF;
-  Float_t FatJet1PNet_QCD1HF;
-  Float_t FatJet1PNet_QCD2HF;
-  Float_t FatJet1PNet_XbbVsQCD;
-  Float_t FatJet1PNet_XccVsQCD;
-  Float_t FatJet1PNet_XggVsQCD;
-  Float_t FatJet1PNet_XqqVsQCD;
   // Fatjet 1 ParticleNetLegacy scores
   Float_t FatJet1PNetLegacy_Xbb;
   Float_t FatJet1PNetLegacy_Xcc;
@@ -252,42 +243,6 @@ void tree_data(
   Float_t FatJet2_MassSD;
   Float_t FatJet2_rawFactor;
   Float_t FatJet2_Tau3OverTau2;
-  // Fatjet 2 ParticleNet scores
-  Float_t FatJet2PNet_QCD;
-  Float_t FatJet2PNet_QCD0HF;
-  Float_t FatJet2PNet_QCD1HF;
-  Float_t FatJet2PNet_QCD2HF;
-  Float_t FatJet2PNet_XbbVsQCD;
-  Float_t FatJet2PNet_XccVsQCD;
-  Float_t FatJet2PNet_XggVsQCD;
-  Float_t FatJet2PNet_XqqVsQCD;
-  // Fatjet 2 ParticleNetLegacy scores
-  Float_t FatJet2PNetLegacy_Xbb;
-  Float_t FatJet2PNetLegacy_Xcc;
-  Float_t FatJet2PNetLegacy_Xqq;
-  Float_t FatJet2PNetLegacy_QCD;
-  Float_t FatJet2PNetLegacy_QCDb;
-  Float_t FatJet2PNetLegacy_QCDbb;
-  Float_t FatJet2PNetLegacy_QCDothers;
-  // Fatjet 2 GloParT scores
-  Float_t FatJet2GloParT_QCD0HF;
-  Float_t FatJet2GloParT_QCD1HF;
-  Float_t FatJet2GloParT_QCD2HF;
-  Float_t FatJet2GloParT_Xbb;
-  Float_t FatJet2GloParT_Xcc;
-  Float_t FatJet2GloParT_Xqq;
-  Float_t FatJet2GloParT_XbbVsQCD;
-  Float_t FatJet2GloParT_massRes;
-  Float_t FatJet2GloParT_massVis;
-
-  // FatJet 3 kinematics
-  Float_t FatJet3_pt;
-  Float_t FatJet3_eta;
-  Float_t FatJet3_phi;
-  Float_t FatJet3_Mass;
-  Float_t FatJet3_MassSD;
-  Float_t FatJet3_rawFactor;
-  Float_t FatJet3_Tau3OverTau2;
 
   InputTree->SetBranchAddress("run", &run);
   InputTree->SetBranchAddress("lumi", &lumi);
@@ -347,22 +302,6 @@ void tree_data(
   InputTree->SetBranchAddress("fatJet1_msoftdrop", &FatJet1_MassSD);
   InputTree->SetBranchAddress("fatJet1_rawFactor", &FatJet1_rawFactor);
   InputTree->SetBranchAddress("fatJet1_Tau3OverTau2", &FatJet1_Tau3OverTau2);
-  // FatJet 1 ParticleNet scores
-  InputTree->SetBranchAddress("fatJet1_particleNet_QCD", &FatJet1PNet_QCD);
-  InputTree->SetBranchAddress("fatJet1_particleNet_QCD0HF",
-                              &FatJet1PNet_QCD0HF);
-  InputTree->SetBranchAddress("fatJet1_particleNet_QCD1HF",
-                              &FatJet1PNet_QCD1HF);
-  InputTree->SetBranchAddress("fatJet1_particleNet_QCD2HF",
-                              &FatJet1PNet_QCD2HF);
-  InputTree->SetBranchAddress("fatJet1_particleNet_XbbVsQCD",
-                              &FatJet1PNet_XbbVsQCD);
-  InputTree->SetBranchAddress("fatJet1_particleNet_XccVsQCD",
-                              &FatJet1PNet_XccVsQCD);
-  InputTree->SetBranchAddress("fatJet1_particleNet_XggVsQCD",
-                              &FatJet1PNet_XggVsQCD);
-  InputTree->SetBranchAddress("fatJet1_particleNet_XqqVsQCD",
-                              &FatJet1PNet_XqqVsQCD);
   // FatJet 1 ParticleNetLegacy scores
   InputTree->SetBranchAddress("fatJet1_particleNetLegacy_Xbb",
                               &FatJet1PNetLegacy_Xbb);
@@ -403,62 +342,6 @@ void tree_data(
   InputTree->SetBranchAddress("fatJet2_msoftdrop", &FatJet2_MassSD);
   InputTree->SetBranchAddress("fatJet2_rawFactor", &FatJet2_rawFactor);
   InputTree->SetBranchAddress("fatJet2_Tau3OverTau2", &FatJet2_Tau3OverTau2);
-  // FatJet 2 ParticleNet scores
-  InputTree->SetBranchAddress("fatJet2_particleNet_QCD", &FatJet2PNet_QCD);
-  InputTree->SetBranchAddress("fatJet2_particleNet_QCD0HF",
-                              &FatJet2PNet_QCD0HF);
-  InputTree->SetBranchAddress("fatJet2_particleNet_QCD1HF",
-                              &FatJet2PNet_QCD1HF);
-  InputTree->SetBranchAddress("fatJet2_particleNet_QCD2HF",
-                              &FatJet2PNet_QCD2HF);
-  InputTree->SetBranchAddress("fatJet2_particleNet_XbbVsQCD",
-                              &FatJet2PNet_XbbVsQCD);
-  InputTree->SetBranchAddress("fatJet2_particleNet_XccVsQCD",
-                              &FatJet2PNet_XccVsQCD);
-  InputTree->SetBranchAddress("fatJet2_particleNet_XggVsQCD",
-                              &FatJet2PNet_XggVsQCD);
-  InputTree->SetBranchAddress("fatJet2_particleNet_XqqVsQCD",
-                              &FatJet2PNet_XqqVsQCD);
-  // FatJet 2 ParticleNetLegacy scores
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_Xbb",
-                              &FatJet2PNetLegacy_Xbb);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_Xcc",
-                              &FatJet2PNetLegacy_Xcc);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_Xqq",
-                              &FatJet2PNetLegacy_Xqq);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCD",
-                              &FatJet2PNetLegacy_QCD);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCDb",
-                              &FatJet2PNetLegacy_QCDb);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCDbb",
-                              &FatJet2PNetLegacy_QCDbb);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCDothers",
-                              &FatJet2PNetLegacy_QCDothers);
-  // FatJet 2 GloParT scores
-  InputTree->SetBranchAddress("fatJet2_globalParT_QCD0HF",
-                              &FatJet2GloParT_QCD0HF);
-  InputTree->SetBranchAddress("fatJet2_globalParT_QCD1HF",
-                              &FatJet2GloParT_QCD1HF);
-  InputTree->SetBranchAddress("fatJet2_globalParT_QCD2HF",
-                              &FatJet2GloParT_QCD2HF);
-  InputTree->SetBranchAddress("fatJet2_globalParT_Xbb", &FatJet2GloParT_Xbb);
-  InputTree->SetBranchAddress("fatJet2_globalParT_Xcc", &FatJet2GloParT_Xcc);
-  InputTree->SetBranchAddress("fatJet2_globalParT_Xqq", &FatJet2GloParT_Xqq);
-  InputTree->SetBranchAddress("fatJet2_globalParT_XbbVsQCD",
-                              &FatJet2GloParT_XbbVsQCD);
-  InputTree->SetBranchAddress("fatJet2_globalParT_massRes",
-                              &FatJet2GloParT_massRes);
-  InputTree->SetBranchAddress("fatJet2_globalParT_massVis",
-                              &FatJet2GloParT_massVis);
-
-  // FatJet 3 kinematics
-  InputTree->SetBranchAddress("fatJet3_pt", &FatJet3_pt);
-  InputTree->SetBranchAddress("fatJet3_eta", &FatJet3_eta);
-  InputTree->SetBranchAddress("fatJet3_phi", &FatJet3_phi);
-  InputTree->SetBranchAddress("fatJet3_mass", &FatJet3_Mass);
-  InputTree->SetBranchAddress("fatJet3_msoftdrop", &FatJet3_MassSD);
-  InputTree->SetBranchAddress("fatJet3_rawFactor", &FatJet3_rawFactor);
-  InputTree->SetBranchAddress("fatJet3_Tau3OverTau2", &FatJet3_Tau3OverTau2);
 
   // Events Loop
   for (int i = 0; i < InputTree->GetEntries(); i++) {

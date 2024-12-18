@@ -42,246 +42,283 @@ std::vector<double> loadPUReweighting(const std::string &pu_file) {
 }
 
 struct ParamDict {
-    double Lumi;
-    // QCD HT-binned samples
-    double XSec_QCD_HT_100to200;
-    double XSec_QCD_HT_200to400;
-    double XSec_QCD_HT_400to600;
-    double XSec_QCD_HT_600to800;
-    double XSec_QCD_HT_800to1000;
-    double XSec_QCD_HT_1000to1200;
-    double XSec_QCD_HT_1200to1500;
-    double XSec_QCD_HT_1500to2000;
-    double XSec_QCD_HT_2000toInf;
-    
-    // TT samples
-    double XSec_TTto4Q;
-    double XSec_TTtoLNu2Q;
-    double XSec_TTto2L2Nu;
-    
-    // Diboson samples
-    double XSec_WW;
-    double XSec_WZ;
-    double XSec_ZZ;
-    
-    // Z+jets HT-binned samples
-    double XSec_Zto2Q_4Jets_HT_200to400;
-    double XSec_Zto2Q_4Jets_HT_400to600;
-    double XSec_Zto2Q_4Jets_HT_600to800;
-    double XSec_Zto2Q_4Jets_HT_800toInf;
-    
-    // W+jets HT-binned samples
-    double XSec_Wto2Q_3Jets_HT_200to400;
-    double XSec_Wto2Q_3Jets_HT_400to600;
-    double XSec_Wto2Q_3Jets_HT_600to800;
-    double XSec_Wto2Q_3Jets_HT_800toInf;
-    
-    // W+jets PTQQ-binned samples
-    double XSec_Wto2Q_2Jets_PTQQ_100to200_1J;
-    double XSec_Wto2Q_2Jets_PTQQ_100to200_2J;
-    double XSec_Wto2Q_2Jets_PTQQ_200to400_1J;
-    double XSec_Wto2Q_2Jets_PTQQ_200to400_2J;
-    double XSec_Wto2Q_2Jets_PTQQ_400to600_1J;
-    double XSec_Wto2Q_2Jets_PTQQ_400to600_2J;
-    double XSec_Wto2Q_2Jets_PTQQ_600_1J;
-    double XSec_Wto2Q_2Jets_PTQQ_600_2J;
-    
-    // Z+jets PTQQ-binned samples
-    double XSec_Zto2Q_2Jets_PTQQ_100to200_1J;
-    double XSec_Zto2Q_2Jets_PTQQ_100to200_2J;
-    double XSec_Zto2Q_2Jets_PTQQ_200to400_1J;
-    double XSec_Zto2Q_2Jets_PTQQ_200to400_2J;
-    double XSec_Zto2Q_2Jets_PTQQ_400to600_1J;
-    double XSec_Zto2Q_2Jets_PTQQ_400to600_2J;
-    double XSec_Zto2Q_2Jets_PTQQ_600_1J;
-    double XSec_Zto2Q_2Jets_PTQQ_600_2J;
-    
-    // DY+jets samples
-    double XSec_DYto2L_2Jets_MLL_50_0J;
-    double XSec_DYto2L_2Jets_MLL_50_1J;
-    double XSec_DYto2L_2Jets_MLL_50_2J;
-    
-    // W+leptons samples
-    double XSec_WtoLNu_2Jets_0J;
-    double XSec_WtoLNu_2Jets_1J;
-    double XSec_WtoLNu_2Jets_2J;
-    double XSec_WtoLNu_4Jets_1J;
-    double XSec_WtoLNu_4Jets_2J;
-    double XSec_WtoLNu_4Jets_3J;
-    
-    // HH sample
-    double XSec_GluGlutoHHto4B;
+  double Lumi;
+  // QCD HT-binned samples
+  double XSec_QCD_HT_100to200;
+  double XSec_QCD_HT_200to400;
+  double XSec_QCD_HT_400to600;
+  double XSec_QCD_HT_600to800;
+  double XSec_QCD_HT_800to1000;
+  double XSec_QCD_HT_1000to1200;
+  double XSec_QCD_HT_1200to1500;
+  double XSec_QCD_HT_1500to2000;
+  double XSec_QCD_HT_2000toInf;
+
+  // TT samples
+  double XSec_TTto4Q;
+  double XSec_TTtoLNu2Q;
+  double XSec_TTto2L2Nu;
+
+  // Diboson samples
+  double XSec_WW;
+  double XSec_WZ;
+  double XSec_ZZ;
+
+  // Z+jets HT-binned samples
+  double XSec_Zto2Q_4Jets_HT_200to400;
+  double XSec_Zto2Q_4Jets_HT_400to600;
+  double XSec_Zto2Q_4Jets_HT_600to800;
+  double XSec_Zto2Q_4Jets_HT_800toInf;
+
+  // W+jets HT-binned samples
+  double XSec_Wto2Q_3Jets_HT_200to400;
+  double XSec_Wto2Q_3Jets_HT_400to600;
+  double XSec_Wto2Q_3Jets_HT_600to800;
+  double XSec_Wto2Q_3Jets_HT_800toInf;
+
+  // W+jets PTQQ-binned samples
+  double XSec_Wto2Q_2Jets_PTQQ_100to200_1J;
+  double XSec_Wto2Q_2Jets_PTQQ_100to200_2J;
+  double XSec_Wto2Q_2Jets_PTQQ_200to400_1J;
+  double XSec_Wto2Q_2Jets_PTQQ_200to400_2J;
+  double XSec_Wto2Q_2Jets_PTQQ_400to600_1J;
+  double XSec_Wto2Q_2Jets_PTQQ_400to600_2J;
+  double XSec_Wto2Q_2Jets_PTQQ_600_1J;
+  double XSec_Wto2Q_2Jets_PTQQ_600_2J;
+
+  // Z+jets PTQQ-binned samples
+  double XSec_Zto2Q_2Jets_PTQQ_100to200_1J;
+  double XSec_Zto2Q_2Jets_PTQQ_100to200_2J;
+  double XSec_Zto2Q_2Jets_PTQQ_200to400_1J;
+  double XSec_Zto2Q_2Jets_PTQQ_200to400_2J;
+  double XSec_Zto2Q_2Jets_PTQQ_400to600_1J;
+  double XSec_Zto2Q_2Jets_PTQQ_400to600_2J;
+  double XSec_Zto2Q_2Jets_PTQQ_600_1J;
+  double XSec_Zto2Q_2Jets_PTQQ_600_2J;
+
+  // DY+jets samples
+  double XSec_DYto2L_2Jets_MLL_50_0J;
+  double XSec_DYto2L_2Jets_MLL_50_1J;
+  double XSec_DYto2L_2Jets_MLL_50_2J;
+
+  // W+leptons samples
+  double XSec_WtoLNu_2Jets_0J;
+  double XSec_WtoLNu_2Jets_1J;
+  double XSec_WtoLNu_2Jets_2J;
+  double XSec_WtoLNu_4Jets_1J;
+  double XSec_WtoLNu_4Jets_2J;
+  double XSec_WtoLNu_4Jets_3J;
+
+  // HH sample
+  double XSec_GluGlutoHHto4B;
 };
 
 void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
-    std::ifstream file(param_path);
-    if (!file.is_open()) {
-        throw std::runtime_error("Could not open parameters file: " + param_path);
+  std::ifstream file(param_path);
+  if (!file.is_open()) {
+    throw std::runtime_error("Could not open parameters file: " + param_path);
+  }
+
+  std::string line;
+  while (std::getline(file, line)) {
+    if (line.empty() || line[0] == '/')
+      continue;
+
+    // Look for double declarations
+    if (line.find("double") != std::string::npos) {
+      std::istringstream iss(line);
+      std::string type, name, equals;
+      double value;
+
+      // Parse line of format: double XSec_QCD_HT_100to200 = 25220000.00;
+      if (!(iss >> type >> name >> equals >> value)) {
+        continue;
+      }
+
+      // Remove semicolon if present
+      if (name.back() == ';')
+        name = name.substr(0, name.size() - 1);
+
+      // Use pointer to member to make assignment more concise
+      using MemberPtr = double ParamDict::*;
+      std::map<std::string, MemberPtr> memberMap = {
+          {"Lumi", &ParamDict::Lumi},
+          // QCD
+          {"XSec_QCD_HT_100to200", &ParamDict::XSec_QCD_HT_100to200},
+          {"XSec_QCD_HT_200to400", &ParamDict::XSec_QCD_HT_200to400},
+          {"XSec_QCD_HT_400to600", &ParamDict::XSec_QCD_HT_400to600},
+          {"XSec_QCD_HT_600to800", &ParamDict::XSec_QCD_HT_600to800},
+          {"XSec_QCD_HT_800to1000", &ParamDict::XSec_QCD_HT_800to1000},
+          {"XSec_QCD_HT_1000to1200", &ParamDict::XSec_QCD_HT_1000to1200},
+          {"XSec_QCD_HT_1200to1500", &ParamDict::XSec_QCD_HT_1200to1500},
+          {"XSec_QCD_HT_1500to2000", &ParamDict::XSec_QCD_HT_1500to2000},
+          {"XSec_QCD_HT_2000toInf", &ParamDict::XSec_QCD_HT_2000toInf},
+          // TT
+          {"XSec_TTto4Q", &ParamDict::XSec_TTto4Q},
+          {"XSec_TTtoLNu2Q", &ParamDict::XSec_TTtoLNu2Q},
+          {"XSec_TTto2L2Nu", &ParamDict::XSec_TTto2L2Nu},
+          // Diboson
+          {"XSec_WW", &ParamDict::XSec_WW},
+          {"XSec_WZ", &ParamDict::XSec_WZ},
+          {"XSec_ZZ", &ParamDict::XSec_ZZ},
+          // Z+jets HT
+          {"XSec_Zto2Q_4Jets_HT_200to400",
+           &ParamDict::XSec_Zto2Q_4Jets_HT_200to400},
+          {"XSec_Zto2Q_4Jets_HT_400to600",
+           &ParamDict::XSec_Zto2Q_4Jets_HT_400to600},
+          {"XSec_Zto2Q_4Jets_HT_600to800",
+           &ParamDict::XSec_Zto2Q_4Jets_HT_600to800},
+          {"XSec_Zto2Q_4Jets_HT_800toInf",
+           &ParamDict::XSec_Zto2Q_4Jets_HT_800toInf},
+          // W+jets HT
+          {"XSec_Wto2Q_3Jets_HT_200to400",
+           &ParamDict::XSec_Wto2Q_3Jets_HT_200to400},
+          {"XSec_Wto2Q_3Jets_HT_400to600",
+           &ParamDict::XSec_Wto2Q_3Jets_HT_400to600},
+          {"XSec_Wto2Q_3Jets_HT_600to800",
+           &ParamDict::XSec_Wto2Q_3Jets_HT_600to800},
+          {"XSec_Wto2Q_3Jets_HT_800toInf",
+           &ParamDict::XSec_Wto2Q_3Jets_HT_800toInf},
+          // W+jets PTQQ
+          {"XSec_Wto2Q_2Jets_PTQQ_100to200_1J",
+           &ParamDict::XSec_Wto2Q_2Jets_PTQQ_100to200_1J},
+          {"XSec_Wto2Q_2Jets_PTQQ_100to200_2J",
+           &ParamDict::XSec_Wto2Q_2Jets_PTQQ_100to200_2J},
+          {"XSec_Wto2Q_2Jets_PTQQ_200to400_1J",
+           &ParamDict::XSec_Wto2Q_2Jets_PTQQ_200to400_1J},
+          {"XSec_Wto2Q_2Jets_PTQQ_200to400_2J",
+           &ParamDict::XSec_Wto2Q_2Jets_PTQQ_200to400_2J},
+          {"XSec_Wto2Q_2Jets_PTQQ_400to600_1J",
+           &ParamDict::XSec_Wto2Q_2Jets_PTQQ_400to600_1J},
+          {"XSec_Wto2Q_2Jets_PTQQ_400to600_2J",
+           &ParamDict::XSec_Wto2Q_2Jets_PTQQ_400to600_2J},
+          {"XSec_Wto2Q_2Jets_PTQQ_600_1J",
+           &ParamDict::XSec_Wto2Q_2Jets_PTQQ_600_1J},
+          {"XSec_Wto2Q_2Jets_PTQQ_600_2J",
+           &ParamDict::XSec_Wto2Q_2Jets_PTQQ_600_2J},
+          // Z+jets PTQQ
+          {"XSec_Zto2Q_2Jets_PTQQ_100to200_1J",
+           &ParamDict::XSec_Zto2Q_2Jets_PTQQ_100to200_1J},
+          {"XSec_Zto2Q_2Jets_PTQQ_100to200_2J",
+           &ParamDict::XSec_Zto2Q_2Jets_PTQQ_100to200_2J},
+          {"XSec_Zto2Q_2Jets_PTQQ_200to400_1J",
+           &ParamDict::XSec_Zto2Q_2Jets_PTQQ_200to400_1J},
+          {"XSec_Zto2Q_2Jets_PTQQ_200to400_2J",
+           &ParamDict::XSec_Zto2Q_2Jets_PTQQ_200to400_2J},
+          {"XSec_Zto2Q_2Jets_PTQQ_400to600_1J",
+           &ParamDict::XSec_Zto2Q_2Jets_PTQQ_400to600_1J},
+          {"XSec_Zto2Q_2Jets_PTQQ_400to600_2J",
+           &ParamDict::XSec_Zto2Q_2Jets_PTQQ_400to600_2J},
+          {"XSec_Zto2Q_2Jets_PTQQ_600_1J",
+           &ParamDict::XSec_Zto2Q_2Jets_PTQQ_600_1J},
+          {"XSec_Zto2Q_2Jets_PTQQ_600_2J",
+           &ParamDict::XSec_Zto2Q_2Jets_PTQQ_600_2J},
+          // DY+jets
+          {"XSec_DYto2L_2Jets_MLL_50_0J",
+           &ParamDict::XSec_DYto2L_2Jets_MLL_50_0J},
+          {"XSec_DYto2L_2Jets_MLL_50_1J",
+           &ParamDict::XSec_DYto2L_2Jets_MLL_50_1J},
+          {"XSec_DYto2L_2Jets_MLL_50_2J",
+           &ParamDict::XSec_DYto2L_2Jets_MLL_50_2J},
+          // W+leptons
+          {"XSec_WtoLNu_2Jets_0J", &ParamDict::XSec_WtoLNu_2Jets_0J},
+          {"XSec_WtoLNu_2Jets_1J", &ParamDict::XSec_WtoLNu_2Jets_1J},
+          {"XSec_WtoLNu_2Jets_2J", &ParamDict::XSec_WtoLNu_2Jets_2J},
+          {"XSec_WtoLNu_4Jets_1J", &ParamDict::XSec_WtoLNu_4Jets_1J},
+          {"XSec_WtoLNu_4Jets_2J", &ParamDict::XSec_WtoLNu_4Jets_2J},
+          {"XSec_WtoLNu_4Jets_3J", &ParamDict::XSec_WtoLNu_4Jets_3J},
+          // HH
+          {"XSec_GluGlutoHHto4B", &ParamDict::XSec_GluGlutoHHto4B}};
+
+      auto it = memberMap.find(name);
+      if (it != memberMap.end()) {
+        param_dict->*(it->second) = value;
+      } else {
+        std::cerr << "Unknown parameter: " << name << std::endl;
+      }
     }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        if (line.empty() || line[0] == '/')
-            continue;
-
-        // Look for double declarations
-        if (line.find("double") != std::string::npos) {
-            std::istringstream iss(line);
-            std::string type, name, equals;
-            double value;
-
-            // Parse line of format: double XSec_QCD_HT_100to200 = 25220000.00;
-            if (!(iss >> type >> name >> equals >> value)) {
-                continue;
-            }
-
-            // Remove semicolon if present
-            if (name.back() == ';')
-                name = name.substr(0, name.size() - 1);
-
-            // Use pointer to member to make assignment more concise
-            using MemberPtr = double ParamDict::*;
-            std::map<std::string, MemberPtr> memberMap = {
-                {"Lumi", &ParamDict::Lumi},
-                // QCD
-                {"XSec_QCD_HT_100to200", &ParamDict::XSec_QCD_HT_100to200},
-                {"XSec_QCD_HT_200to400", &ParamDict::XSec_QCD_HT_200to400},
-                {"XSec_QCD_HT_400to600", &ParamDict::XSec_QCD_HT_400to600},
-                {"XSec_QCD_HT_600to800", &ParamDict::XSec_QCD_HT_600to800},
-                {"XSec_QCD_HT_800to1000", &ParamDict::XSec_QCD_HT_800to1000},
-                {"XSec_QCD_HT_1000to1200", &ParamDict::XSec_QCD_HT_1000to1200},
-                {"XSec_QCD_HT_1200to1500", &ParamDict::XSec_QCD_HT_1200to1500},
-                {"XSec_QCD_HT_1500to2000", &ParamDict::XSec_QCD_HT_1500to2000},
-                {"XSec_QCD_HT_2000toInf", &ParamDict::XSec_QCD_HT_2000toInf},
-                // TT
-                {"XSec_TTto4Q", &ParamDict::XSec_TTto4Q},
-                {"XSec_TTtoLNu2Q", &ParamDict::XSec_TTtoLNu2Q},
-                {"XSec_TTto2L2Nu", &ParamDict::XSec_TTto2L2Nu},
-                // Diboson
-                {"XSec_WW", &ParamDict::XSec_WW},
-                {"XSec_WZ", &ParamDict::XSec_WZ},
-                {"XSec_ZZ", &ParamDict::XSec_ZZ},
-                // Z+jets HT
-                {"XSec_Zto2Q_4Jets_HT_200to400", &ParamDict::XSec_Zto2Q_4Jets_HT_200to400},
-                {"XSec_Zto2Q_4Jets_HT_400to600", &ParamDict::XSec_Zto2Q_4Jets_HT_400to600},
-                {"XSec_Zto2Q_4Jets_HT_600to800", &ParamDict::XSec_Zto2Q_4Jets_HT_600to800},
-                {"XSec_Zto2Q_4Jets_HT_800toInf", &ParamDict::XSec_Zto2Q_4Jets_HT_800toInf},
-                // W+jets HT
-                {"XSec_Wto2Q_3Jets_HT_200to400", &ParamDict::XSec_Wto2Q_3Jets_HT_200to400},
-                {"XSec_Wto2Q_3Jets_HT_400to600", &ParamDict::XSec_Wto2Q_3Jets_HT_400to600},
-                {"XSec_Wto2Q_3Jets_HT_600to800", &ParamDict::XSec_Wto2Q_3Jets_HT_600to800},
-                {"XSec_Wto2Q_3Jets_HT_800toInf", &ParamDict::XSec_Wto2Q_3Jets_HT_800toInf},
-                // W+jets PTQQ
-                {"XSec_Wto2Q_2Jets_PTQQ_100to200_1J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_100to200_1J},
-                {"XSec_Wto2Q_2Jets_PTQQ_100to200_2J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_100to200_2J},
-                {"XSec_Wto2Q_2Jets_PTQQ_200to400_1J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_200to400_1J},
-                {"XSec_Wto2Q_2Jets_PTQQ_200to400_2J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_200to400_2J},
-                {"XSec_Wto2Q_2Jets_PTQQ_400to600_1J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_400to600_1J},
-                {"XSec_Wto2Q_2Jets_PTQQ_400to600_2J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_400to600_2J},
-                {"XSec_Wto2Q_2Jets_PTQQ_600_1J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_600_1J},
-                {"XSec_Wto2Q_2Jets_PTQQ_600_2J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_600_2J},
-                // Z+jets PTQQ
-                {"XSec_Zto2Q_2Jets_PTQQ_100to200_1J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_100to200_1J},
-                {"XSec_Zto2Q_2Jets_PTQQ_100to200_2J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_100to200_2J},
-                {"XSec_Zto2Q_2Jets_PTQQ_200to400_1J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_200to400_1J},
-                {"XSec_Zto2Q_2Jets_PTQQ_200to400_2J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_200to400_2J},
-                {"XSec_Zto2Q_2Jets_PTQQ_400to600_1J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_400to600_1J},
-                {"XSec_Zto2Q_2Jets_PTQQ_400to600_2J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_400to600_2J},
-                {"XSec_Zto2Q_2Jets_PTQQ_600_1J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_600_1J},
-                {"XSec_Zto2Q_2Jets_PTQQ_600_2J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_600_2J},
-                // DY+jets
-                {"XSec_DYto2L_2Jets_MLL_50_0J", &ParamDict::XSec_DYto2L_2Jets_MLL_50_0J},
-                {"XSec_DYto2L_2Jets_MLL_50_1J", &ParamDict::XSec_DYto2L_2Jets_MLL_50_1J},
-                {"XSec_DYto2L_2Jets_MLL_50_2J", &ParamDict::XSec_DYto2L_2Jets_MLL_50_2J},
-                // W+leptons
-                {"XSec_WtoLNu_2Jets_0J", &ParamDict::XSec_WtoLNu_2Jets_0J},
-                {"XSec_WtoLNu_2Jets_1J", &ParamDict::XSec_WtoLNu_2Jets_1J},
-                {"XSec_WtoLNu_2Jets_2J", &ParamDict::XSec_WtoLNu_2Jets_2J},
-                {"XSec_WtoLNu_4Jets_1J", &ParamDict::XSec_WtoLNu_4Jets_1J},
-                {"XSec_WtoLNu_4Jets_2J", &ParamDict::XSec_WtoLNu_4Jets_2J},
-                {"XSec_WtoLNu_4Jets_3J", &ParamDict::XSec_WtoLNu_4Jets_3J},
-                // HH
-                {"XSec_GluGlutoHHto4B", &ParamDict::XSec_GluGlutoHHto4B}
-            };
-
-            auto it = memberMap.find(name);
-            if (it != memberMap.end()) {
-                param_dict->*(it->second) = value;
-            } else {
-                std::cerr << "Unknown parameter: " << name << std::endl;
-            }
-        }
-    }
+  }
 }
 
 double getXSec(ParamDict *param_dict, std::string data_type) {
-    std::map<std::string, double ParamDict::*> xsecMap = {
-        // TT samples
-        {"TTto4Q", &ParamDict::XSec_TTto4Q},
-        {"TTtoLNu2Q", &ParamDict::XSec_TTtoLNu2Q},
-        {"TTto2L2Nu", &ParamDict::XSec_TTto2L2Nu},
-        // QCD samples
-        {"QCD_HT_100to200", &ParamDict::XSec_QCD_HT_100to200},
-        {"QCD_HT_200to400", &ParamDict::XSec_QCD_HT_200to400},
-        {"QCD_HT_400to600", &ParamDict::XSec_QCD_HT_400to600},
-        {"QCD_HT_600to800", &ParamDict::XSec_QCD_HT_600to800},
-        {"QCD_HT_800to1000", &ParamDict::XSec_QCD_HT_800to1000},
-        {"QCD_HT_1000to1200", &ParamDict::XSec_QCD_HT_1000to1200},
-        {"QCD_HT_1200to1500", &ParamDict::XSec_QCD_HT_1200to1500},
-        {"QCD_HT_1500to2000", &ParamDict::XSec_QCD_HT_1500to2000},
-        {"QCD_HT_2000toInf", &ParamDict::XSec_QCD_HT_2000toInf},
-        // Diboson samples
-        {"WW", &ParamDict::XSec_WW},
-        {"WZ", &ParamDict::XSec_WZ},
-        {"ZZ", &ParamDict::XSec_ZZ},
-        // Z+jets HT samples
-        {"Zto2Q_4Jets_HT_200to400", &ParamDict::XSec_Zto2Q_4Jets_HT_200to400},
-        {"Zto2Q_4Jets_HT_400to600", &ParamDict::XSec_Zto2Q_4Jets_HT_400to600},
-        {"Zto2Q_4Jets_HT_600to800", &ParamDict::XSec_Zto2Q_4Jets_HT_600to800},
-        {"Zto2Q_4Jets_HT_800toInf", &ParamDict::XSec_Zto2Q_4Jets_HT_800toInf},
-        // W+jets HT samples
-        {"Wto2Q_3Jets_HT_200to400", &ParamDict::XSec_Wto2Q_3Jets_HT_200to400},
-        {"Wto2Q_3Jets_HT_400to600", &ParamDict::XSec_Wto2Q_3Jets_HT_400to600},
-        {"Wto2Q_3Jets_HT_600to800", &ParamDict::XSec_Wto2Q_3Jets_HT_600to800},
-        {"Wto2Q_3Jets_HT_800toInf", &ParamDict::XSec_Wto2Q_3Jets_HT_800toInf},
-        // W+jets PTQQ samples
-        {"Wto2Q_2Jets_PTQQ_100to200_1J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_100to200_1J},
-        {"Wto2Q_2Jets_PTQQ_100to200_2J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_100to200_2J},
-        {"Wto2Q_2Jets_PTQQ_200to400_1J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_200to400_1J},
-        {"Wto2Q_2Jets_PTQQ_200to400_2J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_200to400_2J},
-        {"Wto2Q_2Jets_PTQQ_400to600_1J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_400to600_1J},
-        {"Wto2Q_2Jets_PTQQ_400to600_2J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_400to600_2J},
-        {"Wto2Q_2Jets_PTQQ_600_1J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_600_1J},
-        {"Wto2Q_2Jets_PTQQ_600_2J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_600_2J},
-        // Z+jets PTQQ samples
-        {"Zto2Q_2Jets_PTQQ_100to200_1J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_100to200_1J},
-        {"Zto2Q_2Jets_PTQQ_100to200_2J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_100to200_2J},
-        {"Zto2Q_2Jets_PTQQ_200to400_1J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_200to400_1J},
-        {"Zto2Q_2Jets_PTQQ_200to400_2J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_200to400_2J},
-        {"Zto2Q_2Jets_PTQQ_400to600_1J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_400to600_1J},
-        {"Zto2Q_2Jets_PTQQ_400to600_2J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_400to600_2J},
-        {"Zto2Q_2Jets_PTQQ_600_1J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_600_1J},
-        {"Zto2Q_2Jets_PTQQ_600_2J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_600_2J},
-        // DY+jets samples
-        {"DYto2L_2Jets_MLL_50_0J", &ParamDict::XSec_DYto2L_2Jets_MLL_50_0J},
-        {"DYto2L_2Jets_MLL_50_1J", &ParamDict::XSec_DYto2L_2Jets_MLL_50_1J},
-        {"DYto2L_2Jets_MLL_50_2J", &ParamDict::XSec_DYto2L_2Jets_MLL_50_2J},
-        // W+leptons samples
-        {"WtoLNu_2Jets_0J", &ParamDict::XSec_WtoLNu_2Jets_0J},
-        {"WtoLNu_2Jets_1J", &ParamDict::XSec_WtoLNu_2Jets_1J},
-        {"WtoLNu_2Jets_2J", &ParamDict::XSec_WtoLNu_2Jets_2J},
-        {"WtoLNu_4Jets_1J", &ParamDict::XSec_WtoLNu_4Jets_1J},
-        {"WtoLNu_4Jets_2J", &ParamDict::XSec_WtoLNu_4Jets_2J},
-        {"WtoLNu_4Jets_3J", &ParamDict::XSec_WtoLNu_4Jets_3J},
-        // HH sample
-        {"GluGlutoHHto4B", &ParamDict::XSec_GluGlutoHHto4B}
-    };
+  std::map<std::string, double ParamDict::*> xsecMap = {
+      // TT samples
+      {"TTto4Q", &ParamDict::XSec_TTto4Q},
+      {"TTtoLNu2Q", &ParamDict::XSec_TTtoLNu2Q},
+      {"TTto2L2Nu", &ParamDict::XSec_TTto2L2Nu},
+      // QCD samples
+      {"QCD_HT_100to200", &ParamDict::XSec_QCD_HT_100to200},
+      {"QCD_HT_200to400", &ParamDict::XSec_QCD_HT_200to400},
+      {"QCD_HT_400to600", &ParamDict::XSec_QCD_HT_400to600},
+      {"QCD_HT_600to800", &ParamDict::XSec_QCD_HT_600to800},
+      {"QCD_HT_800to1000", &ParamDict::XSec_QCD_HT_800to1000},
+      {"QCD_HT_1000to1200", &ParamDict::XSec_QCD_HT_1000to1200},
+      {"QCD_HT_1200to1500", &ParamDict::XSec_QCD_HT_1200to1500},
+      {"QCD_HT_1500to2000", &ParamDict::XSec_QCD_HT_1500to2000},
+      {"QCD_HT_2000toInf", &ParamDict::XSec_QCD_HT_2000toInf},
+      // Diboson samples
+      {"WW", &ParamDict::XSec_WW},
+      {"WZ", &ParamDict::XSec_WZ},
+      {"ZZ", &ParamDict::XSec_ZZ},
+      // Z+jets HT samples
+      {"Zto2Q_4Jets_HT_200to400", &ParamDict::XSec_Zto2Q_4Jets_HT_200to400},
+      {"Zto2Q_4Jets_HT_400to600", &ParamDict::XSec_Zto2Q_4Jets_HT_400to600},
+      {"Zto2Q_4Jets_HT_600to800", &ParamDict::XSec_Zto2Q_4Jets_HT_600to800},
+      {"Zto2Q_4Jets_HT_800toInf", &ParamDict::XSec_Zto2Q_4Jets_HT_800toInf},
+      // W+jets HT samples
+      {"Wto2Q_3Jets_HT_200to400", &ParamDict::XSec_Wto2Q_3Jets_HT_200to400},
+      {"Wto2Q_3Jets_HT_400to600", &ParamDict::XSec_Wto2Q_3Jets_HT_400to600},
+      {"Wto2Q_3Jets_HT_600to800", &ParamDict::XSec_Wto2Q_3Jets_HT_600to800},
+      {"Wto2Q_3Jets_HT_800toInf", &ParamDict::XSec_Wto2Q_3Jets_HT_800toInf},
+      // W+jets PTQQ samples
+      {"Wto2Q_2Jets_PTQQ_100to200_1J",
+       &ParamDict::XSec_Wto2Q_2Jets_PTQQ_100to200_1J},
+      {"Wto2Q_2Jets_PTQQ_100to200_2J",
+       &ParamDict::XSec_Wto2Q_2Jets_PTQQ_100to200_2J},
+      {"Wto2Q_2Jets_PTQQ_200to400_1J",
+       &ParamDict::XSec_Wto2Q_2Jets_PTQQ_200to400_1J},
+      {"Wto2Q_2Jets_PTQQ_200to400_2J",
+       &ParamDict::XSec_Wto2Q_2Jets_PTQQ_200to400_2J},
+      {"Wto2Q_2Jets_PTQQ_400to600_1J",
+       &ParamDict::XSec_Wto2Q_2Jets_PTQQ_400to600_1J},
+      {"Wto2Q_2Jets_PTQQ_400to600_2J",
+       &ParamDict::XSec_Wto2Q_2Jets_PTQQ_400to600_2J},
+      {"Wto2Q_2Jets_PTQQ_600_1J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_600_1J},
+      {"Wto2Q_2Jets_PTQQ_600_2J", &ParamDict::XSec_Wto2Q_2Jets_PTQQ_600_2J},
+      // Z+jets PTQQ samples
+      {"Zto2Q_2Jets_PTQQ_100to200_1J",
+       &ParamDict::XSec_Zto2Q_2Jets_PTQQ_100to200_1J},
+      {"Zto2Q_2Jets_PTQQ_100to200_2J",
+       &ParamDict::XSec_Zto2Q_2Jets_PTQQ_100to200_2J},
+      {"Zto2Q_2Jets_PTQQ_200to400_1J",
+       &ParamDict::XSec_Zto2Q_2Jets_PTQQ_200to400_1J},
+      {"Zto2Q_2Jets_PTQQ_200to400_2J",
+       &ParamDict::XSec_Zto2Q_2Jets_PTQQ_200to400_2J},
+      {"Zto2Q_2Jets_PTQQ_400to600_1J",
+       &ParamDict::XSec_Zto2Q_2Jets_PTQQ_400to600_1J},
+      {"Zto2Q_2Jets_PTQQ_400to600_2J",
+       &ParamDict::XSec_Zto2Q_2Jets_PTQQ_400to600_2J},
+      {"Zto2Q_2Jets_PTQQ_600_1J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_600_1J},
+      {"Zto2Q_2Jets_PTQQ_600_2J", &ParamDict::XSec_Zto2Q_2Jets_PTQQ_600_2J},
+      // DY+jets samples
+      {"DYto2L_2Jets_MLL_50_0J", &ParamDict::XSec_DYto2L_2Jets_MLL_50_0J},
+      {"DYto2L_2Jets_MLL_50_1J", &ParamDict::XSec_DYto2L_2Jets_MLL_50_1J},
+      {"DYto2L_2Jets_MLL_50_2J", &ParamDict::XSec_DYto2L_2Jets_MLL_50_2J},
+      // W+leptons samples
+      {"WtoLNu_2Jets_0J", &ParamDict::XSec_WtoLNu_2Jets_0J},
+      {"WtoLNu_2Jets_1J", &ParamDict::XSec_WtoLNu_2Jets_1J},
+      {"WtoLNu_2Jets_2J", &ParamDict::XSec_WtoLNu_2Jets_2J},
+      {"WtoLNu_4Jets_1J", &ParamDict::XSec_WtoLNu_4Jets_1J},
+      {"WtoLNu_4Jets_2J", &ParamDict::XSec_WtoLNu_4Jets_2J},
+      {"WtoLNu_4Jets_3J", &ParamDict::XSec_WtoLNu_4Jets_3J},
+      // HH sample
+      {"GluGlutoHHto4B", &ParamDict::XSec_GluGlutoHHto4B}};
 
-    auto it = xsecMap.find(data_type);
-    if (it != xsecMap.end()) {
-        return param_dict->*(it->second);
-    }
-    throw std::invalid_argument("Invalid data_type: " + data_type);
+  auto it = xsecMap.find(data_type);
+  if (it != xsecMap.end()) {
+    return param_dict->*(it->second);
+  }
+  throw std::invalid_argument("Invalid data_type: " + data_type);
 }
 
 // D-phi
@@ -333,32 +370,32 @@ applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
          const Float_t *genJetPts, const Float_t *genJetEtas,
          const Float_t *genJetPhis, int nGenJets) {
 
-  JME::JetParameters JerPARAM = {
-    {JME::Binning::JetPt, jet_pt},
-    {JME::Binning::JetEta, jet_eta},
-    {JME::Binning::Rho, rho}
-  };
-  
+  JME::JetParameters JerPARAM = {{JME::Binning::JetPt, jet_pt},
+                                 {JME::Binning::JetEta, jet_eta},
+                                 {JME::Binning::Rho, rho}};
+
   JME::JetParameters JerSFPARAM;
   JerSFPARAM.set(JME::Binning::JetPt, jet_pt);
   JerSFPARAM.set(JME::Binning::JetEta, jet_eta);
   JerSFPARAM.set(JME::Binning::Rho, rho);
 
   Float_t resolution = resolution_pt.getResolution(JerPARAM);
-  Float_t resolution_sf = resolution_pt_sf.getScaleFactor(JerSFPARAM); 
+  Float_t resolution_sf = resolution_pt_sf.getScaleFactor(JerSFPARAM);
 
   const Float_t MAX_DELTA_R = 0.2;
   Float_t smearFactor = 1.0;
   bool gen_matched = false;
 
   for (int nGJ = 0; nGJ < nGenJets; nGJ++) {
-    Float_t delta_R = get_dR(jet_eta, jet_phi, genJetEtas[nGJ], genJetPhis[nGJ]);
+    Float_t delta_R =
+        get_dR(jet_eta, jet_phi, genJetEtas[nGJ], genJetPhis[nGJ]);
     Float_t pt_diff_ratio = fabs(jet_pt - genJetPts[nGJ]) / jet_pt;
     Float_t resolution_threshold = 3 * resolution;
 
     if (!gen_matched && delta_R < MAX_DELTA_R &&
         pt_diff_ratio < resolution_threshold) {
-      smearFactor = 1.0 + (resolution_sf - 1.0) * (jet_pt - genJetPts[nGJ]) / jet_pt;
+      smearFactor =
+          1.0 + (resolution_sf - 1.0) * (jet_pt - genJetPts[nGJ]) / jet_pt;
       gen_matched = true;
       break;
     }
@@ -372,16 +409,15 @@ applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
   return JetCorrectionResult{jet_pt * smearFactor, jet_massSD * smearFactor};
 }
 
-void tree_mc(
-    const std::string &year,             // 2022, 2023
-    const std::string &data_type,        // Example: TTtoLNu2Q, QCD_HT100to200
-    const std::string &sample_path,      // path to the root file
-    const std::string &output_path,      // path to the output root file
-    const std::string &pu_path,          // path to the pileup reweighting file
-    const std::string &param_path,       // path to the parameters file
-    const std::string &jec_path,         // path to the AK8 JEC txt file
-    const std::string &jer_path,         // path to the AK8 JER txt file
-    const std::string &jer_path_sf       // path to the AK8 JER SF txt file
+void tree_mc(const std::string &year,      // 2022, 2023
+             const std::string &data_type, // Example: TTtoLNu2Q, QCD_HT100to200
+             const std::string &sample_path, // path to the root file
+             const std::string &output_path, // path to the output root file
+             const std::string &pu_path, // path to the pileup reweighting file
+             const std::string &param_path, // path to the parameters file
+             const std::string &jec_path,   // path to the AK8 JEC txt file
+             const std::string &jer_path,   // path to the AK8 JER txt file
+             const std::string &jer_path_sf // path to the AK8 JER SF txt file
 ) {
   gSystem->Load("libFWCoreFWLite.so");
 
@@ -471,16 +507,7 @@ void tree_mc(
   Float_t rho;
 
   Bool_t HLT_Ele32_WPTight_Gsf;
-  Bool_t HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40;
-  Bool_t HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
-
-  Bool_t HLT_Mu50;
   Bool_t HLT_IsoMu27;
-  Bool_t HLT_IsoMu50_AK8PFJet230_SoftDropMass40;
-  Bool_t HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06;
-
-  Bool_t HLT_AK8PFJet230_SoftDropMass40;
-  Bool_t HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
 
   Float_t MET;
 
@@ -509,15 +536,6 @@ void tree_mc(
   Float_t FatJet1_MassSD;
   Float_t FatJet1_rawFactor;
   Float_t FatJet1_Tau3OverTau2;
-  // Fatjet 1 ParticleNet scores
-  Float_t FatJet1PNet_QCD;
-  Float_t FatJet1PNet_QCD0HF;
-  Float_t FatJet1PNet_QCD1HF;
-  Float_t FatJet1PNet_QCD2HF;
-  Float_t FatJet1PNet_XbbVsQCD;
-  Float_t FatJet1PNet_XccVsQCD;
-  Float_t FatJet1PNet_XggVsQCD;
-  Float_t FatJet1PNet_XqqVsQCD;
   // Fatjet 1 ParticleNetLegacy scores
   Float_t FatJet1PNetLegacy_Xbb;
   Float_t FatJet1PNetLegacy_Xcc;
@@ -545,42 +563,6 @@ void tree_mc(
   Float_t FatJet2_MassSD;
   Float_t FatJet2_rawFactor;
   Float_t FatJet2_Tau3OverTau2;
-  // Fatjet 2 ParticleNet scores
-  Float_t FatJet2PNet_QCD;
-  Float_t FatJet2PNet_QCD0HF;
-  Float_t FatJet2PNet_QCD1HF;
-  Float_t FatJet2PNet_QCD2HF;
-  Float_t FatJet2PNet_XbbVsQCD;
-  Float_t FatJet2PNet_XccVsQCD;
-  Float_t FatJet2PNet_XggVsQCD;
-  Float_t FatJet2PNet_XqqVsQCD;
-  // Fatjet 2 ParticleNetLegacy scores
-  Float_t FatJet2PNetLegacy_Xbb;
-  Float_t FatJet2PNetLegacy_Xcc;
-  Float_t FatJet2PNetLegacy_Xqq;
-  Float_t FatJet2PNetLegacy_QCD;
-  Float_t FatJet2PNetLegacy_QCDb;
-  Float_t FatJet2PNetLegacy_QCDbb;
-  Float_t FatJet2PNetLegacy_QCDothers;
-  // Fatjet 2 GloParT scores
-  Float_t FatJet2GloParT_QCD0HF;
-  Float_t FatJet2GloParT_QCD1HF;
-  Float_t FatJet2GloParT_QCD2HF;
-  Float_t FatJet2GloParT_Xbb;
-  Float_t FatJet2GloParT_Xcc;
-  Float_t FatJet2GloParT_Xqq;
-  Float_t FatJet2GloParT_XbbVsQCD;
-  Float_t FatJet2GloParT_massRes;
-  Float_t FatJet2GloParT_massVis;
-
-  // FatJet 3 kinematics
-  Float_t FatJet3_pt;
-  Float_t FatJet3_eta;
-  Float_t FatJet3_phi;
-  Float_t FatJet3_Mass;
-  Float_t FatJet3_MassSD;
-  Float_t FatJet3_rawFactor;
-  Float_t FatJet3_Tau3OverTau2;
 
   // gen-level
   Int_t nGenJet;
@@ -600,33 +582,7 @@ void tree_mc(
   InputTree->SetBranchAddress("isVBFtag", &isVBFtag);
 
   InputTree->SetBranchAddress("HLT_Ele32_WPTight_Gsf", &HLT_Ele32_WPTight_Gsf);
-  InputTree->SetBranchAddress(
-      "HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40",
-      &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40);
-  InputTree->SetBranchAddress(
-      "HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06",
-      &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06);
-
-  InputTree->SetBranchAddress("HLT_Ele32_WPTight_Gsf", &HLT_Ele32_WPTight_Gsf);
-  InputTree->SetBranchAddress(
-      "HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40",
-      &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40);
-  InputTree->SetBranchAddress(
-      "HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06",
-      &HLT_Ele50_CaloIdVT_GsfTrkIdT_AK8PFJet230_SoftDropMass40_PNetBB0p06);
-
-  InputTree->SetBranchAddress("HLT_Mu50", &HLT_Mu50);
   InputTree->SetBranchAddress("HLT_IsoMu27", &HLT_IsoMu27);
-  InputTree->SetBranchAddress("HLT_IsoMu50_AK8PFJet230_SoftDropMass40",
-                              &HLT_IsoMu50_AK8PFJet230_SoftDropMass40);
-  InputTree->SetBranchAddress(
-      "HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06",
-      &HLT_IsoMu50_AK8PFJet230_SoftDropMass40_PNetBB0p06);
-
-  InputTree->SetBranchAddress("HLT_AK8PFJet230_SoftDropMass40",
-                              &HLT_AK8PFJet230_SoftDropMass40);
-  InputTree->SetBranchAddress("HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06",
-                              &HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06);
 
   InputTree->SetBranchAddress("lep1Pt", &lep1_pt);
   InputTree->SetBranchAddress("lep1Eta", &lep1_eta);
@@ -653,22 +609,6 @@ void tree_mc(
   InputTree->SetBranchAddress("fatJet1_msoftdrop", &FatJet1_MassSD);
   InputTree->SetBranchAddress("fatJet1_rawFactor", &FatJet1_rawFactor);
   InputTree->SetBranchAddress("fatJet1_Tau3OverTau2", &FatJet1_Tau3OverTau2);
-  // FatJet 1 ParticleNet scores
-  InputTree->SetBranchAddress("fatJet1_particleNet_QCD", &FatJet1PNet_QCD);
-  InputTree->SetBranchAddress("fatJet1_particleNet_QCD0HF",
-                              &FatJet1PNet_QCD0HF);
-  InputTree->SetBranchAddress("fatJet1_particleNet_QCD1HF",
-                              &FatJet1PNet_QCD1HF);
-  InputTree->SetBranchAddress("fatJet1_particleNet_QCD2HF",
-                              &FatJet1PNet_QCD2HF);
-  InputTree->SetBranchAddress("fatJet1_particleNet_XbbVsQCD",
-                              &FatJet1PNet_XbbVsQCD);
-  InputTree->SetBranchAddress("fatJet1_particleNet_XccVsQCD",
-                              &FatJet1PNet_XccVsQCD);
-  InputTree->SetBranchAddress("fatJet1_particleNet_XggVsQCD",
-                              &FatJet1PNet_XggVsQCD);
-  InputTree->SetBranchAddress("fatJet1_particleNet_XqqVsQCD",
-                              &FatJet1PNet_XqqVsQCD);
   // FatJet 1 ParticleNetLegacy scores
   InputTree->SetBranchAddress("fatJet1_particleNetLegacy_Xbb",
                               &FatJet1PNetLegacy_Xbb);
@@ -709,62 +649,6 @@ void tree_mc(
   InputTree->SetBranchAddress("fatJet2_msoftdrop", &FatJet2_MassSD);
   InputTree->SetBranchAddress("fatJet2_rawFactor", &FatJet2_rawFactor);
   InputTree->SetBranchAddress("fatJet2_Tau3OverTau2", &FatJet2_Tau3OverTau2);
-  // FatJet 2 ParticleNet scores
-  InputTree->SetBranchAddress("fatJet2_particleNet_QCD", &FatJet2PNet_QCD);
-  InputTree->SetBranchAddress("fatJet2_particleNet_QCD0HF",
-                              &FatJet2PNet_QCD0HF);
-  InputTree->SetBranchAddress("fatJet2_particleNet_QCD1HF",
-                              &FatJet2PNet_QCD1HF);
-  InputTree->SetBranchAddress("fatJet2_particleNet_QCD2HF",
-                              &FatJet2PNet_QCD2HF);
-  InputTree->SetBranchAddress("fatJet2_particleNet_XbbVsQCD",
-                              &FatJet2PNet_XbbVsQCD);
-  InputTree->SetBranchAddress("fatJet2_particleNet_XccVsQCD",
-                              &FatJet2PNet_XccVsQCD);
-  InputTree->SetBranchAddress("fatJet2_particleNet_XggVsQCD",
-                              &FatJet2PNet_XggVsQCD);
-  InputTree->SetBranchAddress("fatJet2_particleNet_XqqVsQCD",
-                              &FatJet2PNet_XqqVsQCD);
-  // FatJet 2 ParticleNetLegacy scores
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_Xbb",
-                              &FatJet2PNetLegacy_Xbb);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_Xcc",
-                              &FatJet2PNetLegacy_Xcc);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_Xqq",
-                              &FatJet2PNetLegacy_Xqq);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCD",
-                              &FatJet2PNetLegacy_QCD);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCDb",
-                              &FatJet2PNetLegacy_QCDb);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCDbb",
-                              &FatJet2PNetLegacy_QCDbb);
-  InputTree->SetBranchAddress("fatJet2_particleNetLegacy_QCDothers",
-                              &FatJet2PNetLegacy_QCDothers);
-  // FatJet 2 GloParT scores
-  InputTree->SetBranchAddress("fatJet2_globalParT_QCD0HF",
-                              &FatJet2GloParT_QCD0HF);
-  InputTree->SetBranchAddress("fatJet2_globalParT_QCD1HF",
-                              &FatJet2GloParT_QCD1HF);
-  InputTree->SetBranchAddress("fatJet2_globalParT_QCD2HF",
-                              &FatJet2GloParT_QCD2HF);
-  InputTree->SetBranchAddress("fatJet2_globalParT_Xbb", &FatJet2GloParT_Xbb);
-  InputTree->SetBranchAddress("fatJet2_globalParT_Xcc", &FatJet2GloParT_Xcc);
-  InputTree->SetBranchAddress("fatJet2_globalParT_Xqq", &FatJet2GloParT_Xqq);
-  InputTree->SetBranchAddress("fatJet2_globalParT_XbbVsQCD",
-                              &FatJet2GloParT_XbbVsQCD);
-  InputTree->SetBranchAddress("fatJet2_globalParT_massRes",
-                              &FatJet2GloParT_massRes);
-  InputTree->SetBranchAddress("fatJet2_globalParT_massVis",
-                              &FatJet2GloParT_massVis);
-
-  // FatJet 3 kinematics
-  InputTree->SetBranchAddress("fatJet3_pt", &FatJet3_pt);
-  InputTree->SetBranchAddress("fatJet3_eta", &FatJet3_eta);
-  InputTree->SetBranchAddress("fatJet3_phi", &FatJet3_phi);
-  InputTree->SetBranchAddress("fatJet3_mass", &FatJet3_Mass);
-  InputTree->SetBranchAddress("fatJet3_msoftdrop", &FatJet3_MassSD);
-  InputTree->SetBranchAddress("fatJet3_rawFactor", &FatJet3_rawFactor);
-  InputTree->SetBranchAddress("fatJet3_Tau3OverTau2", &FatJet3_Tau3OverTau2);
 
   // gen-level jets
   InputTree->SetBranchAddress("nGenJet", &nGenJet);
@@ -814,18 +698,94 @@ void tree_mc(
     FatJet2_pt = jer2.corrected_pt;
     FatJet2_MassSD = jer2.corrected_massSD;
 
-    JetCorrectionResult jec3 =
-        applyJEC(FatJet3_pt, FatJet3_eta, FatJet3_phi, FatJet3_rawFactor,
-                 FatJet3_MassSD, corrector);
-    FatJet3_pt = jec3.corrected_pt;
-    FatJet3_MassSD = jec3.corrected_massSD;
+    // if (FatJet1_pt > 0) {
+    //   double raw_FatJet1_pt = FatJet1_pt * (1.0 - FatJet1_rawFactor);
+    //   corrector->setJetPt(raw_FatJet1_pt);
+    //   corrector->setJetEta(FatJet1_eta);
+    //   corrector->setJetPhi(FatJet1_phi);
+    //   double corr = corrector->getCorrection();
+    //   FatJet1_pt = raw_FatJet1_pt * corr;
+    //   FatJet1_MassSD =
+    //       FatJet1_MassSD * (1.0 - FatJet1_rawFactor) * corr;
+    // }
+    // if (FatJet2_pt > 0) {
+    //   double raw_FatJet2_pt = FatJet2_pt * (1.0 - FatJet2_rawFactor);
+    //   corrector->setJetPt(raw_FatJet2_pt);
+    //   corrector->setJetEta(FatJet2_eta);
+    //   corrector->setJetPhi(FatJet2_phi);
+    //   double corr = corrector->getCorrection();
+    //   FatJet2_pt = raw_FatJet2_pt * corr;
+    //   FatJet2_MassSD =
+    //       FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * corr;
+    // }
 
-    JetCorrectionResult jer3 =
-        applyJER(FatJet3_pt, FatJet3_eta, FatJet3_phi, FatJet3_MassSD,
-                 resolution_pt, resolution_pt_sf, rho, GenJetAK8_pt,
-                 GenJetAK8_eta, GenJetAK8_phi, nGenJetAK8);
-    FatJet3_pt = jer3.corrected_pt;
-    FatJet3_MassSD = jer3.corrected_massSD;
+    // // JER
+    // double res_pt_1;
+    // double res_pt_sf_1;
+    // JME::JetParameters JerPARAM_1 = {{JME::Binning::JetPt, FatJet1_pt},
+    //                                  {JME::Binning::JetEta, FatJet1_eta},
+    //                                  {JME::Binning::Rho, rho}};
+    // JME::JetParameters JerSFPARAM_1;
+    // JerSFPARAM_1.set(JME::Binning::JetPt, FatJet1_pt);
+    // JerSFPARAM_1.set(JME::Binning::JetEta, FatJet1_eta);
+    // JerSFPARAM_1.set(JME::Binning::Rho, rho);
+    // res_pt_1 = resolution_pt.getResolution(JerPARAM_1);
+    // res_pt_sf_1 = resolution_pt_sf.getScaleFactor(JerSFPARAM_1);
+
+    // double res_pt_2;
+    // double res_pt_sf_2;
+    // JME::JetParameters JerPARAM_2 = {{JME::Binning::JetPt, FatJet2_pt},
+    //                                  {JME::Binning::JetEta, FatJet2_eta},
+    //                                  {JME::Binning::Rho, rho}};
+    // JME::JetParameters JerSFPARAM_2;
+    // JerSFPARAM_2.set(JME::Binning::JetPt, FatJet2_pt);
+    // JerSFPARAM_2.set(JME::Binning::JetEta, FatJet2_eta);
+    // JerSFPARAM_2.set(JME::Binning::Rho, rho);
+    // res_pt_2 = resolution_pt.getResolution(JerPARAM_2);
+    // res_pt_sf_2 = resolution_pt_sf.getScaleFactor(JerSFPARAM_2);
+
+    // double SmearFactor_1 = 1;
+    // bool GenJetMatched_1 = false;
+    // double SmearFactor_2 = 1;
+    // bool GenJetMatched_2 = false;
+
+    // for (int nGJAK8 = 0; nGJAK8 < nGenJetAK8; nGJAK8++) {
+    //   if (!GenJetMatched_1 &&
+    //       sqrt(pow(FatJet1_eta - GenJetAK8_eta[nGJAK8], 2) +
+    //            pow(phi_dist(FatJet1_phi, GenJetAK8_phi[nGJAK8]), 2)) < 0.2 &&
+    //       (fabs(FatJet1_pt - GenJetAK8_pt[nGJAK8]) / FatJet1_pt <
+    //        3 * res_pt_1)) {
+    //     SmearFactor_1 = 1.0 + (res_pt_sf_1 - 1.0) *
+    //                               (FatJet1_pt - GenJetAK8_pt[nGJAK8]) /
+    //                               FatJet1_pt;
+    //     GenJetMatched_1 = true;
+    //   }
+    //   if (!GenJetMatched_2 &&
+    //       sqrt(pow(FatJet2_eta - GenJetAK8_eta[nGJAK8], 2) +
+    //            pow(phi_dist(FatJet2_phi, GenJetAK8_phi[nGJAK8]), 2)) < 0.2 &&
+    //       (fabs(FatJet2_pt - GenJetAK8_pt[nGJAK8]) / FatJet2_pt <
+    //        3 * res_pt_2)) {
+    //     SmearFactor_2 = 1.0 + (res_pt_sf_2 - 1.0) *
+    //                               (FatJet2_pt - GenJetAK8_pt[nGJAK8]) /
+    //                               FatJet2_pt;
+    //     GenJetMatched_2 = true;
+    //   }
+    // }
+
+    // if (!GenJetMatched_1 && res_pt_sf_1 > 1.0) {
+    //   double sigma = res_pt_1 * sqrt(res_pt_sf_1 * res_pt_sf_1 - 1);
+    //   SmearFactor_1 = 1.0 + gRandom->Gaus(0, sigma);
+    // }
+
+    // if (!GenJetMatched_2 && res_pt_sf_2 > 1.0) {
+    //   double sigma = res_pt_2 * sqrt(res_pt_sf_2 * res_pt_sf_2 - 1);
+    //   SmearFactor_2 = 1.0 + gRandom->Gaus(0, sigma);
+    // }
+
+    // FatJet1_pt = FatJet1_pt * SmearFactor_1;
+    // FatJet1_MassSD = FatJet1_MassSD * SmearFactor_1;
+    // FatJet2_pt = FatJet2_pt * SmearFactor_2;
+    // FatJet2_MassSD = FatJet2_MassSD * SmearFactor_2;
 
     // Selection
     if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
@@ -877,10 +837,6 @@ void tree_mc(
     double PU_weight = PU_Rew[(int)npu];
     if (PU_weight < 20.0) {
       weight = weight * PU_weight;
-    }
-    if (weight < 0) {
-      // overflow
-      continue;
     }
 
     T_weight = weight;
