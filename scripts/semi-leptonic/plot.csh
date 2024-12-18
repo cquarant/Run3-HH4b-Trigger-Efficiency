@@ -18,11 +18,12 @@ cd ${SCRIPT_DIR};
 
 # Variables and their labels
 declare -A LABEL_DICT
-VARS=("lep1_pt" "FatJet1_pt" "FatJet1_MassSD" "FatJet1_GloParT_XbbVsQCD" "FatJet1_Tau3OverTau2")
+VARS=("lep1_pt" "FatJet1_pt" "FatJet1_MassSD" "FatJet1_GloParT_XbbVsQCD" "FatJet1_ParticleNetLegacy_XbbVsQCD" "FatJet1_Tau3OverTau2")
 LABEL_DICT["lep1_pt"]="Lepton p_{T} [GeV]"
 LABEL_DICT["FatJet1_pt"]="FatJet p_{T} [GeV]"
 LABEL_DICT["FatJet1_MassSD"]="FatJet m_{SD} [GeV]"
 LABEL_DICT["FatJet1_GloParT_XbbVsQCD"]="FatJet T_{Xbb}"
+LABEL_DICT["FatJet1_ParticleNetLegacy_XbbVsQCD"]="FatJet T_{Xbb}"
 LABEL_DICT["FatJet1_Tau3OverTau2"]="FatJet #tau_{3}/#tau_{2}"
 
 get_paths() {

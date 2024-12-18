@@ -531,7 +531,7 @@ void tree_data(
     if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
       continue;
     }
-    if (lep1_pt < 50 || lep2_Pt > 30 || fabs(lep1_eta) > 2.4) {
+    if (lep1_pt < 50 || lep2_Pt > 30) {
       continue;
     }
     if (FatJet2_pt > 200 && FatJet2_MassSD > 50) {
@@ -582,7 +582,7 @@ void tree_data(
     double FatJet1PNetLegacy_XbbVsQCD =
         FatJet1PNetLegacy_Xbb / (FatJet1PNetLegacy_Xbb + FatJet1PNetLegacy_QCD);
     T_fatJet1_ParticleNetLegacy_XbbVsQCD = FatJet1PNetLegacy_XbbVsQCD;
-    T_fatJet1_globalParT_XbbVsQCD = FatJet1GloParT_Xbb;
+    T_fatJet1_globalParT_XbbVsQCD = FatJet1GloParT_XbbVsQCD;
     T_fatJet2_pt = FatJet2_pt;
     T_fatJet2_eta = FatJet2_eta;
     T_fatJet2_msoftdrop = FatJet2_MassSD;

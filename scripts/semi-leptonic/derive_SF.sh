@@ -59,6 +59,9 @@ process_year() {
     process_data ${year}
     process_mc ${year}
 
+    # derive prescale factors
+    python3 ${SCRIPT_DIR}/kfact.py --year ${year}
+
     # derive SFs for tau3/tau2
     root -l -b -q "SF_tau32.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${path_sf_tau32}\")"
     # make histograms with tau32 SF to TTbar
@@ -73,6 +76,10 @@ process_year() {
     input_path="${TREE_DIR}/Histograms_${year}_MC_TTbar.root"
     output_path="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32_TXbb.root"
     root -l -b -q "make_hist.cpp(\"${input_path}\", \"${output_path}\", \"${path_sf_tau32}\", \"${path_sf_TXbb}\")"
+
+    # plot
+    echo "Plotting..."
+    ${SCRIPT_DIR}/plot.csh ${year}
     
 }
 
