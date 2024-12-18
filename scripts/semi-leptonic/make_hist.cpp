@@ -109,9 +109,6 @@ void make_hist(
 
   for (int i = 0; i < ntuples->GetEntries(); i++) {
     ntuples->GetEntry(i);
-    if (weight < 0) {
-      continue;
-    }
 
     if (dR_J1FJ < 0.0 && dR_J2FJ < 0.0) {
       continue;

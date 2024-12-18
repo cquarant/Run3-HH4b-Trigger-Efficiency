@@ -409,29 +409,32 @@ applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
          const Float_t *genJetPts, const Float_t *genJetEtas,
          const Float_t *genJetPhis, int nGenJets) {
 
-  // Get resolution and scale factors
-  JME::JetParameters JerPARAM = {{JME::Binning::JetPt, jet_pt},
-                                 {JME::Binning::JetEta, jet_eta},
-                                 {JME::Binning::Rho, rho}};
+  JME::JetParameters JerPARAM = {
+    {JME::Binning::JetPt, jet_pt},
+    {JME::Binning::JetEta, jet_eta},
+    {JME::Binning::Rho, rho}
+  };
+  
+  JME::JetParameters JerSFPARAM;
+  JerSFPARAM.set(JME::Binning::JetPt, jet_pt);
+  JerSFPARAM.set(JME::Binning::JetEta, jet_eta);
+  JerSFPARAM.set(JME::Binning::Rho, rho);
 
   Float_t resolution = resolution_pt.getResolution(JerPARAM);
-  Float_t resolution_sf = resolution_pt_sf.getScaleFactor(JerPARAM);
+  Float_t resolution_sf = resolution_pt_sf.getScaleFactor(JerSFPARAM); 
 
-  // Calculate smearing
   const Float_t MAX_DELTA_R = 0.2;
   Float_t smearFactor = 1.0;
   bool gen_matched = false;
 
   for (int nGJ = 0; nGJ < nGenJets; nGJ++) {
-    Float_t delta_R =
-        get_dR(jet_eta, jet_phi, genJetEtas[nGJ], genJetPhis[nGJ]);
+    Float_t delta_R = get_dR(jet_eta, jet_phi, genJetEtas[nGJ], genJetPhis[nGJ]);
     Float_t pt_diff_ratio = fabs(jet_pt - genJetPts[nGJ]) / jet_pt;
     Float_t resolution_threshold = 3 * resolution;
 
     if (!gen_matched && delta_R < MAX_DELTA_R &&
         pt_diff_ratio < resolution_threshold) {
-      smearFactor =
-          1.0 + (resolution_sf - 1.0) * (jet_pt - genJetPts[nGJ]) / jet_pt;
+      smearFactor = 1.0 + (resolution_sf - 1.0) * (jet_pt - genJetPts[nGJ]) / jet_pt;
       gen_matched = true;
       break;
     }
@@ -442,7 +445,6 @@ applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
     smearFactor = 1.0 + gRandom->Gaus(0, sigma);
   }
 
-  // Apply smearing
   return JetCorrectionResult{jet_pt * smearFactor, jet_massSD * smearFactor};
 }
 

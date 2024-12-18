@@ -33,8 +33,8 @@ declare -A jec_configs=(
     ["2023BPix"]="Summer23BPixPrompt23_RunD_V1_DATA"
 )
 
-channels=("Muon" "EGamma")
-sample_dir="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
+CHANNELS=("Muon" "EGamma")
+SAMPLE_DIR="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
 jec_base="${PROJ_ROOT}/JECs"
 
 process_single_file() {
@@ -80,7 +80,7 @@ process_single_file() {
     fi
 
     # Set up paths
-    local sample_path="${sample_dir}/${year}/${channel}_${run_tag}${input_version}.root"
+    local sample_path="${SAMPLE_DIR}/${year}/${channel}_${run_tag}${input_version}.root"
     local output_path="${TMP_DIR}/Histograms_${era}_data_${channel}_${output_tag}.root"
     
     # Set appropriate JEC paths
@@ -100,7 +100,7 @@ process_era() {
     case ${era} in
         "2023")
             for run_tag in ${era_runs[${era}]}; do
-                for channel in "${channels[@]}"; do
+                for channel in "${CHANNELS[@]}"; do
                     # Process v1-v3 with first JEC set
                     for version in v1 v2 v3; do
                         process_single_file "$era" "$channel" "$version" "$run_tag"
@@ -113,7 +113,7 @@ process_era() {
             
         "2023BPix")
             for run_tag in ${era_runs[${era}]}; do
-                for channel in "${channels[@]}"; do
+                for channel in "${CHANNELS[@]}"; do
                     for version in v1 v2; do
                         process_single_file "$era" "$channel" "$version" "$run_tag"
                     done
@@ -123,7 +123,7 @@ process_era() {
             
         "2022"|"2022EE")
             for run_tag in ${era_runs[${era}]}; do
-                for channel in "${channels[@]}"; do
+                for channel in "${CHANNELS[@]}"; do
                     process_single_file "$era" "$channel" "" "$run_tag"
                 done
             done
@@ -131,13 +131,13 @@ process_era() {
     esac
     
     # Combine all runs for each channel
-    for channel in "${channels[@]}"; do
+    for channel in "${CHANNELS[@]}"; do
         channel_output="${TMP_DIR}/Histograms_${era}_data_${channel}.root"
         echo "Combining runs for ${channel} into: ${channel_output}"
         hadd -f "${channel_output}" ${TMP_DIR}/Histograms_${era}_data_${channel}_*.root
     done
     
-    # Final combination (all channels)
+    # Final combination (all CHANNELS)
     final_output="${OUTPUT_DIR}/Histograms_${era}_data.root"
     echo "Creating final combined output: ${final_output}"
     hadd -f "${final_output}" \

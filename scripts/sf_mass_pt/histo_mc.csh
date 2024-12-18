@@ -52,7 +52,7 @@ get_era_paths() {
             ;;
         "2023BPix")
             pu_path="${PROJ_ROOT}/pileups/pu_2023D.txt"
-            param_path="${PROJ_ROOT}/parameters/parameters_2023.txt"
+            param_path="${PROJ_ROOT}/parameters/parameters_${era}.txt"
             jec_base="${PROJ_ROOT}/JECs/${jec_configs[${era}]}"
             jer_base="${PROJ_ROOT}/JERs/${jer_configs[${era}]}"
             ;;

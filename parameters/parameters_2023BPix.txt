@@ -1,7 +1,7 @@
 // ************************************************* Lumi  (pb-1)
-// double Lumi   = 9450.74;
+double Lumi   = 9450.74;
 // https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis
-double Lumi = 9451;
+// double Lumi = 9451;
 
 // ************************************************* XSec  (pb)
 double XSec_Signal             =        1.0;

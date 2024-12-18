@@ -339,21 +339,21 @@ bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
 // JEC and JER
 struct JetCorrectionResult {
-  Float_t corrected_pt;
-  Float_t corrected_massSD;
+  double corrected_pt;
+  double corrected_massSD;
 };
 
-JetCorrectionResult applyJEC(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi,
-                             Float_t jet_rawFactor, Float_t jet_massSD,
+JetCorrectionResult applyJEC(double jet_pt, double jet_eta, double jet_phi,
+                             double jet_rawFactor, double jet_massSD,
                              FactorizedJetCorrector *corrector) {
   JetCorrectionResult result{jet_pt, jet_massSD};
 
   if (jet_pt > 0) {
-    Float_t raw_pt = jet_pt * (1.0 - jet_rawFactor);
+    double raw_pt = jet_pt * (1.0 - jet_rawFactor);
     corrector->setJetPt(raw_pt);
     corrector->setJetEta(jet_eta);
     corrector->setJetPhi(jet_phi);
-    Float_t correction_factor = corrector->getCorrection();
+    double correction_factor = corrector->getCorrection();
 
     result.corrected_pt = raw_pt * correction_factor;
     result.corrected_massSD =
@@ -364,9 +364,9 @@ JetCorrectionResult applyJEC(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi,
 }
 
 JetCorrectionResult
-applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
+applyJER(double jet_pt, double jet_eta, double jet_phi, double jet_massSD,
          const JME::JetResolution &resolution_pt,
-         const JME::JetResolutionScaleFactor &resolution_pt_sf, Float_t rho,
+         const JME::JetResolutionScaleFactor &resolution_pt_sf, double rho,
          const Float_t *genJetPts, const Float_t *genJetEtas,
          const Float_t *genJetPhis, int nGenJets) {
 
@@ -379,18 +379,18 @@ applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
   JerSFPARAM.set(JME::Binning::JetEta, jet_eta);
   JerSFPARAM.set(JME::Binning::Rho, rho);
 
-  Float_t resolution = resolution_pt.getResolution(JerPARAM);
-  Float_t resolution_sf = resolution_pt_sf.getScaleFactor(JerSFPARAM);
+  double resolution = resolution_pt.getResolution(JerPARAM);
+  double resolution_sf = resolution_pt_sf.getScaleFactor(JerSFPARAM);
 
-  const Float_t MAX_DELTA_R = 0.2;
-  Float_t smearFactor = 1.0;
+  const double MAX_DELTA_R = 0.2;
+  double smearFactor = 1.0;
   bool gen_matched = false;
 
   for (int nGJ = 0; nGJ < nGenJets; nGJ++) {
-    Float_t delta_R =
+    double delta_R =
         get_dR(jet_eta, jet_phi, genJetEtas[nGJ], genJetPhis[nGJ]);
-    Float_t pt_diff_ratio = fabs(jet_pt - genJetPts[nGJ]) / jet_pt;
-    Float_t resolution_threshold = 3 * resolution;
+    double pt_diff_ratio = fabs(jet_pt - genJetPts[nGJ]) / jet_pt;
+    double resolution_threshold = 3 * resolution;
 
     if (!gen_matched && delta_R < MAX_DELTA_R &&
         pt_diff_ratio < resolution_threshold) {
@@ -437,7 +437,9 @@ void tree_mc(const std::string &year,      // 2022, 2023
   // parse ParamDict
   ParamDict param_dict;
   loadParamDict(&param_dict, param_path);
+  std::cout << "Lumi: " << param_dict.Lumi << std::endl;
   double xsec = getXSec(&param_dict, data_type);
+  std::cout << "XSec: " << xsec << std::endl;
 
   // pu weight
   std::vector<double> PU_Rew = loadPUReweighting(pu_path);
@@ -497,6 +499,7 @@ void tree_mc(const std::string &year,      // 2022, 2023
 
   TH1F *NEvents = (TH1F *)f1->Get("NEvents");
   double SumGenWeights = NEvents->GetBinContent(1);
+  std::cout << "SumGenWeights: " << SumGenWeights << std::endl;
   TTree *InputTree = (TTree *)f1->Get("tree");
 
   Float_t weight;
@@ -697,95 +700,6 @@ void tree_mc(const std::string &year,      // 2022, 2023
                  GenJetAK8_eta, GenJetAK8_phi, nGenJetAK8);
     FatJet2_pt = jer2.corrected_pt;
     FatJet2_MassSD = jer2.corrected_massSD;
-
-    // if (FatJet1_pt > 0) {
-    //   double raw_FatJet1_pt = FatJet1_pt * (1.0 - FatJet1_rawFactor);
-    //   corrector->setJetPt(raw_FatJet1_pt);
-    //   corrector->setJetEta(FatJet1_eta);
-    //   corrector->setJetPhi(FatJet1_phi);
-    //   double corr = corrector->getCorrection();
-    //   FatJet1_pt = raw_FatJet1_pt * corr;
-    //   FatJet1_MassSD =
-    //       FatJet1_MassSD * (1.0 - FatJet1_rawFactor) * corr;
-    // }
-    // if (FatJet2_pt > 0) {
-    //   double raw_FatJet2_pt = FatJet2_pt * (1.0 - FatJet2_rawFactor);
-    //   corrector->setJetPt(raw_FatJet2_pt);
-    //   corrector->setJetEta(FatJet2_eta);
-    //   corrector->setJetPhi(FatJet2_phi);
-    //   double corr = corrector->getCorrection();
-    //   FatJet2_pt = raw_FatJet2_pt * corr;
-    //   FatJet2_MassSD =
-    //       FatJet2_MassSD * (1.0 - FatJet2_rawFactor) * corr;
-    // }
-
-    // // JER
-    // double res_pt_1;
-    // double res_pt_sf_1;
-    // JME::JetParameters JerPARAM_1 = {{JME::Binning::JetPt, FatJet1_pt},
-    //                                  {JME::Binning::JetEta, FatJet1_eta},
-    //                                  {JME::Binning::Rho, rho}};
-    // JME::JetParameters JerSFPARAM_1;
-    // JerSFPARAM_1.set(JME::Binning::JetPt, FatJet1_pt);
-    // JerSFPARAM_1.set(JME::Binning::JetEta, FatJet1_eta);
-    // JerSFPARAM_1.set(JME::Binning::Rho, rho);
-    // res_pt_1 = resolution_pt.getResolution(JerPARAM_1);
-    // res_pt_sf_1 = resolution_pt_sf.getScaleFactor(JerSFPARAM_1);
-
-    // double res_pt_2;
-    // double res_pt_sf_2;
-    // JME::JetParameters JerPARAM_2 = {{JME::Binning::JetPt, FatJet2_pt},
-    //                                  {JME::Binning::JetEta, FatJet2_eta},
-    //                                  {JME::Binning::Rho, rho}};
-    // JME::JetParameters JerSFPARAM_2;
-    // JerSFPARAM_2.set(JME::Binning::JetPt, FatJet2_pt);
-    // JerSFPARAM_2.set(JME::Binning::JetEta, FatJet2_eta);
-    // JerSFPARAM_2.set(JME::Binning::Rho, rho);
-    // res_pt_2 = resolution_pt.getResolution(JerPARAM_2);
-    // res_pt_sf_2 = resolution_pt_sf.getScaleFactor(JerSFPARAM_2);
-
-    // double SmearFactor_1 = 1;
-    // bool GenJetMatched_1 = false;
-    // double SmearFactor_2 = 1;
-    // bool GenJetMatched_2 = false;
-
-    // for (int nGJAK8 = 0; nGJAK8 < nGenJetAK8; nGJAK8++) {
-    //   if (!GenJetMatched_1 &&
-    //       sqrt(pow(FatJet1_eta - GenJetAK8_eta[nGJAK8], 2) +
-    //            pow(phi_dist(FatJet1_phi, GenJetAK8_phi[nGJAK8]), 2)) < 0.2 &&
-    //       (fabs(FatJet1_pt - GenJetAK8_pt[nGJAK8]) / FatJet1_pt <
-    //        3 * res_pt_1)) {
-    //     SmearFactor_1 = 1.0 + (res_pt_sf_1 - 1.0) *
-    //                               (FatJet1_pt - GenJetAK8_pt[nGJAK8]) /
-    //                               FatJet1_pt;
-    //     GenJetMatched_1 = true;
-    //   }
-    //   if (!GenJetMatched_2 &&
-    //       sqrt(pow(FatJet2_eta - GenJetAK8_eta[nGJAK8], 2) +
-    //            pow(phi_dist(FatJet2_phi, GenJetAK8_phi[nGJAK8]), 2)) < 0.2 &&
-    //       (fabs(FatJet2_pt - GenJetAK8_pt[nGJAK8]) / FatJet2_pt <
-    //        3 * res_pt_2)) {
-    //     SmearFactor_2 = 1.0 + (res_pt_sf_2 - 1.0) *
-    //                               (FatJet2_pt - GenJetAK8_pt[nGJAK8]) /
-    //                               FatJet2_pt;
-    //     GenJetMatched_2 = true;
-    //   }
-    // }
-
-    // if (!GenJetMatched_1 && res_pt_sf_1 > 1.0) {
-    //   double sigma = res_pt_1 * sqrt(res_pt_sf_1 * res_pt_sf_1 - 1);
-    //   SmearFactor_1 = 1.0 + gRandom->Gaus(0, sigma);
-    // }
-
-    // if (!GenJetMatched_2 && res_pt_sf_2 > 1.0) {
-    //   double sigma = res_pt_2 * sqrt(res_pt_sf_2 * res_pt_sf_2 - 1);
-    //   SmearFactor_2 = 1.0 + gRandom->Gaus(0, sigma);
-    // }
-
-    // FatJet1_pt = FatJet1_pt * SmearFactor_1;
-    // FatJet1_MassSD = FatJet1_MassSD * SmearFactor_1;
-    // FatJet2_pt = FatJet2_pt * SmearFactor_2;
-    // FatJet2_MassSD = FatJet2_MassSD * SmearFactor_2;
 
     // Selection
     if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {

@@ -43,21 +43,21 @@ double get_dR(double eta1, double phi1, double eta2, double phi2) {
 bool inRange(int low, int high, int x) { return (low <= x && x <= high); }
 
 struct JetCorrectionResult {
-  Float_t corrected_pt;
-  Float_t corrected_massSD;
+  double corrected_pt;
+  double corrected_massSD;
 };
 
-JetCorrectionResult applyJEC(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi,
-                             Float_t jet_rawFactor, Float_t jet_massSD,
+JetCorrectionResult applyJEC(Double_t jet_pt, Double_t jet_eta, Double_t jet_phi,
+                             Double_t jet_rawFactor, Double_t jet_massSD,
                              FactorizedJetCorrector *corrector) {
   JetCorrectionResult result{jet_pt, jet_massSD};
 
   if (jet_pt > 0) {
-    Float_t raw_pt = jet_pt * (1.0 - jet_rawFactor);
+    double raw_pt = jet_pt * (1.0 - jet_rawFactor);
     corrector->setJetPt(raw_pt);
     corrector->setJetEta(jet_eta);
     corrector->setJetPhi(jet_phi);
-    Float_t correction_factor = corrector->getCorrection();
+    double correction_factor = corrector->getCorrection();
 
     result.corrected_pt = raw_pt * correction_factor;
     result.corrected_massSD =
@@ -402,12 +402,6 @@ void tree_data(
                  FatJet2_MassSD, corrector);
     FatJet2_pt = jec2.corrected_pt;
     FatJet2_MassSD = jec2.corrected_massSD;
-
-    JetCorrectionResult jec3 =
-        applyJEC(FatJet3_pt, FatJet3_eta, FatJet3_phi, FatJet3_rawFactor,
-                 FatJet3_MassSD, corrector);
-    FatJet3_pt = jec3.corrected_pt;
-    FatJet3_MassSD = jec3.corrected_massSD;
 
     // Selection
     // EGamma, Muon, Lepton (EGamma + Muon)
