@@ -195,7 +195,7 @@ void tree_data(
   Float_t lep1_eta;
   Float_t lep1_phi;
   Int_t lep1_Id;
-  Float_t lep2_Pt;
+  Float_t lep2_pt;
   Float_t lep2_Eta;
   Float_t lep2_Phi;
   Int_t lep2_Id;
@@ -281,7 +281,7 @@ void tree_data(
   InputTree->SetBranchAddress("lep1Eta", &lep1_eta);
   InputTree->SetBranchAddress("lep1Phi", &lep1_phi);
   InputTree->SetBranchAddress("lep1Id", &lep1_Id);
-  InputTree->SetBranchAddress("lep2Pt", &lep2_Pt);
+  InputTree->SetBranchAddress("lep2Pt", &lep2_pt);
   InputTree->SetBranchAddress("lep2Eta", &lep2_Eta);
   InputTree->SetBranchAddress("lep2Phi", &lep2_Phi);
   InputTree->SetBranchAddress("lep2Id", &lep2_Id);
@@ -405,17 +405,34 @@ void tree_data(
 
     // Selection
     // EGamma, Muon, Lepton (EGamma + Muon)
-    if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
+    if (year == "2022") {
+      if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
+          continue;
+      }
+      if (FatJet2_pt > 250 && FatJet2_MassSD > 50) {
+        continue;
+      }
+      if (lep1_pt < 50 || lep2_pt > 30) {
+        continue;
+      }
+      if (MET < 50) {
+        continue;
+      }
+    } else if (year == "2023") {
+      if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
       continue;
-    }
-    if (lep1_pt < 50 || lep2_Pt > 30) {
-      continue;
-    }
-    if (FatJet2_pt > 200 && FatJet2_MassSD > 50) {
-      continue;
-    }
-    if (MET < 50) {
-      continue;
+      }
+      if (FatJet2_pt > 200 && FatJet2_MassSD > 50) {
+        continue;
+      }
+      if (lep1_pt < 50 || lep2_pt > 30) {
+        continue;
+      }
+      if (MET < 50) {
+        continue;
+      }
+    } else {
+      throw std::invalid_argument("Invalid year: " + year);
     }
 
     double dR_LFJ = get_dR(lep1_eta, lep1_phi, FatJet1_eta, FatJet1_phi);
