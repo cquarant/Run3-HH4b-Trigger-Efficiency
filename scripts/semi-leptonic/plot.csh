@@ -12,9 +12,13 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 HIST_DIR=${SCRIPT_DIR}/hists
 SF_DIR=${SCRIPT_DIR}/SFs
 TREE_DIR=${SCRIPT_DIR}/trees
-PLOT_DIR=${SCRIPT_DIR}/plots
-mkdir -p ${PLOT_DIR}
 cd ${SCRIPT_DIR};
+# BIN="0.8,0.9,0.94,0.97,0.99,1.0"
+# PLOT_DIR=${SCRIPT_DIR}/plots_sfBDT
+BIN="0.8,0.85,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99,1.0"
+# PLOT_DIR=${SCRIPT_DIR}/plots_sfBDTBin
+PLOT_DIR=${SCRIPT_DIR}/plots_sfBDTFinerBin
+mkdir -p ${PLOT_DIR}
 
 # Variables and their labels
 declare -A LABEL_DICT
@@ -46,19 +50,19 @@ process_year() {
         var_label="${LABEL_DICT[$var]}"
         output_path="${PLOT_DIR}/var_${year}_${var}.pdf"
         echo "Processing ${var} for year ${year}"
-        root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
+        root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${output_path}\", \"${var}\", \"${var_label}\", \"${BIN}\")"
 
         # tau32 correction
         output_path="${PLOT_DIR}/var_${year}_${var}_tau32corr.pdf"
         path_TTbar_tau32="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32.root"
         echo "Processing ${var} with tau32 correction for year ${year}"
-        root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
+        root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32}\", \"${output_path}\", \"${var}\", \"${var_label}\", \"${BIN}\")"
 
         # tau32+TXbb correction
         output_path="${PLOT_DIR}/var_${year}_${var}_tau32TXbbcorr.pdf"
         path_TTbar_tau32_TXbb="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32_TXbb.root"
         echo "Processing ${var} with tau32+TXbb correction for year ${year}"
-        root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32_TXbb}\", \"${output_path}\", \"${var}\", \"${var_label}\")"
+        root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32_TXbb}\", \"${output_path}\", \"${var}\", \"${var_label}\", \"${BIN}\")"
     done
 }
 

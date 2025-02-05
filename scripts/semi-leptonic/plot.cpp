@@ -7,6 +7,8 @@
 #include <iostream>
 #include <math.h>
 #include "kfact.h"
+#include <sstream>
+#include <vector>
 
 
 void plot(const std::string &year,        // 2022, 2023
@@ -17,10 +19,9 @@ void plot(const std::string &year,        // 2022, 2023
           const std::string &path_TTbar,  // path to the TTbar root file
           const std::string &output_path, // path to the output root file
           const std::string &var,         // variable to plot
-          const std::string &var_label    // jet to plot
+          const std::string &var_label,   // jet to plot
+          const std::string &TXbb_bin=""  // custom binning (comma separated)
 ) {
-
-  int reb = 5;
 
   TString variable = var;
   TString XTitle = var_label;
@@ -72,11 +73,43 @@ void plot(const std::string &year,        // 2022, 2023
   _VJ_var->Scale(kfact);
   _VV_var->Scale(kfact);
 
-  _Data_var->Rebin(reb);
-  _VJ_var->Rebin(reb);
-  _VV_var->Rebin(reb);
-  _QCD_var->Rebin(reb);
-  _TTbar_var->Rebin(reb);
+  // chech if var contains "Xbb"
+  if (variable.Contains("Xbb") && !TXbb_bin.empty()) {
+    // Parse custom binning string
+    std::vector<Double_t> bins;
+    std::stringstream ss(TXbb_bin);
+    std::string value;
+    
+    while (std::getline(ss, value, ',')) {
+        bins.push_back(std::stod(value));
+    }
+    
+    // Create array from vector
+    const int nBins = bins.size() - 1;
+    Double_t* bins_array = bins.data();
+    
+    // Rebin histograms
+    TH1D* rebinned_Data = (TH1D*)_Data_var->Rebin(nBins, "rebinned_Data", bins_array);
+    TH1D* rebinned_QCD = (TH1D*)_QCD_var->Rebin(nBins, "rebinned_QCD", bins_array);
+    TH1D* rebinned_VV = (TH1D*)_VV_var->Rebin(nBins, "rebinned_VV", bins_array);
+    TH1D* rebinned_VJ = (TH1D*)_VJ_var->Rebin(nBins, "rebinned_VJ", bins_array);
+    TH1D* rebinned_TTbar = (TH1D*)_TTbar_var->Rebin(nBins, "rebinned_TTbar", bins_array);
+    
+    // Replace original histograms with rebinned ones
+    _Data_var = rebinned_Data;
+    _QCD_var = rebinned_QCD;
+    _VV_var = rebinned_VV;
+    _VJ_var = rebinned_VJ;
+    _TTbar_var = rebinned_TTbar;
+  } else {
+    int reb = 5;
+    _Data_var->Rebin(reb);
+    _VJ_var->Rebin(reb);
+    _VV_var->Rebin(reb);
+    _QCD_var->Rebin(reb);
+    _TTbar_var->Rebin(reb);
+  }
+  
 
   _VV_var->Add(_QCD_var);
   _VJ_var->Add(_VV_var);
