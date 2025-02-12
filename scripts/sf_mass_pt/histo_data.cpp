@@ -77,6 +77,10 @@ bool checkAK4JetRequirements(Float_t j1_pt, Float_t j1_eta, Float_t j1_phi,
                              Float_t j2_pt, Float_t j2_eta, Float_t j2_phi,
                              Float_t fj_eta, Float_t fj_phi, Float_t lep_eta,
                              Float_t lep_phi) {
+  double dR_LFJ = get_dR(fj_eta, fj_phi, lep_eta, lep_phi);
+  if (dR_LFJ < 1.5)
+    return false;
+
   double dR_J1FJ = -1;
   double dR_J1L = 10;
   if (j1_pt > 40) {
