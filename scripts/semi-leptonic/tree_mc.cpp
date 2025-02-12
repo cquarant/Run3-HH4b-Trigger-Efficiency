@@ -703,7 +703,7 @@ void tree_mc(const std::string &year,      // 2022, 2023
 
     // Selection
     if (year == "2022") {
-      if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
+      if (FatJet1_pt < 270 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
           continue;
       }
       if (FatJet2_pt > 250 && FatJet2_MassSD > 50) {

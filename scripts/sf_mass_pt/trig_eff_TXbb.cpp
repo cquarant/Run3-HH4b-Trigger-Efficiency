@@ -10,6 +10,7 @@
 #include <TH1D.h>
 #include <iostream>
 #include <math.h>
+#include "TXbb.h"
 
 void set_pad_style(TPad* pad) {
     pad->SetFillColor(0);
@@ -58,7 +59,7 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
                    const std::string& tagger_name, const std::string& output_root_path, 
                    const std::string& figure_path) {
     
-    const int rebin = 4;
+    const int rebin = 4 * (N_TXbb / 100);
     
     // Open files
     TFile* f = new TFile(output_root_path.c_str(), "RECREATE");

@@ -50,5 +50,5 @@ if [ $# -ne 1 ]; then
     echo "All done"
 else
     # process single era
-    process_era $1 &
+    process_era $1
 fi

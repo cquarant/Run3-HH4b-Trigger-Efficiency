@@ -14,10 +14,11 @@ SF_DIR=${SCRIPT_DIR}/SFs
 TREE_DIR=${SCRIPT_DIR}/trees
 cd ${SCRIPT_DIR};
 # BIN="0.8,0.9,0.94,0.97,0.99,1.0"
-# PLOT_DIR=${SCRIPT_DIR}/plots_sfBDT
-BIN="0.8,0.85,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99,1.0"
 # PLOT_DIR=${SCRIPT_DIR}/plots_sfBDTBin
+BIN="0.8,0.85,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99,0.995,1.0"
 PLOT_DIR=${SCRIPT_DIR}/plots_sfBDTFinerBin
+# BIN="0.990,0.991,0.992,0.993,0.994,0.995,0.996,0.997,0.998,0.999,1.0"
+# PLOT_DIR=${SCRIPT_DIR}/plots_sfBDTEvenFinerBin
 mkdir -p ${PLOT_DIR}
 
 # Variables and their labels

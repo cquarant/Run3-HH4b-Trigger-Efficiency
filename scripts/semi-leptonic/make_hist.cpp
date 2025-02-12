@@ -10,6 +10,7 @@
 #include "TString.h"
 #include "TSystem.h"
 #include "TTree.h"
+#include "TXbb.h"
 
 #include "TMVA/MethodCuts.h"
 #include "TMVA/Reader.h"
@@ -58,11 +59,11 @@ void make_hist(
       new TH1D("FatJet1_MassSD", "FatJet1_MassSD", 500, 0, 500);
   TH1D *_FatJet1_ParticleNetLegacy_XbbVsQCD =
       new TH1D("FatJet1_ParticleNetLegacy_XbbVsQCD",
-               "FatJet1_ParticleNetLegacy_XbbVsQCD", 100, 0.0, 1.0);
+               "FatJet1_ParticleNetLegacy_XbbVsQCD", N_TXbb, 0.0, 1.0);
   TH1D *_FatJet1_GloParT_XbbVsQCD = new TH1D(
-      "FatJet1_GloParT_XbbVsQCD", "FatJet1_GloParT_XbbVsQCD", 100, 0.0, 1.0);
+      "FatJet1_GloParT_XbbVsQCD", "FatJet1_GloParT_XbbVsQCD", N_TXbb, 0.0, 1.0);
   TH1D *_FatJet1_Tau3OverTau2 =
-      new TH1D("FatJet1_Tau3OverTau2", "FatJet1_Tau3OverTau2", 100, 0.0, 1.0);
+      new TH1D("FatJet1_Tau3OverTau2", "FatJet1_Tau3OverTau2", N_TXbb, 0.0, 1.0);
   TH1D *_FatJet2_pt = new TH1D("FatJet2_pt", "FatJet2_pt", 200, 0, 1200);
   TH1D *_FatJet2_eta = new TH1D("FatJet2_eta", "FatJet2_eta", 100, -5, 5);
   TH1D *_FatJet2_MassSD =

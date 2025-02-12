@@ -18,6 +18,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include "TXbb.h"
 
 #define ARR_SIZE 10000
 
@@ -245,69 +246,69 @@ void histo_data(
                bins_m, num_pt_bins, bins_pt);
   // probe FatJet 1 ParticleNet scores
   TH1D *_ProbeJet_pass_PNet_QCD =
-      new TH1D("ProbeJet_pass_PNet_QCD", "ProbeJet_pass_PNet_QCD", 100, 0, 1.0);
+      new TH1D("ProbeJet_pass_PNet_QCD", "ProbeJet_pass_PNet_QCD", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNet_QCD0HF = new TH1D(
-      "ProbeJet_pass_PNet_QCD0HF", "ProbeJet_pass_PNet_QCD0HF", 100, 0, 1.0);
+      "ProbeJet_pass_PNet_QCD0HF", "ProbeJet_pass_PNet_QCD0HF", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNet_QCD1HF = new TH1D(
-      "ProbeJet_pass_PNet_QCD1HF", "ProbeJet_pass_PNet_QCD1HF", 100, 0, 1.0);
+      "ProbeJet_pass_PNet_QCD1HF", "ProbeJet_pass_PNet_QCD1HF", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNet_QCD2HF = new TH1D(
-      "ProbeJet_pass_PNet_QCD2HF", "ProbeJet_pass_PNet_QCD2HF", 100, 0, 1.0);
+      "ProbeJet_pass_PNet_QCD2HF", "ProbeJet_pass_PNet_QCD2HF", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNet_XbbVsQCD =
       new TH1D("ProbeJet_pass_PNet_XbbVsQCD", "ProbeJet_pass_PNet_XbbVsQCD",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNet_XccVsQCD =
       new TH1D("ProbeJet_pass_PNet_XccVsQCD", "ProbeJet_pass_PNet_XccVsQCD",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNet_XggVsQCD =
       new TH1D("ProbeJet_pass_PNet_XggVsQCD", "ProbeJet_pass_PNet_XggVsQCD",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNet_XqqVsQCD =
       new TH1D("ProbeJet_pass_PNet_XqqVsQCD", "ProbeJet_pass_PNet_XqqVsQCD",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   // probe FatJet 1 ParticleNetLegacy scores
   TH1D *_ProbeJet_pass_PNetLegacy_Xbb =
       new TH1D("ProbeJet_pass_PNetLegacy_Xbb", "ProbeJet_pass_PNetLegacy_Xbb",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNetLegacy_XbbVsQCD =
       new TH1D("ProbeJet_pass_PNetLegacy_XbbVsQCD",
-               "ProbeJet_pass_PNetLegacy_XbbVsQCD", 100, 0, 1.0);
+               "ProbeJet_pass_PNetLegacy_XbbVsQCD", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNetLegacy_Xcc =
       new TH1D("ProbeJet_pass_PNetLegacy_Xcc", "ProbeJet_pass_PNetLegacy_Xcc",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNetLegacy_Xqq =
       new TH1D("ProbeJet_pass_PNetLegacy_Xqq", "ProbeJet_pass_PNetLegacy_Xqq",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNetLegacy_QCD =
       new TH1D("ProbeJet_pass_PNetLegacy_QCD", "ProbeJet_pass_PNetLegacy_QCD",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNetLegacy_QCDb =
       new TH1D("ProbeJet_pass_PNetLegacy_QCDb", "ProbeJet_pass_PNetLegacy_QCDb",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNetLegacy_QCDbb =
       new TH1D("ProbeJet_pass_PNetLegacy_QCDbb",
-               "ProbeJet_pass_PNetLegacy_QCDbb", 100, 0, 1.0);
+               "ProbeJet_pass_PNetLegacy_QCDbb", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_PNetLegacy_QCDothers =
       new TH1D("ProbeJet_pass_PNetLegacy_QCDothers",
-               "ProbeJet_pass_PNetLegacy_QCDothers", 100, 0, 1.0);
+               "ProbeJet_pass_PNetLegacy_QCDothers", N_TXbb, 0, 1.0);
   // probe FatJet 1 GloParT scores
   TH1D *_ProbeJet_pass_GloParT_QCD0HF =
       new TH1D("ProbeJet_pass_GloParT_QCD0HF", "ProbeJet_pass_GloParT_QCD0HF",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_GloParT_QCD1HF =
       new TH1D("ProbeJet_pass_GloParT_QCD1HF", "ProbeJet_pass_GloParT_QCD1HF",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_GloParT_QCD2HF =
       new TH1D("ProbeJet_pass_GloParT_QCD2HF", "ProbeJet_pass_GloParT_QCD2HF",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_GloParT_Xbb = new TH1D(
-      "ProbeJet_pass_GloParT_Xbb", "ProbeJet_pass_GloParT_Xbb", 100, 0, 1.0);
+      "ProbeJet_pass_GloParT_Xbb", "ProbeJet_pass_GloParT_Xbb", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_GloParT_Xcc = new TH1D(
-      "ProbeJet_pass_GloParT_Xcc", "ProbeJet_pass_GloParT_Xcc", 100, 0, 1.0);
+      "ProbeJet_pass_GloParT_Xcc", "ProbeJet_pass_GloParT_Xcc", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_GloParT_Xqq = new TH1D(
-      "ProbeJet_pass_GloParT_Xqq", "ProbeJet_pass_GloParT_Xqq", 100, 0, 1.0);
+      "ProbeJet_pass_GloParT_Xqq", "ProbeJet_pass_GloParT_Xqq", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_pass_GloParT_XbbVsQCD =
       new TH1D("ProbeJet_pass_GloParT_XbbVsQCD",
-               "ProbeJet_pass_GloParT_XbbVsQCD", 100, 0, 1.0);
+               "ProbeJet_pass_GloParT_XbbVsQCD", N_TXbb, 0, 1.0);
 
   // tag FatJet 1 kinematics
   TH1D *_ProbeJet_all_pt =
@@ -327,65 +328,65 @@ void histo_data(
                bins_m, num_pt_bins, bins_pt);
   // tag FatJet 1 ParticleNet scores
   TH1D *_ProbeJet_all_PNet_QCD =
-      new TH1D("ProbeJet_all_PNet_QCD", "ProbeJet_all_PNet_QCD", 100, 0, 1.0);
+      new TH1D("ProbeJet_all_PNet_QCD", "ProbeJet_all_PNet_QCD", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNet_QCD0HF = new TH1D(
-      "ProbeJet_all_PNet_QCD0HF", "ProbeJet_all_PNet_QCD0HF", 100, 0, 1.0);
+      "ProbeJet_all_PNet_QCD0HF", "ProbeJet_all_PNet_QCD0HF", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNet_QCD1HF = new TH1D(
-      "ProbeJet_all_PNet_QCD1HF", "ProbeJet_all_PNet_QCD1HF", 100, 0, 1.0);
+      "ProbeJet_all_PNet_QCD1HF", "ProbeJet_all_PNet_QCD1HF", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNet_QCD2HF = new TH1D(
-      "ProbeJet_all_PNet_QCD2HF", "ProbeJet_all_PNet_QCD2HF", 100, 0, 1.0);
+      "ProbeJet_all_PNet_QCD2HF", "ProbeJet_all_PNet_QCD2HF", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNet_XbbVsQCD = new TH1D(
-      "ProbeJet_all_PNet_XbbVsQCD", "ProbeJet_all_PNet_XbbVsQCD", 100, 0, 1.0);
+      "ProbeJet_all_PNet_XbbVsQCD", "ProbeJet_all_PNet_XbbVsQCD", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNet_XccVsQCD = new TH1D(
-      "ProbeJet_all_PNet_XccVsQCD", "ProbeJet_all_PNet_XccVsQCD", 100, 0, 1.0);
+      "ProbeJet_all_PNet_XccVsQCD", "ProbeJet_all_PNet_XccVsQCD", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNet_XggVsQCD = new TH1D(
-      "ProbeJet_all_PNet_XggVsQCD", "ProbeJet_all_PNet_XggVsQCD", 100, 0, 1.0);
+      "ProbeJet_all_PNet_XggVsQCD", "ProbeJet_all_PNet_XggVsQCD", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNet_XqqVsQCD = new TH1D(
-      "ProbeJet_all_PNet_XqqVsQCD", "ProbeJet_all_PNet_XqqVsQCD", 100, 0, 1.0);
+      "ProbeJet_all_PNet_XqqVsQCD", "ProbeJet_all_PNet_XqqVsQCD", N_TXbb, 0, 1.0);
   // tag FatJet 1 ParticleNetLegacy scores
   TH1D *_ProbeJet_all_PNetLegacy_Xbb =
       new TH1D("ProbeJet_all_PNetLegacy_Xbb", "ProbeJet_all_PNetLegacy_Xbb",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNetLegacy_XbbVsQCD =
       new TH1D("ProbeJet_all_PNetLegacy_XbbVsQCD",
-               "ProbeJet_all_PNetLegacy_XbbVsQCD", 100, 0, 1.0);
+               "ProbeJet_all_PNetLegacy_XbbVsQCD", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNetLegacy_Xcc =
       new TH1D("ProbeJet_all_PNetLegacy_Xcc", "ProbeJet_all_PNetLegacy_Xcc",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNetLegacy_Xqq =
       new TH1D("ProbeJet_all_PNetLegacy_Xqq", "ProbeJet_all_PNetLegacy_Xqq",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNetLegacy_QCD =
       new TH1D("ProbeJet_all_PNetLegacy_QCD", "ProbeJet_all_PNetLegacy_QCD",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNetLegacy_QCDb =
       new TH1D("ProbeJet_all_PNetLegacy_QCDb", "ProbeJet_all_PNetLegacy_QCDb",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNetLegacy_QCDbb =
       new TH1D("ProbeJet_all_PNetLegacy_QCDbb", "ProbeJet_all_PNetLegacy_QCDbb",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_PNetLegacy_QCDothers =
       new TH1D("ProbeJet_all_PNetLegacy_QCDothers",
-               "ProbeJet_all_PNetLegacy_QCDothers", 100, 0, 1.0);
+               "ProbeJet_all_PNetLegacy_QCDothers", N_TXbb, 0, 1.0);
   // tag FatJet 1 GloParT scores
   TH1D *_ProbeJet_all_GloParT_QCD0HF =
       new TH1D("ProbeJet_all_GloParT_QCD0HF", "ProbeJet_all_GloParT_QCD0HF",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_GloParT_QCD1HF =
       new TH1D("ProbeJet_all_GloParT_QCD1HF", "ProbeJet_all_GloParT_QCD1HF",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_GloParT_QCD2HF =
       new TH1D("ProbeJet_all_GloParT_QCD2HF", "ProbeJet_all_GloParT_QCD2HF",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_GloParT_Xbb = new TH1D(
-      "ProbeJet_all_GloParT_Xbb", "ProbeJet_all_GloParT_Xbb", 100, 0, 1.0);
+      "ProbeJet_all_GloParT_Xbb", "ProbeJet_all_GloParT_Xbb", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_GloParT_Xcc = new TH1D(
-      "ProbeJet_all_GloParT_Xcc", "ProbeJet_all_GloParT_Xcc", 100, 0, 1.0);
+      "ProbeJet_all_GloParT_Xcc", "ProbeJet_all_GloParT_Xcc", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_GloParT_Xqq = new TH1D(
-      "ProbeJet_all_GloParT_Xqq", "ProbeJet_all_GloParT_Xqq", 100, 0, 1.0);
+      "ProbeJet_all_GloParT_Xqq", "ProbeJet_all_GloParT_Xqq", N_TXbb, 0, 1.0);
   TH1D *_ProbeJet_all_GloParT_XbbVsQCD =
       new TH1D("ProbeJet_all_GloParT_XbbVsQCD", "ProbeJet_all_GloParT_XbbVsQCD",
-               100, 0, 1.0);
+               N_TXbb, 0, 1.0);
 
   TFile *f1 = new TFile(sample_path.c_str());
 

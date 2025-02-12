@@ -10,6 +10,7 @@
 #include <TH1D.h>
 #include <iostream>
 #include <math.h>
+#include "TXbb.h"
 
 void set_pad_style(TPad* pad) {
     pad->SetFillColor(0);
@@ -58,7 +59,8 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
                    const std::string& tagger_name, const std::string& output_root_path, 
                    const std::string& figure_path) {
     
-    const int rebin = 4;
+    // const int rebin = 4 * (N_TXbb / 100);
+    const int rebin = 4 * (N_TXbb / 100);
     
     // Open files
     TFile* f = new TFile(output_root_path.c_str(), "RECREATE");
@@ -80,6 +82,18 @@ void trig_eff_TXbb(const std::string& mc_path, const std::string& data_path,
         std::cerr << "Error: could not find histograms in input files" << std::endl;
         return;
     }
+
+    // int nBins = 10;
+    // Double_t bins_array[11] = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    // TH1D* mc_all_reb = (TH1D*)_mc_all->Rebin(nBins, "mc_all", bins_array);
+    // TH1D* mc_pass_reb = (TH1D*)_mc_pass->Rebin(nBins, "mc_pass", bins_array);
+    // TH1D* data_all_reb = (TH1D*)_data_all->Rebin(nBins, "data_all", bins_array);
+    // TH1D* data_pass_reb = (TH1D*)_data_pass->Rebin(nBins, "data_pass", bins_array);
+
+    // _mc_all = mc_all_reb;
+    // _mc_pass = mc_pass_reb;
+    // _data_all = data_all_reb;
+    // _data_pass = data_pass_reb;
 
     // Rebin histograms
     _mc_all->Rebin(rebin);

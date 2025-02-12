@@ -7,6 +7,7 @@
 #include <iostream>
 #include <math.h>
 #include "kfact.h"
+#include "TXbb.h"
 #include <sstream>
 #include <vector>
 
@@ -102,7 +103,7 @@ void plot(const std::string &year,        // 2022, 2023
     _VJ_var = rebinned_VJ;
     _TTbar_var = rebinned_TTbar;
   } else {
-    int reb = 5;
+    int reb = 5 * (N_TXbb / 100);
     _Data_var->Rebin(reb);
     _VJ_var->Rebin(reb);
     _VV_var->Rebin(reb);

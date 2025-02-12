@@ -8,6 +8,7 @@
 #include <iostream>
 #include <math.h>
 #include "kfact.h"
+#include "TXbb.h"
 
 
 void SF_TXbb(const std::string &year,       // 2022, 2023
@@ -19,7 +20,7 @@ void SF_TXbb(const std::string &year,       // 2022, 2023
              const std::string &output_path // path to the output root file
 ) {
 
-  int reb = 5;
+  int reb = 5 * (N_TXbb / 100);
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
   Float_t Bound[14] = {0.0, 0.01, 0.1, 0.21, 0.31, 0.4,  0.5,

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <math.h>
 #include "kfact.h"
+#include "TXbb.h"
 
 
 void SF_tau32(
@@ -20,7 +21,7 @@ void SF_tau32(
     const std::string &output_path  // path to the output root file
 ) {
 
-  int reb = 5;
+  int reb = 5 * (N_TXbb / 100);
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
   TH1D *_SF = new TH1D("SF", "SF", 100, 0.0, 1.0);
