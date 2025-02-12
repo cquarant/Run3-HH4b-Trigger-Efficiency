@@ -1,7 +1,9 @@
 // ************************************************* Lumi  (pb_1)
 // https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis
 // 2022C, 2022D
-double Lumi = 7980.4; 
+// (5.0104 + 2.9700) * 1000
+// double Lumi = 7980.4; 
+double Lumi   = 8077.0;
 
 // ************************************************* XSec  (pb)
 double XSec_Signal             =        1.0;
