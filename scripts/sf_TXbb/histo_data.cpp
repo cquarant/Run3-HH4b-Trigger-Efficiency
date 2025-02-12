@@ -84,6 +84,10 @@ bool checkAK4JetRequirements(Float_t j1_pt, Float_t j1_eta, Float_t j1_phi,
                              Float_t j2_pt, Float_t j2_eta, Float_t j2_phi,
                              Float_t fj_eta, Float_t fj_phi, Float_t lep_eta,
                              Float_t lep_phi) {
+  double dR_LFJ = get_dR(fj_eta, fj_phi, lep_eta, lep_phi);
+  if (dR_LFJ < 1.5)
+    return false;
+
   double dR_J1FJ = -1;
   double dR_J1L = 10;
   if (j1_pt > 40) {
@@ -109,9 +113,11 @@ bool checkAK4JetRequirements(Float_t j1_pt, Float_t j1_eta, Float_t j1_phi,
   }
 
   // Apply cuts
-  if (dR_JFJ_Max < 1.5)
-    return false;
+  // if (dR_JFJ_Max < 1.5)
+  //   return false;
   if (dR_J1L <= 0.4 || dR_J2L <= 0.4)
+    return false;
+  if (dR_J1FJ < 0.0 && dR_J2FJ < 0.0)
     return false;
   if (dR_JmaxL > 3.5)
     return false;
@@ -803,6 +809,9 @@ void histo_data(
     } else {
       HLT_pass = HLT_pass_ele || HLT_pass_mu;
     } 
+    if (!HLT_pass) {
+      continue;
+    }
     
     if (year == "2022") {
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
@@ -813,14 +822,14 @@ void histo_data(
           continue;
       } else {
         // Leptonic-specific 2022 requirements
-        if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
+        if (FatJet1_pt < 270 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
           continue;
-        if (FatJet2_pt > 250 && FatJet2_MassSD > 50)
+        if (FatJet2_pt > 200 && FatJet2_MassSD > 50)
           continue;
-        if (lep1_Pt < 50 || lep2_Pt > 30)
+        if (lep1_Pt < 55 || lep2_Pt > 30)
           continue;
-        if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
-          continue;
+        // if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
+        //   continue;
         if (MET < 50)
           continue;
 
@@ -873,8 +882,8 @@ void histo_data(
           continue;
         if (lep1_Pt < 55 || lep2_Pt > 30)
           continue;
-        if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
-          continue;
+        // if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
+        //   continue;
         if (MET < 50)
           continue;
 

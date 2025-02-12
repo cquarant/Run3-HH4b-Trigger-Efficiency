@@ -339,6 +339,10 @@ bool checkAK4JetRequirements(Float_t j1_pt, Float_t j1_eta, Float_t j1_phi,
                              Float_t j2_pt, Float_t j2_eta, Float_t j2_phi,
                              Float_t fj_eta, Float_t fj_phi, Float_t lep_eta,
                              Float_t lep_phi) {
+  double dR_LFJ = get_dR(fj_eta, fj_phi, lep_eta, lep_phi);
+  if (dR_LFJ < 1.5)
+    return false;
+  
   double dR_J1FJ = -1;
   double dR_J1L = 10;
   if (j1_pt > 40) {
@@ -364,9 +368,11 @@ bool checkAK4JetRequirements(Float_t j1_pt, Float_t j1_eta, Float_t j1_phi,
   }
 
   // Apply cuts
-  if (dR_JFJ_Max < 1.5)
-    return false;
+  // if (dR_JFJ_Max < 1.5)
+  //   return false;
   if (dR_J1L <= 0.4 || dR_J2L <= 0.4)
+    return false;
+  if (dR_J1FJ < 0.0 && dR_J2FJ < 0.0)
     return false;
   if (dR_JmaxL > 3.5)
     return false;
@@ -1157,8 +1163,8 @@ void histo_mc(
           continue;
         if (lep1_Pt < 55 || lep2_Pt > 30)
           continue;
-        if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
-          continue;
+        // if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
+        //   continue;
         if (MET < 50)
           continue;
 
@@ -1186,7 +1192,8 @@ void histo_mc(
           Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 12, 100);
 
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
-        probe_pass = matched_to_PNetBB && HLT_pass;
+        // probe_pass = matched_to_PNetBB && HLT_pass;
+        probe_pass = matched_to_PNetBB;
       } else {
         probe_pass = matched_to_PNetBB;
       }
@@ -1218,9 +1225,9 @@ void histo_mc(
         if (lep1_Pt < 50 || lep2_Pt > 30) {
           continue;
         }
-        if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0) {
-          continue;
-        }
+        // if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0) {
+        //   continue;
+        // }
         if (MET < 50) {
           continue;
         }
