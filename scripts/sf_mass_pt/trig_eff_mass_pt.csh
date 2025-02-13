@@ -29,14 +29,14 @@ process_era() {
         root -l -b -q "trig_eff_mass_pt.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\", \"${figure_sf_path}\")"
     done
 
-    # together
-    hist_mc_path="${OUTPUT_DIR}/Histograms_${era_tag}_MC.root"
-    hist_data_path="${OUTPUT_DIR}/Histograms_${era_tag}_data.root"
-    output_path="${OUTPUT_DIR}/efficiency_mass_pt_${era_tag}.root"
-    figure_mc_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_MC.pdf"
-    figure_data_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_data.pdf"
-    figure_sf_path="${FIG_DIR}/SF_mass_pt_${era_tag}.pdf"
-    root -l -b -q "trig_eff_mass_pt.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\", \"${figure_sf_path}\")"
+    # # together
+    # hist_mc_path="${OUTPUT_DIR}/Histograms_${era_tag}_MC.root"
+    # hist_data_path="${OUTPUT_DIR}/Histograms_${era_tag}_data.root"
+    # output_path="${OUTPUT_DIR}/efficiency_mass_pt_${era_tag}.root"
+    # figure_mc_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_MC.pdf"
+    # figure_data_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_data.pdf"
+    # figure_sf_path="${FIG_DIR}/SF_mass_pt_${era_tag}.pdf"
+    # root -l -b -q "trig_eff_mass_pt.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${output_path}\", \"${figure_mc_path}\", \"${figure_data_path}\", \"${figure_sf_path}\")"
 }
 
 

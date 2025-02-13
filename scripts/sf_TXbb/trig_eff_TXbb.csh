@@ -14,7 +14,8 @@ mkdir -p ${OUTPUT_DIR}
 mkdir -p ${FIG_DIR}
 mkdir -p ${FIG_TMP_DIR}
 
-DATA_TYPES=("QCD" "TTbar")
+# DATA_TYPES=("QCD" "TTbar")
+DATA_TYPES=("TTbar" "QCD")
 TAGGER_NAMES=("GloParT" "PNetLegacy")
 
 process_era() {
@@ -30,13 +31,6 @@ process_era() {
             figure_path="${FIG_DIR}/efficiency_${tagger_name}_${era_tag}_${data_type}.pdf"
             root -l -b -q "trig_eff_TXbb.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${tagger_name}\", \"${output_path}\", \"${figure_path}\")"
         done
-
-        # together
-        hist_mc_path="${OUTPUT_DIR}/Histograms_${era_tag}_MC.root"
-        hist_data_path="${OUTPUT_DIR}/Histograms_${era_tag}_data.root"
-        output_path="${OUTPUT_DIR}/efficiency_${tagger_name}_${era_tag}.root"
-        figure_path="${FIG_DIR}/efficiency_${tagger_name}_${era_tag}.pdf"
-        root -l -b -q "trig_eff_TXbb.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${tagger_name}\", \"${output_path}\", \"${figure_path}\")"
     done
 }
 

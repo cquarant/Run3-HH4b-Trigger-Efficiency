@@ -90,7 +90,8 @@ process_ttbar() {
     # Get paths specific to TTBar processing
     get_era_paths ${era} "ttbar" || return 1
     
-    local channels=("Muon" "EGamma" "Leptonic")
+    # local channels=("Muon" "EGamma" "Leptonic")
+    local channels=("Leptonic")
     local ttbar_type="TTtoLNu2Q"
     
     # Find TTBar sample with wildcard
@@ -186,8 +187,8 @@ process_era() {
     # Process TTBar samples
     process_ttbar ${era}
 
-    # Combine all MC samples
-    combine_final_output ${era}
+    # # Combine all MC samples
+    # combine_final_output ${era}
     
     echo "MC processing for era ${era} completed successfully!"
 }

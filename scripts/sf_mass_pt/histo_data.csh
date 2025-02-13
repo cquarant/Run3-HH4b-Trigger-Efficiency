@@ -146,14 +146,6 @@ process_era() {
     hadd -f "${leptonic_output}" \
         ${OUTPUT_DIR}/Histograms_${era}_data_Muon.root \
         ${OUTPUT_DIR}/Histograms_${era}_data_EGamma.root
-    
-    # Final combination (all channels)
-    final_output="${OUTPUT_DIR}/Histograms_${era}_data.root"
-    echo "Creating final combined output: ${final_output}"
-    hadd -f "${final_output}" \
-        ${OUTPUT_DIR}/Histograms_${era}_data_JetMET.root \
-        ${OUTPUT_DIR}/Histograms_${era}_data_Muon.root \
-        ${OUTPUT_DIR}/Histograms_${era}_data_EGamma.root
 }
 
 if [ $# -ne 1 ]; then
