@@ -1126,7 +1126,9 @@ void histo_mc(
     bool probe_pass = false;
     bool HLT_pass_QCD = false;
     if (year == "2022") {
-      HLT_pass_QCD = HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35;
+      // TODO: Add 2022 HLTs
+      // HLT_pass_QCD = HLT_AK8PFJet250_SoftDropMass40_PFAK8ParticleNetBB0p35;
+      HLT_pass_QCD = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
     } else if (year == "2023") {
       HLT_pass_QCD = HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06;
     } else {
@@ -1148,7 +1150,7 @@ void histo_mc(
       HLT_pass = HLT_pass_mu;
     } else {
       HLT_pass = HLT_pass_ele || HLT_pass_mu;
-    } 
+    }
     
     if (year == "2022") {
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
@@ -1213,18 +1215,14 @@ void histo_mc(
         }
       } else {
         // Leptonic-specific 2023 requirements
-        if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50) {
+        if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
           continue;
-        }
-        if (FatJet2_pt > 200 && FatJet2_MassSD > 50) {
+        if (FatJet2_pt > 200 && FatJet2_MassSD > 50)
           continue;
-        }
-        if (FatJet3_pt > 200) {
+        if (FatJet3_pt > 200)
           continue;
-        }
-        if (lep1_Pt < 50 || lep2_Pt > 30) {
+        if (lep1_Pt < 55 || lep2_Pt > 30)
           continue;
-        }
         // if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0) {
         //   continue;
         // }
@@ -1250,7 +1248,6 @@ void histo_mc(
         continue;
 
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
-        probe_pass = HLT_pass;
         // Veto events where FatJet2 matches trigger
         bool fatjet2_matched = checkTriggerMatching(
             NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
@@ -1262,6 +1259,7 @@ void histo_mc(
       }
 
       probe_pass = HLT_pass;
+
     }
 
     // always use pT leading FatJet as probe

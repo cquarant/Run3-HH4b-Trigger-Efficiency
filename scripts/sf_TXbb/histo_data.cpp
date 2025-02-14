@@ -808,17 +808,12 @@ void histo_data(
       HLT_pass = HLT_pass_mu;
     } else {
       HLT_pass = HLT_pass_ele || HLT_pass_mu;
-    } 
-    if (!HLT_pass) {
-      continue;
     }
     
     if (year == "2022") {
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
         // QCD-specific 2022 requirements
-        if (FatJet1_pt < 300 || fabs(FatJet1_eta) > 1.5 || FatJet1_MassSD < 50)
-          continue;
-        if (isVBFtag)
+        if (FatJet1_pt < 270 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
           continue;
       } else {
         // Leptonic-specific 2022 requirements
@@ -839,6 +834,7 @@ void histo_data(
           continue;
         }
       }
+      // Want matched_to_AK8PFJet230_SoftDropMass40 && matched_to_AK8PFJet250
       bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
           NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
           Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 4, 100);
@@ -866,12 +862,15 @@ void histo_data(
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
         // QCD-specific 2023 requirements
         if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 ||
-            FatJet1_MassSD < 50)
+            FatJet1_MassSD < 50) {
           continue;
-        if (lep1_Pt > 20.0)
+        }
+        if (lep1_Pt > 20.0) {
           continue;
-        if (FatJet3_pt > 200)
+        }
+        if (FatJet3_pt > 200) {
           continue;
+        }
       } else {
         // Leptonic-specific 2023 requirements
         if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 || FatJet1_MassSD < 50)
@@ -882,10 +881,12 @@ void histo_data(
           continue;
         if (lep1_Pt < 55 || lep2_Pt > 30)
           continue;
-        // if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0)
+        // if (phi_dist(FatJet1_phi, lep1_Phi) < 2.0) {
         //   continue;
-        if (MET < 50)
+        // }
+        if (MET < 50) {
           continue;
+        }
 
         if (!checkAK4JetRequirements(Jet1_Pt, Jet1_Eta, Jet1_Phi, Jet2_Pt,
                                      Jet2_Eta, Jet2_Phi, FatJet1_eta,
@@ -894,9 +895,8 @@ void histo_data(
         }
       }
 
-      probe_pass = HLT_pass;
-
       // 2023 common requirements
+      // Matching 1st
       bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
           NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
           Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 4,
@@ -905,13 +905,43 @@ void histo_data(
       if (!matched_to_AK8PFJet230_SoftDropMass40)
         continue;
 
-      // Veto events where FatJet2 matches trigger
-      bool fatjet2_matched = checkTriggerMatching(
+      if (channel_lower == "jetmet" or channel_lower == "qcd") {
+        // Veto events where FatJet2 matches trigger
+        bool fatjet2_matched = checkTriggerMatching(
+            NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+            Trigger_Object_bit, FatJet2_eta, FatJet2_phi, 4,
+            100);
+        if (fatjet2_matched) {
+          continue;
+        }
+      }
+
+      probe_pass = HLT_pass;
+    }
+
+      // 2023 common requirements
+      // Matching 1st
+      bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
           NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
-          Trigger_Object_bit, FatJet2_eta, FatJet2_phi, 4,
+          Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 4,
           100);
-      if (fatjet2_matched)
+      
+      if (!matched_to_AK8PFJet230_SoftDropMass40)
         continue;
+
+      if (channel_lower == "jetmet" or channel_lower == "qcd") {
+        probe_pass = HLT_pass;
+        // Veto events where FatJet2 matches trigger
+        bool fatjet2_matched = checkTriggerMatching(
+            NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+            Trigger_Object_bit, FatJet2_eta, FatJet2_phi, 4,
+            100);
+        if (fatjet2_matched) {
+          continue;
+        }
+      }
+
+      probe_pass = HLT_pass;
     }
 
 
