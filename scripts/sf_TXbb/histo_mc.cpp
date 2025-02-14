@@ -1307,28 +1307,32 @@ void histo_mc(
     }
 
     // Add Trigger PT_Mass and PNet Scale Factors
-    double eff_data = 0;
-    double eff_MC = 0;
+    if (channel_lower == "qcd") {
+      double SF_mass_pt = 1.0;
+    
+      double eff_data = 0;
+      double eff_MC = 0;
 
-    Int_t bin_mass = _eff_data->GetXaxis()->FindBin(ProbeJet_MassSD);
-    Int_t bin_pt = _eff_data->GetYaxis()->FindBin(ProbeJet_pt);
+      Int_t bin_mass = _eff_data->GetXaxis()->FindBin(ProbeJet_MassSD);
+      Int_t bin_pt = _eff_data->GetYaxis()->FindBin(ProbeJet_pt);
 
-    eff_data = 1.0;
-    double eff_data_bin = _eff_data->GetBinContent(bin_mass, bin_pt);
-    if (eff_data_bin > 0) {
-      eff_data = eff_data_bin;
-    }
+      eff_data = 1.0;
+      double eff_data_bin = _eff_data->GetBinContent(bin_mass, bin_pt);
+      if (eff_data_bin > 0) {
+        eff_data = eff_data_bin;
+      }
 
-    eff_MC = 1.0;
-    double eff_mc_bin = _eff_mc->GetBinContent(bin_mass, bin_pt);
-    if (eff_mc_bin > 0) {
-      eff_MC = eff_mc_bin;
-    }
+      eff_MC = 1.0;
+      double eff_mc_bin = _eff_mc->GetBinContent(bin_mass, bin_pt);
+      if (eff_mc_bin > 0) {
+        eff_MC = eff_mc_bin;
+      }
 
-    double SF_mass_pt = eff_data / eff_MC;
+      SF_mass_pt = eff_data / eff_MC;
 
-    if (SF_mass_pt > 0 && SF_mass_pt < 10) {
-      weight = weight * SF_mass_pt;
+      if (SF_mass_pt > 0 && SF_mass_pt < 10) {
+        weight = weight * SF_mass_pt;
+      }
     }
 
     // Fill histograms
