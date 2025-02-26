@@ -705,10 +705,13 @@ void histo_data(
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
 
+    bool trigger_2022 = false;
     if (year == "2023") {
-      // for 2023 HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06 started operations from 367661
       if (run < 367661) {
-        continue;
+        trigger_2022 = true;  // logical or
+      } else {
+        // for 2023 HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06 started operations from 367661
+        trigger_2022 = false;
       }
     }
 
@@ -834,31 +837,7 @@ void histo_data(
           continue;
         }
       }
-      // Want matched_to_AK8PFJet230_SoftDropMass40 && matched_to_AK8PFJet250
-      bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
-          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
-          Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 4, 100);
-      if (!matched_to_AK8PFJet230_SoftDropMass40)
-        continue;
-
-      bool matched_to_AK8PFJet250 = checkTriggerMatching(
-          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
-          Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 250);
-      if (!matched_to_AK8PFJet250)
-        continue;
-
-      bool matched_to_PNetBB = checkTriggerMatching(
-          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
-          Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 12, 100);
-
-      if (channel_lower == "jetmet" or channel_lower == "qcd") {
-        // probe_pass = matched_to_PNetBB && HLT_pass;
-        probe_pass = matched_to_PNetBB;
-      } else {
-        probe_pass = matched_to_PNetBB;
-      }
     } else if (year == "2023") {
-      
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
         // QCD-specific 2023 requirements
         if (FatJet1_pt < 250 || fabs(FatJet1_eta) > 2.4 ||
@@ -894,32 +873,33 @@ void histo_data(
           continue;
         }
       }
-
-      // 2023 common requirements
-      // Matching 1st
-      bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
-          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
-          Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 4,
-          100);
-      
-      if (!matched_to_AK8PFJet230_SoftDropMass40)
-        continue;
-
-      if (channel_lower == "jetmet" or channel_lower == "qcd") {
-        // Veto events where FatJet2 matches trigger
-        bool fatjet2_matched = checkTriggerMatching(
-            NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
-            Trigger_Object_bit, FatJet2_eta, FatJet2_phi, 4,
-            100);
-        if (fatjet2_matched) {
-          continue;
-        }
-      }
-
-      probe_pass = HLT_pass;
     }
 
-      // 2023 common requirements
+    if (year == "2022" || trigger_2022) {
+      // Want matched_to_AK8PFJet230_SoftDropMass40 && matched_to_AK8PFJet250
+      bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
+          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+          Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 4, 100);
+      if (!matched_to_AK8PFJet230_SoftDropMass40)
+        continue;
+
+      bool matched_to_AK8PFJet250 = checkTriggerMatching(
+          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+          Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 250);
+      if (!matched_to_AK8PFJet250)
+        continue;
+
+      bool matched_to_PNetBB = checkTriggerMatching(
+          NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
+          Trigger_Object_bit, FatJet1_eta, FatJet1_phi, 12, 100);
+
+      if (channel_lower == "jetmet" or channel_lower == "qcd") {
+        // probe_pass = matched_to_PNetBB && HLT_pass;
+        probe_pass = matched_to_PNetBB;
+      } else {
+        probe_pass = matched_to_PNetBB;
+      }
+    } else {
       // Matching 1st
       bool matched_to_AK8PFJet230_SoftDropMass40 = checkTriggerMatching(
           NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
@@ -930,7 +910,6 @@ void histo_data(
         continue;
 
       if (channel_lower == "jetmet" or channel_lower == "qcd") {
-        probe_pass = HLT_pass;
         // Veto events where FatJet2 matches trigger
         bool fatjet2_matched = checkTriggerMatching(
             NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,

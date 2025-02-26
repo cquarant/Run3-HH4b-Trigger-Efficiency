@@ -12,16 +12,17 @@
 #include <vector>
 
 
-void plot(const std::string &year,        // 2022, 2023
-          const std::string &path_data,   // path to the data root file
-          const std::string &path_QCD,    // path to the QCD root file
-          const std::string &path_VV,     // path to the VV root file
-          const std::string &path_VJ,     // path to the VJ root file
-          const std::string &path_TTbar,  // path to the TTbar root file
-          const std::string &output_path, // path to the output root file
-          const std::string &var,         // variable to plot
-          const std::string &var_label,   // jet to plot
-          const std::string &TXbb_bin=""  // custom binning (comma separated)
+void plot(const std::string &year,         // 2022, 2023
+          const std::string &path_data,    // path to the data root file
+          const std::string &path_QCD,     // path to the QCD root file
+          const std::string &path_VV,      // path to the VV root file
+          const std::string &path_VJ,      // path to the VJ root file
+          const std::string &path_TTbar,   // path to the TTbar root file
+          const std::string &path_ttHto2B, // path to the ttHto2B root file
+          const std::string &output_path,  // path to the output root file
+          const std::string &var,          // variable to plot
+          const std::string &var_label,    // jet to plot
+          const std::string &TXbb_bin=""   // custom binning (comma separated)
 ) {
 
   TString variable = var;
@@ -53,12 +54,14 @@ void plot(const std::string &year,        // 2022, 2023
   TFile *f_VV = new TFile(path_VV.c_str());
   TFile *f_VJ = new TFile(path_VJ.c_str());
   TFile *f_TTbar = new TFile(path_TTbar.c_str());
+  TFile *f_ttHto2B = new TFile(path_ttHto2B.c_str());
 
   TH1D *_Data_var = (TH1D *)f_Data->Get(variable);
   TH1D *_QCD_var = (TH1D *)f_QCD->Get(variable);
   TH1D *_TTbar_var = (TH1D *)f_TTbar->Get(variable);
   TH1D *_VV_var = (TH1D *)f_VV->Get(variable);
   TH1D *_VJ_var = (TH1D *)f_VJ->Get(variable);
+  TH1D *_ttHto2B_var = (TH1D *)f_ttHto2B->Get(variable);
 
   // Float_t kfact = 0.9547;
   Float_t kfact;
@@ -73,6 +76,7 @@ void plot(const std::string &year,        // 2022, 2023
   _TTbar_var->Scale(kfact);
   _VJ_var->Scale(kfact);
   _VV_var->Scale(kfact);
+  _ttHto2B_var->Scale(kfact);
 
   // chech if var contains "Xbb"
   if (variable.Contains("Xbb") && !TXbb_bin.empty()) {
@@ -95,6 +99,7 @@ void plot(const std::string &year,        // 2022, 2023
     TH1D* rebinned_VV = (TH1D*)_VV_var->Rebin(nBins, "rebinned_VV", bins_array);
     TH1D* rebinned_VJ = (TH1D*)_VJ_var->Rebin(nBins, "rebinned_VJ", bins_array);
     TH1D* rebinned_TTbar = (TH1D*)_TTbar_var->Rebin(nBins, "rebinned_TTbar", bins_array);
+    TH1D* rebinned_ttHto2B = (TH1D*)_ttHto2B_var->Rebin(nBins, "rebinned_ttHto2B", bins_array);
     
     // Replace original histograms with rebinned ones
     _Data_var = rebinned_Data;
@@ -102,6 +107,7 @@ void plot(const std::string &year,        // 2022, 2023
     _VV_var = rebinned_VV;
     _VJ_var = rebinned_VJ;
     _TTbar_var = rebinned_TTbar;
+    _ttHto2B_var = rebinned_ttHto2B;
   } else {
     int reb = 5 * (N_TXbb / 100);
     _Data_var->Rebin(reb);
@@ -109,12 +115,14 @@ void plot(const std::string &year,        // 2022, 2023
     _VV_var->Rebin(reb);
     _QCD_var->Rebin(reb);
     _TTbar_var->Rebin(reb);
+    _ttHto2B_var->Rebin(reb);
   }
   
 
   _VV_var->Add(_QCD_var);
   _VJ_var->Add(_VV_var);
-  _TTbar_var->Add(_VJ_var);
+  _ttHto2B_var->Add(_VJ_var);
+  _TTbar_var->Add(_ttHto2B_var);
 
   TPad *c1_1 = new TPad("c1_1", "c1_1", 0.01, 0.04, 0.75, 0.9);
   c1_1->Draw();
@@ -182,6 +190,13 @@ void plot(const std::string &year,        // 2022, 2023
   _VV_var->SetMaximum(ymax);
   _VV_var->SetMinimum(ymin);
   _VV_var->Draw("HIST same");
+
+  _ttHto2B_var->SetFillColor(kBlue);
+  _ttHto2B_var->SetLineWidth(1);
+  _ttHto2B_var->SetLineStyle(1);
+  _ttHto2B_var->SetMaximum(ymax);
+  _ttHto2B_var->SetMinimum(ymin);
+  _ttHto2B_var->Draw("HIST same");
 
   _QCD_var->Draw("HIST same");
   _QCD_var->SetFillColor(43);
@@ -313,6 +328,7 @@ void plot(const std::string &year,        // 2022, 2023
   leg->AddEntry(_TTbar_var, "TTbar", "f");
   leg->AddEntry(_VJ_var, "V+Jets", "f");
   leg->AddEntry(_VV_var, "VV", "f");
+  leg->AddEntry(_ttHto2B_var, "ttHto2B", "f");
   leg->AddEntry(_QCD_var, "QCD", "f");
   leg->AddEntry(ratioErrH, "MC stat. unc.", "f");
   leg->Draw("same");

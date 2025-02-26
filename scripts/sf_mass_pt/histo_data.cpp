@@ -732,10 +732,13 @@ void histo_data(
     InputTree->GetEntry(i);
     InputTree_TrgObj->GetEntry(i);
 
+    bool trigger_2022 = false;
     if (year == "2023") {
-      // for 2023 HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06 started operations from 367661
       if (run < 367661) {
-        continue;
+        trigger_2022 = true;  // logical or
+      } else {
+        // for 2023 HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06 started operations from 367661
+        trigger_2022 = false;
       }
     }
 
@@ -939,7 +942,7 @@ void histo_data(
         NTrigger_Objects, Trigger_Object_pt, Trigger_Object_eta, Trigger_Object_phi,
         Trigger_Object_bit, ProbeJet_eta, ProbeJet_phi, 4, 100);
 
-    if (year == "2022") {
+    if (year == "2022" || trigger_2022) {
       // $CMSSW_RELEASE_BASE/src/PhysicsTools/NanoAOD/python/triggerObjects_cff.py
       if (matched_to_AK8PFJet230_SoftDropMass40) {
         bool matched_to_AK8PFJet250 = checkTriggerMatching(

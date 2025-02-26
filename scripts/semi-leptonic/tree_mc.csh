@@ -280,6 +280,25 @@ process_VJ() {
     hadd -f ${output_path} ${TMP_DIR}/Histograms_${era}_MC_Wto2Q_2Jets_PTQQ_*.root ${TMP_DIR}/Histograms_${era}_MC_WtoLNu*.root ${TMP_DIR}/Histograms_${era}_MC_Zto2Q_2Jets_PTQQ_*.root ${TMP_DIR}/Histograms_${era}_MC_DYto2L_2Jets_MLL_50_*.root
 }
 
+process_ttHto2B() {
+    local era=$1
+    local year=${era:0:4}
+    local output_path="${OUTPUT_DIR}/Histograms_${era}_MC_ttHto2B.root"
+    local input_file=$(ls ${SAMPLE_DIR}/${era}/ttHto2B*.root 2>/dev/null | head -n1)
+
+    if [ -z "${input_file}" ]; then
+        echo "Warning: No ttHto2B file found for era ${era}"
+        exit 1
+    fi
+    local sample_type="ttHto2B_M_125"
+    local output_path="${TMP_DIR}/Histograms_${era}_MC_ttHto2B.root"
+    
+    root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
+        \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
+        \"${jer_path}\", \"${jer_path_sf}\")"
+
+}
+
 process_era() {
     local era=$1
     echo "Processing era: ${era}"

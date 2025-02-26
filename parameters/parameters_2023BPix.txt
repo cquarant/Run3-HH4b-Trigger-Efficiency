@@ -20,6 +20,8 @@ double XSec_TTto4Q             =       410.90;
 double XSec_TTtoLNu2Q          =       410.30;
 double XSec_TTto2L2Nu          =       102.40;
 
+double XSec_ttHto2B_M_125      =       0.331968;
+
 double XSec_WW                 =       116.80;
 double XSec_WZ                 =        54.30;
 double XSec_ZZ                 =        16.70;

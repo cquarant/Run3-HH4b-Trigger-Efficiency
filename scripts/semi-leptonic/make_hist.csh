@@ -11,7 +11,7 @@ TREE_DIR=${SCRIPT_DIR}/trees
 HIST_DIR=${SCRIPT_DIR}/hists
 mkdir -p ${HIST_DIR}
 
-MC_CHANNELS=("QCD" "TTbar" "VJ" "VV")
+MC_CHANNELS=("QCD" "TTbar" "VJ" "VV" "ttHto2B")
 
 process_data() {
     era=$1;
