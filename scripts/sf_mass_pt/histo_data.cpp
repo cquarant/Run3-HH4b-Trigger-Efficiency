@@ -727,6 +727,8 @@ void histo_data(
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_phi", Trigger_Object_phi);
   InputTree_TrgObj->SetBranchAddress("Trigger_Object_bit", Trigger_Object_bit);
 
+  int count_trigger_2022;
+  int count_trigger_2023;
   // Events Loop
   for (int i = 0; i < InputTree->GetEntries(); i++) {
     InputTree->GetEntry(i);
@@ -735,10 +737,14 @@ void histo_data(
     bool trigger_2022 = false;
     if (year == "2023") {
       if (run < 367661) {
-        trigger_2022 = true;  // logical or
+        // TODO: now, skip the 2022 triggers
+        trigger_2022 = false;  // logical or
+        count_trigger_2022++;
+        continue;
       } else {
         // for 2023 HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06 started operations from 367661
         trigger_2022 = false;
+        count_trigger_2023++;
       }
     }
 
@@ -1040,6 +1046,13 @@ void histo_data(
   } // end event loop
 
   f->Write();
+
+  if (year == "2023") {
+    int total = count_trigger_2022 + count_trigger_2023;
+    std::cout << "Total trigger count: " << total << std::endl;
+    std::cout << "2022 trigger count: " << count_trigger_2022 << std::endl;
+    std::cout << "2023 trigger count: " << count_trigger_2023 << std::endl;
+  }
 
   std::cout << "Done. Written to " << output_path << std::endl;
 }

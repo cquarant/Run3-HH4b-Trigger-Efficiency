@@ -708,7 +708,9 @@ void histo_data(
     bool trigger_2022 = false;
     if (year == "2023") {
       if (run < 367661) {
-        trigger_2022 = true;  // logical or
+        // TODO: now, skip the 2022 triggers
+        trigger_2022 = false;  // logical or
+        continue;
       } else {
         // for 2023 HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06 started operations from 367661
         trigger_2022 = false;
