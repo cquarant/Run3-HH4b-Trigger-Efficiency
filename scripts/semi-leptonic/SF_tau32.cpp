@@ -12,19 +12,20 @@
 
 
 void SF_tau32(
-    const std::string &year,        // 2022, 2023
-    const std::string &path_data,   // path to the data root file
-    const std::string &path_QCD,    // path to the QCD root file
-    const std::string &path_VV,     // path to the VV root file
-    const std::string &path_VJ,     // path to the VJ root file
-    const std::string &path_TTbar,  // path to the TTbar root file
-    const std::string &output_path  // path to the output root file
+    const std::string &year,          // 2022, 2023
+    const std::string &path_data,     // path to the data root file
+    const std::string &path_QCD,      // path to the QCD root file
+    const std::string &path_VV,       // path to the VV root file
+    const std::string &path_VJ,       // path to the VJ root file
+    const std::string &path_TTbar,    // path to the TTbar root file
+    const std::string &path_ttHto2B,  // path to the ttHto2B root file
+    const std::string &output_path    // path to the output root file
 ) {
 
   int reb = 5 * (N_TXbb / 100);
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
-  TH1D *_SF = new TH1D("SF", "SF", 100, 0.0, 1.0);
+  TH1D *_SF = new TH1D("SF", "SF", N_TXbb, 0.0, 1.0);
   _SF->Rebin(reb);
   TH1D *hint_68 = new TH1D("hint_68", "", 370, 0.18, 1.0);
 
@@ -82,6 +83,7 @@ void SF_tau32(
   TFile *f_VV = new TFile(path_VV.c_str());
   TFile *f_VJ = new TFile(path_VJ.c_str());
   TFile *f_TTbar = new TFile(path_TTbar.c_str());
+  TFile *f_ttHto2B = new TFile(path_ttHto2B.c_str());
 
   TH1D *_Data_var = (TH1D *)f_Data->Get(variable);
 
@@ -89,6 +91,7 @@ void SF_tau32(
   TH1D *_TTbar_var = (TH1D *)f_TTbar->Get(variable);
   TH1D *_VV_var = (TH1D *)f_VV->Get(variable);
   TH1D *_VJ_var = (TH1D *)f_VJ->Get(variable);
+  TH1D *_ttHto2B_var = (TH1D *)f_ttHto2B->Get(variable);
 
   //  Float_t kfact=0.92;
   // Float_t kfact = 0.9547;
@@ -105,11 +108,13 @@ void SF_tau32(
   _TTbar_var->Scale(kfact);
   _VJ_var->Scale(kfact);
   _VV_var->Scale(kfact);
+  _ttHto2B_var->Scale(kfact);
 
   for (int iB = 1; iB <= _Data_var->GetSize(); ++iB) {
     _Data_var->SetBinContent(
         iB, _Data_var->GetBinContent(iB) - _VJ_var->GetBinContent(iB) -
-                _VV_var->GetBinContent(iB) - _QCD_var->GetBinContent(iB));
+                _VV_var->GetBinContent(iB) - _QCD_var->GetBinContent(iB) - 
+                _ttHto2B_var->GetBinContent(iB));
   }
 
   _Data_var->Rebin(reb);
@@ -117,6 +122,7 @@ void SF_tau32(
   _VV_var->Rebin(reb);
   _QCD_var->Rebin(reb);
   _TTbar_var->Rebin(reb);
+  _ttHto2B_var->Rebin(reb);
 
   _TTbar_var->GetXaxis()->SetLabelFont(42);
   _TTbar_var->GetXaxis()->SetLabelOffset(0.15);
@@ -218,10 +224,12 @@ void SF_tau32(
   _SF_pt->Draw("e1");
   _SF_pt->SetTitle("");
 
-  for (int i = 1; i <= 30; i++)
-    cout << _SF_pt->GetBinContent(i) << endl;
+  cout << "SF_pt: ";
+  for (int i = 1; i <= _SF_pt->GetNbinsX(); i++)
+    cout << _SF_pt->GetBinContent(i) << ", ";
+  cout << endl;
 
-  TF1 *Mypol = new TF1("Mypol", "pol5", 0.1, 1.0);
+  TF1 *Mypol = new TF1("Mypol", "pol8", 0.1, 1.0);
   _SF_pt->Fit("Mypol", "R");
 
   TH1D *hint = new TH1D("hint", "", 185, 0.1, 1.0);
@@ -237,7 +245,7 @@ void SF_tau32(
 
   TLegend *leg1 = new TLegend(0.25, 0.3, 0.45, 0.75);
   leg1->SetTextSize(0.15);
-  leg1->AddEntry(Mypol, "pol5", "l");
+  leg1->AddEntry(Mypol, "pol8", "l");
   leg1->AddEntry(hint_68, "1#sigma", "f");
   leg1->AddEntry(hint, "2#sigma", "f");
   leg1->Draw("same");

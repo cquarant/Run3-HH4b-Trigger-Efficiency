@@ -13,7 +13,7 @@ INPUT_DIR=${SCRIPT_DIR}/trees
 OUTPUT_DIR=${SCRIPT_DIR}/trees/merged
 mkdir -p ${OUTPUT_DIR}
 
-MC_TYPES=("QCD" "TTbar" "VJ" "VV")
+MC_TYPES=("QCD" "TTbar" "VJ" "VV" "ttHto2B")
 
 process_year() {
     year=$1

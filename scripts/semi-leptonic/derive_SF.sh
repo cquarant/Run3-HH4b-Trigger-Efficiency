@@ -15,7 +15,7 @@ TREE_DIR=${SCRIPT_DIR}/trees/merged
 mkdir -p ${SF_DIR} ${HIST_DIR}
 cd ${SCRIPT_DIR};
 
-MC_CHANNELS=("QCD" "TTbar" "VJ" "VV")
+MC_CHANNELS=("QCD" "TTbar" "VJ" "VV" "ttHto2B")
 
 process_data() {
     year=$1;
@@ -47,6 +47,7 @@ get_paths() {
     path_VV="${HIST_DIR}/Histograms_${year}_MC_VV.root"
     path_VJ="${HIST_DIR}/Histograms_${year}_MC_VJ.root"
     path_TTbar="${HIST_DIR}/Histograms_${year}_MC_TTbar.root"
+    path_ttHto2B="${HIST_DIR}/Histograms_${year}_MC_ttHto2B.root"
     path_sf_tau32="${SF_DIR}/SF_tau3overtau2_${year}.root"
     path_sf_TXbb="${SF_DIR}/SF_TXbb_${year}.root"
 }
@@ -63,7 +64,7 @@ process_year() {
     python3 ${SCRIPT_DIR}/kfact.py --year ${year}
 
     # derive SFs for tau3/tau2
-    root -l -b -q "SF_tau32.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${path_sf_tau32}\")"
+    root -l -b -q "SF_tau32.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar}\", \"${path_ttHto2B}\", \"${path_sf_tau32}\")"
     # make histograms with tau32 SF to TTbar
     input_path="${TREE_DIR}/Histograms_${year}_MC_TTbar.root"
     output_path="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32.root"
@@ -71,7 +72,7 @@ process_year() {
 
     # derive SFs for TXbb after applying tau32 SF
     path_TTbar_tau32="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32.root"  # after applying tau32 SF
-    root -l -b -q "SF_TXbb.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32}\", \"${path_sf_TXbb}\")"
+    root -l -b -q "SF_TXbb.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32}\", \"${path_ttHto2B}\", \"${path_sf_TXbb}\")"
     # make histograms with tau32 and TXbb SF to TTbar
     input_path="${TREE_DIR}/Histograms_${year}_MC_TTbar.root"
     output_path="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32_TXbb.root"

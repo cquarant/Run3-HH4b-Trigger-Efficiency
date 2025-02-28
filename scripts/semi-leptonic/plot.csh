@@ -15,15 +15,17 @@ TREE_DIR=${SCRIPT_DIR}/trees
 cd ${SCRIPT_DIR};
 # BIN="0.8,0.9,0.94,0.97,0.99,1.0"
 # PLOT_DIR=${SCRIPT_DIR}/plots_sfBDTBin
-BIN="0.8,0.85,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99,0.995,1.0"
-PLOT_DIR=${SCRIPT_DIR}/plots_sfBDTFinerBin
+# BIN="0.8,0.85,0.9,0.91,0.92,0.93,0.94,0.95,0.96,0.97,0.98,0.99,0.995,1.0"
+# PLOT_DIR=${SCRIPT_DIR}/plots_sfBDTFinerBin
+BIN="0.0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0"
+PLOT_DIR=${SCRIPT_DIR}/plots
 # BIN="0.990,0.991,0.992,0.993,0.994,0.995,0.996,0.997,0.998,0.999,1.0"
 # PLOT_DIR=${SCRIPT_DIR}/plots_sfBDTEvenFinerBin
 mkdir -p ${PLOT_DIR}
 
 # Variables and their labels
 declare -A LABEL_DICT
-VARS=("lep1_pt" "FatJet1_pt" "FatJet1_MassSD" "FatJet1_GloParT_XbbVsQCD" "FatJet1_ParticleNetLegacy_XbbVsQCD" "FatJet1_Tau3OverTau2")
+VARS=("FatJet1_Tau3OverTau2" "FatJet1_GloParT_XbbVsQCD" "lep1_pt" "FatJet1_pt" "FatJet1_MassSD" "FatJet1_ParticleNetLegacy_XbbVsQCD")
 LABEL_DICT["lep1_pt"]="Lepton p_{T} [GeV]"
 LABEL_DICT["FatJet1_pt"]="FatJet p_{T} [GeV]"
 LABEL_DICT["FatJet1_MassSD"]="FatJet m_{SD} [GeV]"

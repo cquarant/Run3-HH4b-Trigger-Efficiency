@@ -119,10 +119,10 @@ void plot(const std::string &year,         // 2022, 2023
   }
   
 
-  _VV_var->Add(_QCD_var);
-  _VJ_var->Add(_VV_var);
-  _ttHto2B_var->Add(_VJ_var);
-  _TTbar_var->Add(_ttHto2B_var);
+  _ttHto2B_var->Add(_QCD_var);  // ttHto2B on top of QCD
+  _VV_var->Add(_ttHto2B_var);   // VV on top of ttHto2B
+  _VJ_var->Add(_VV_var);        // VJ on top of VV
+  _TTbar_var->Add(_VJ_var);     // TTbar on top of VJ
 
   TPad *c1_1 = new TPad("c1_1", "c1_1", 0.01, 0.04, 0.75, 0.9);
   c1_1->Draw();
@@ -136,7 +136,7 @@ void plot(const std::string &year,         // 2022, 2023
   c1_1->SetTicky(1);
   c1_1->SetLeftMargin(0.15);
   c1_1->SetRightMargin(0.05);
-  c1_1->SetTopMargin(0.0);
+  c1_1->SetTopMargin(0.01);
   c1_1->SetBottomMargin(0.3);
   c1_1->SetFrameFillStyle(0);
   c1_1->SetFrameLineStyle(0);
@@ -169,35 +169,36 @@ void plot(const std::string &year,         // 2022, 2023
 
   double ymin = 10e-2;
   double ymax = 5 * (_TTbar_var->GetMaximum());
-
+  
+  // Drawing order needs to match the stacking order (drawing in reverse):
   _TTbar_var->Draw("HIST");
   _TTbar_var->SetFillColor(kOrange - 2);
   _TTbar_var->SetLineWidth(1);
   _TTbar_var->SetLineStyle(1);
   _TTbar_var->SetMaximum(ymax);
   _TTbar_var->SetMinimum(ymin);
-
+  
   _VJ_var->SetFillColor(kGreen - 3);
   _VJ_var->SetLineWidth(1);
   _VJ_var->SetLineStyle(1);
   _VJ_var->SetMaximum(ymax);
   _VJ_var->SetMinimum(ymin);
   _VJ_var->Draw("HIST same");
-
+  
   _VV_var->SetFillColor(kGreen);
   _VV_var->SetLineWidth(1);
   _VV_var->SetLineStyle(1);
   _VV_var->SetMaximum(ymax);
   _VV_var->SetMinimum(ymin);
   _VV_var->Draw("HIST same");
-
+  
   _ttHto2B_var->SetFillColor(kBlue);
   _ttHto2B_var->SetLineWidth(1);
   _ttHto2B_var->SetLineStyle(1);
   _ttHto2B_var->SetMaximum(ymax);
   _ttHto2B_var->SetMinimum(ymin);
   _ttHto2B_var->Draw("HIST same");
-
+  
   _QCD_var->Draw("HIST same");
   _QCD_var->SetFillColor(43);
   _QCD_var->SetLineWidth(1);
@@ -288,6 +289,12 @@ void plot(const std::string &year,         // 2022, 2023
       ratioH->SetBinContent(iB, 1000);
     }
   }
+
+  // print the ratio
+  std::cout << "Data / MC: ";
+  for (int i = 1; i <= ratioH->GetNbinsX(); i++)
+    std::cout << ratioH->GetBinContent(i) << ", ";
+  std::cout << std::endl;
 
   TPad *c1_2 = new TPad("lower", "pad", 0.01, 0.11, 0.75, 0.28);
   c1_2->Draw();

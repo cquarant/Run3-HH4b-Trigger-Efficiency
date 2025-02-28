@@ -7,7 +7,7 @@ years = ["2022", "2023"]  # TODO: add more years if needed
 def calculate_kfactor(year):
     """Calculate the k-factor for a given year using only FatJet1_pt."""
     path_data = Path(f"hists/Histograms_{year}_data.root")
-    MC_regions = ["QCD", "TTbar", "VJ", "VV"]
+    MC_regions = ["QCD", "TTbar", "VJ", "VV", "ttHto2B"]
     paths_MC = {
         region: Path(f"hists/Histograms_{year}_MC_{region}.root")
         for region in MC_regions

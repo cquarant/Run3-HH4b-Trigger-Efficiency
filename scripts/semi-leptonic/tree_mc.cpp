@@ -60,7 +60,7 @@ struct ParamDict {
   double XSec_TTto2L2Nu;
 
   // ttHto2B sample
-  double ttHto2B_M_125;
+  double XSec_ttHto2B_M_125;
 
   // Diboson samples
   double XSec_WW;
@@ -161,7 +161,7 @@ void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
           {"XSec_TTtoLNu2Q", &ParamDict::XSec_TTtoLNu2Q},
           {"XSec_TTto2L2Nu", &ParamDict::XSec_TTto2L2Nu},
           // ttH
-          {"ttHto2B_M_125", &ParamDict::ttHto2B_M_125},
+          {"XSec_ttHto2B_M_125", &ParamDict::XSec_ttHto2B_M_125},
           // Diboson
           {"XSec_WW", &ParamDict::XSec_WW},
           {"XSec_WZ", &ParamDict::XSec_WZ},
@@ -252,7 +252,7 @@ double getXSec(ParamDict *param_dict, std::string data_type) {
       {"TTtoLNu2Q", &ParamDict::XSec_TTtoLNu2Q},
       {"TTto2L2Nu", &ParamDict::XSec_TTto2L2Nu},
       // ttHto2B sample
-      {"ttHto2B_M_125", &ParamDict::ttHto2B_M_125},
+      {"ttHto2B_M_125", &ParamDict::XSec_ttHto2B_M_125},
       // QCD samples
       {"QCD_HT_100to200", &ParamDict::XSec_QCD_HT_100to200},
       {"QCD_HT_200to400", &ParamDict::XSec_QCD_HT_200to400},

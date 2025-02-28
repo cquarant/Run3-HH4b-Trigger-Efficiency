@@ -11,13 +11,14 @@
 #include "TXbb.h"
 
 
-void SF_TXbb(const std::string &year,       // 2022, 2023
-             const std::string &path_data,  // path to the data root file
-             const std::string &path_QCD,   // path to the QCD root file
-             const std::string &path_VV,    // path to the VV root file
-             const std::string &path_VJ,    // path to the VJ root file
-             const std::string &path_TTbar, // path to the TTbar root file
-             const std::string &output_path // path to the output root file
+void SF_TXbb(const std::string &year,         // 2022, 2023
+             const std::string &path_data,    // path to the data root file
+             const std::string &path_QCD,     // path to the QCD root file
+             const std::string &path_VV,      // path to the VV root file
+             const std::string &path_VJ,      // path to the VJ root file
+             const std::string &path_TTbar,   // path to the TTbar root file
+             const std::string &path_ttHto2B, // path to the ttHto2B root file
+             const std::string &output_path   // path to the output root file
 ) {
 
   int reb = 5 * (N_TXbb / 100);
@@ -84,12 +85,14 @@ void SF_TXbb(const std::string &year,       // 2022, 2023
   TFile *f_VV = new TFile(path_VV.c_str());
   TFile *f_VJ = new TFile(path_VJ.c_str());
   TFile *f_TTbar = new TFile(path_TTbar.c_str());
+  TFile *f_ttHto2B = new TFile(path_ttHto2B.c_str());
 
   TH1D *_Data_var = (TH1D *)f_Data->Get(variable);
   TH1D *_QCD_var = (TH1D *)f_QCD->Get(variable);
   TH1D *_TTbar_var = (TH1D *)f_TTbar->Get(variable);
   TH1D *_VV_var = (TH1D *)f_VV->Get(variable);
   TH1D *_VJ_var = (TH1D *)f_VJ->Get(variable);
+  TH1D *_ttHto2B_var = (TH1D *)f_ttHto2B->Get(variable);
 
   Float_t kfact;
   if (year == "2023") {
@@ -103,11 +106,13 @@ void SF_TXbb(const std::string &year,       // 2022, 2023
   _TTbar_var->Scale(kfact);
   _VJ_var->Scale(kfact);
   _VV_var->Scale(kfact);
+  _ttHto2B_var->Scale(kfact);
 
   for (int iB = 1; iB <= _Data_var->GetSize(); ++iB) {
     _Data_var->SetBinContent(
         iB, _Data_var->GetBinContent(iB) - _VJ_var->GetBinContent(iB) -
-                _VV_var->GetBinContent(iB) - _QCD_var->GetBinContent(iB));
+                _VV_var->GetBinContent(iB) - _QCD_var->GetBinContent(iB)
+                - _ttHto2B_var->GetBinContent(iB));
   }
 
   TH1D *_My_MC = new TH1D("My_MC", "My_MC", 13, Bound);
@@ -134,6 +139,7 @@ void SF_TXbb(const std::string &year,       // 2022, 2023
   _VV_var->Rebin(reb);
   _QCD_var->Rebin(reb);
   _TTbar_var->Rebin(reb);
+  _ttHto2B_var->Rebin(reb);
 
   _TTbar_var = _My_MC;
   _Data_var = _My_Data;

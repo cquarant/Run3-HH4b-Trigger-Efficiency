@@ -347,6 +347,14 @@ void tree_data(
   for (int i = 0; i < InputTree->GetEntries(); i++) {
     InputTree->GetEntry(i);
 
+    if (year == "2023") {
+      // for 2023 HLT_AK8PFJet230_SoftDropMass40_PNetBB0p06 started operations
+      // from 367661
+      if (run < 367661) {
+        continue;
+      }
+    }
+
     // HLT Selection
     bool HLT_ele = (HLT_Ele32_WPTight_Gsf && fabs(lep1_Id) == 11);
     bool HLT_mu = (HLT_IsoMu27 && fabs(lep1_Id) == 13);
