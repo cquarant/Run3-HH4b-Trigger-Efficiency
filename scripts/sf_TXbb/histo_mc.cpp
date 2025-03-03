@@ -463,17 +463,18 @@ applyJER(Float_t jet_pt, Float_t jet_eta, Float_t jet_phi, Float_t jet_massSD,
 }
 
 void histo_mc(
-    const std::string &year,             // 2022, 2023
-    const std::string &data_type,        // Example: TTtoLNu2Q, QCD_HT100to200
-    const std::string &channel,          // electron, muon, leptonic, QCD
-    const std::string &sample_path,      // path to the root file
-    const std::string &output_path,      // path to the output root file
-    const std::string &pu_path,          // path to the pileup reweighting file
-    const std::string &eff_mass_pt_path, // path to eff(mSD, pt) file
-    const std::string &param_path,       // path to the parameters file
-    const std::string &jec_path,         // path to the AK8 JEC txt file
-    const std::string &jer_path,         // path to the AK8 JER txt file
-    const std::string &jer_path_sf       // path to the AK8 JER SF txt file
+    const std::string &year,                       // 2022, 2023
+    const std::string &data_type,                  // Example: TTtoLNu2Q, QCD_HT100to200
+    const std::string &channel,                    // electron, muon, leptonic, QCD
+    const std::string &sample_path,                // path to the root file
+    const std::string &output_path,                // path to the output root file
+    const std::string &pu_path,                    // path to the pileup reweighting file
+    const std::string &eff_mass_pt_path,           // path to eff(mSD, pt) file
+    const std::string &param_path,                 // path to the parameters file
+    const std::string &jec_path,                   // path to the AK8 JEC txt file
+    const std::string &jer_path,                   // path to the AK8 JER txt file
+    const std::string &jer_path_sf,                // path to the AK8 JER SF txt file
+    const std::string &ttbar_reweight_path = ""    // path to the ttbar reweighting file (as a function of (mass, pt))
 ) {
   gSystem->Load("libFWCoreFWLite.so");
 
@@ -515,6 +516,16 @@ void histo_mc(
   JME::JetResolution resolution_pt = JME::JetResolution(jer_path.c_str());
   JME::JetResolutionScaleFactor resolution_pt_sf =
       JME::JetResolutionScaleFactor(jer_path_sf.c_str());
+
+  // Read histogram in ttbar_reweight_path if provided
+  bool ttbar_reweight = false;
+  TH2D *_sf_ttbar;
+  if ((channel_lower != "qcd" & channel_lower != "jetmet") & !ttbar_reweight_path.empty()) {
+    std::cout << "Reading ttbar reweighting file: " << ttbar_reweight_path << std::endl;
+    TFile *f_reweight_mass_pt = new TFile(ttbar_reweight_path.c_str());
+    _sf_ttbar = (TH2D *)f_reweight_mass_pt->Get("reweight");
+    ttbar_reweight = true;
+  }
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
@@ -1337,6 +1348,15 @@ void histo_mc(
 
       if (SF_mass_pt > 0 && SF_mass_pt < 10) {
         weight = weight * SF_mass_pt;
+      }
+    }
+
+    if (ttbar_reweight) {
+      Int_t bin_mass = _sf_ttbar->GetXaxis()->FindBin(FatJet1_MassSD);
+      Int_t bin_pt = _sf_ttbar->GetYaxis()->FindBin(FatJet1_pt);
+      double sf_ttbar = _sf_ttbar->GetBinContent(bin_mass, bin_pt);
+      if (sf_ttbar > 0) {
+        weight = weight * sf_ttbar;
       }
     }
 

@@ -8,11 +8,10 @@ fi
 PROJ_ROOT="${CMSSW_BASE}/src"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 OUTPUT_DIR=${SCRIPT_DIR}/output
-TMP_DIR=${SCRIPT_DIR}/tmp
+REWEIGHT_DIR=${SCRIPT_DIR}/output_ttbar_reweight
 
-FIG_DIR=${SCRIPT_DIR}/figures
-mkdir -p ${OUTPUT_DIR}
-mkdir -p ${FIG_DIR}
+FIG_DIR=${SCRIPT_DIR}/figures_ttbar_reweight
+mkdir -p ${OUTPUT_DIR} ${FIG_DIR}
 
 process_era() {
     era_tag=$1
@@ -21,9 +20,9 @@ process_era() {
     data_types=("QCD" "TTbar")
     for data_type in ${data_types[@]}; do
         echo "Type: ${data_type}"
-        hist_mc_path="${OUTPUT_DIR}/Histograms_${era_tag}_MC_${data_type}.root"
+        hist_mc_path="${REWEIGHT_DIR}/Histograms_${era_tag}_MC_${data_type}.root"
         hist_data_path="${OUTPUT_DIR}/Histograms_${era_tag}_data_${data_type}.root"
-        output_path="${OUTPUT_DIR}/efficiency_mass_pt_${era_tag}_${data_type}.root"
+        output_path="${REWEIGHT_DIR}/efficiency_mass_pt_${era_tag}_${data_type}.root"
         figure_mc_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_MC_${data_type}.pdf"
         figure_data_path="${FIG_DIR}/efficiency_mass_pt_${era_tag}_data_${data_type}.pdf"
         figure_sf_path="${FIG_DIR}/SF_mass_pt_${era_tag}_${data_type}.pdf"

@@ -7,14 +7,13 @@ fi
 PROJ_ROOT="${CMSSW_BASE}/src"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 OUTPUT_DIR=${SCRIPT_DIR}/output
-TMP_DIR=${SCRIPT_DIR}/txbb_tmp
-FIG_DIR=${SCRIPT_DIR}/txbb_figures
-FIG_TMP_DIR=${SCRIPT_DIR}/txbb_figures
-mkdir -p ${OUTPUT_DIR}
-mkdir -p ${FIG_DIR}
-mkdir -p ${FIG_TMP_DIR}
+REWEIGHT_OUTPUT_DIR=${SCRIPT_DIR}/output_ttbar_reweight
+TMP_DIR=${SCRIPT_DIR}/tmp_ttbar_reweight
+FIG_DIR=${SCRIPT_DIR}/figures_ttbar_reweight
+mkdir -p ${OUTPUT_DIR} ${REWEIGHT_OUTPUT_DIR} ${FIG_DIR}
 
-DATA_TYPES=("QCD" "TTbar")
+# DATA_TYPES=("QCD" "TTbar")
+DATA_TYPES=("TTbar" "QCD")
 TAGGER_NAMES=("GloParT" "PNetLegacy")
 
 process_era() {
@@ -24,19 +23,12 @@ process_era() {
     for tagger_name in ${TAGGER_NAMES[@]}; do
         for data_type in ${DATA_TYPES[@]}; do
             echo "Type: ${data_type}"
-            hist_mc_path="${OUTPUT_DIR}/Histograms_${era_tag}_MC_${data_type}.root"
+            hist_mc_path="${REWEIGHT_OUTPUT_DIR}/Histograms_${era_tag}_MC_${data_type}.root"
             hist_data_path="${OUTPUT_DIR}/Histograms_${era_tag}_data_${data_type}.root"
-            output_path="${OUTPUT_DIR}/efficiency_${tagger_name}_${era_tag}_${data_type}.root"
+            output_path="${REWEIGHT_OUTPUT_DIR}/efficiency_${tagger_name}_${era_tag}_${data_type}.root"
             figure_path="${FIG_DIR}/efficiency_${tagger_name}_${era_tag}_${data_type}.pdf"
             root -l -b -q "trig_eff_TXbb.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${tagger_name}\", \"${output_path}\", \"${figure_path}\")"
         done
-
-        # together
-        hist_mc_path="${OUTPUT_DIR}/Histograms_${era_tag}_MC.root"
-        hist_data_path="${OUTPUT_DIR}/Histograms_${era_tag}_data.root"
-        output_path="${OUTPUT_DIR}/efficiency_${tagger_name}_${era_tag}.root"
-        figure_path="${FIG_DIR}/efficiency_${tagger_name}_${era_tag}.pdf"
-        root -l -b -q "trig_eff_TXbb.cpp(\"${hist_mc_path}\", \"${hist_data_path}\", \"${tagger_name}\", \"${output_path}\", \"${figure_path}\")"
     done
 }
 
