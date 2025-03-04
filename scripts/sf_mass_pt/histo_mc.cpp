@@ -491,6 +491,16 @@ void histo_mc(
   loadParamDict(&param_dict, param_path);
   double xsec = getXSec(&param_dict, data_type);
 
+  // Read histogram in ttbar_reweight_path if provided
+  bool ttbar_reweight = false;
+  TH2D *_sf_ttbar;
+  if ((channel_lower != "qcd" & channel_lower != "jetmet") & !ttbar_reweight_path.empty()) {
+    std::cout << "Reading ttbar reweighting file: " << ttbar_reweight_path << std::endl;
+    TFile *f_reweight_mass_pt = new TFile(ttbar_reweight_path.c_str());
+    _sf_ttbar = (TH2D *)f_reweight_mass_pt->Get("reweight");
+    ttbar_reweight = true;
+  }
+
   // pu weight
   std::vector<double> PU_Rew = loadPUReweighting(pu_path);
 
@@ -505,16 +515,6 @@ void histo_mc(
       JME::JetResolutionScaleFactor(jer_path_sf.c_str());
 
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
-
-  // Read histogram in ttbar_reweight_path if provided
-  bool ttbar_reweight = false;
-  TH2D *_sf_ttbar;
-  if ((channel_lower != "qcd" & channel_lower != "jetmet") & !ttbar_reweight_path.empty()) {
-    std::cout << "Reading ttbar reweighting file: " << ttbar_reweight_path << std::endl;
-    TFile *f_reweight_mass_pt = new TFile(ttbar_reweight_path.c_str());
-    _sf_ttbar = (TH2D *)f_reweight_mass_pt->Get("reweight");
-    ttbar_reweight = true;
-  }
 
   // Float_t bins_pt[9] = {300, 350, 400, 450, 500, 600, 700, 850, 1000};
   // int num_pt_bins = 8;
@@ -1291,14 +1291,16 @@ void histo_mc(
     }
 
     // reweight
+    Float_t sf_ttbar = 1.0;
     if (ttbar_reweight) {
-      Int_t bin_mass = _sf_ttbar->GetXaxis()->FindBin(FatJet1_MassSD);
-      Int_t bin_pt = _sf_ttbar->GetYaxis()->FindBin(FatJet1_pt);
-      double sf_ttbar = _sf_ttbar->GetBinContent(bin_mass, bin_pt);
-      if (sf_ttbar > 0) {
-        weight = weight * sf_ttbar;
+      Int_t bin_mass = _sf_ttbar->GetXaxis()->FindBin(ProbeJet_MassSD);
+      Int_t bin_pt = _sf_ttbar->GetYaxis()->FindBin(ProbeJet_pt);
+      sf_ttbar = _sf_ttbar->GetBinContent(bin_mass, bin_pt);
+      if (sf_ttbar <= 0.0) {
+        sf_ttbar = 1.0;
       }
     }
+    weight = weight * sf_ttbar;
 
     // Fill histograms
     // Kinematics

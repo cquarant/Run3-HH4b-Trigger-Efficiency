@@ -1351,14 +1351,16 @@ void histo_mc(
       }
     }
 
+    Float_t sf_ttbar = 1.0;
     if (ttbar_reweight) {
-      Int_t bin_mass = _sf_ttbar->GetXaxis()->FindBin(FatJet1_MassSD);
-      Int_t bin_pt = _sf_ttbar->GetYaxis()->FindBin(FatJet1_pt);
-      double sf_ttbar = _sf_ttbar->GetBinContent(bin_mass, bin_pt);
-      if (sf_ttbar > 0) {
-        weight = weight * sf_ttbar;
+      Int_t bin_mass = _sf_ttbar->GetXaxis()->FindBin(ProbeJet_MassSD);
+      Int_t bin_pt = _sf_ttbar->GetYaxis()->FindBin(ProbeJet_pt);
+      sf_ttbar = _sf_ttbar->GetBinContent(bin_mass, bin_pt);
+      if (sf_ttbar <= 0.0) {
+        sf_ttbar = 1.0;
       }
     }
+    weight = weight * sf_ttbar;
 
     // Fill histograms
     // Kinematics
