@@ -9,6 +9,8 @@
 #include <math.h>
 #include "kfact.h"
 #include "TXbb.h"
+#define SF_min 0
+#define SF_max 2.0
 
 
 void SF_TXbb(const std::string &year,      // 2022, 2023
@@ -20,292 +22,306 @@ void SF_TXbb(const std::string &year,      // 2022, 2023
              const std::string &path_ttHto2B, // path to the ttHto2B root file
              const std::string &output_path   // path to the output root file
 ) {
-  // Setup output file
+  int reb = 5 * (N_TXbb / 100);
+
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
+  TH1D *_SF = new TH1D("SF", "SF", N_TXbb, 0.0, 1.0);
+  _SF->Rebin(reb);
+  TH1D *hint_68 = new TH1D("hint_68", "", 370, 0.18, 1.0);
   
-  // Define binning
-  Float_t Bound[14] = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 
-                       0.94, 0.97, 0.99, 1.00};
-  Float_t BoundZoomed[6] = {0.8, 0.9, 0.94, 0.97, 0.99, 1.00};
-  
-  // Create histograms
-  TH1D *_SF = new TH1D("SF", "SF", 13, Bound);
-  TH1D *hint_68 = new TH1D("hint_68", "", 370, 0.0, 1.0);
-  TH1D *_SF_zoomed = new TH1D("SF_zoomed", "SF_zoomed", 5, BoundZoomed);
-  TH1D *hint_68_zoomed = new TH1D("hint_68_zoomed", "", 100, 0.8, 1.0);
-  
-  // Style settings
+  // Define custom bins for zoomed SF
+  const int nBins_zoomed = 5;
+  Double_t bins_zoomed[nBins_zoomed + 1] = {0.8, 0.9, 0.94, 0.97, 0.99, 1.00};
+
   gStyle->SetOptFile(0);
   gStyle->SetOptStat(0);
-  
-  // Load input histograms
+
+  TString PlotTitle = " ";
+
+  TCanvas *c1 = new TCanvas(PlotTitle, PlotTitle, 100, 52, 800, 686);
+  c1->SetGridy();
+  c1->Range(0, 0, 1, 1);
+  c1->SetFillColor(0);
+  c1->SetBorderMode(0);
+  c1->SetBorderSize(10);
+  c1->SetTickx(1);
+  c1->SetTicky(1);
+  c1->SetFrameFillStyle(0);
+  c1->SetFrameLineStyle(0);
+  c1->SetFrameLineWidth(2);
+  c1->SetFrameBorderMode(0);
+  c1->SetFrameBorderSize(10);
+
+  TPad *c1_1 = new TPad("c1_1", "c1_1", 0.1, 0.05, 0.9, 0.95);
+  c1_1->Draw();
+  c1_1->cd();
+  c1_1->Range(-93.75, -1.992728, 531.25, 5.643644);
+  c1_1->SetFillColor(0);
+  c1_1->SetBorderMode(0);
+  c1_1->SetBorderSize(10);
+  c1_1->SetTickx(1);
+  c1_1->SetLogy();
+  c1_1->SetTicky(1);
+  c1_1->SetBottomMargin(0.35);
+  c1_1->SetLeftMargin(0.2);
+  c1_1->SetFrameFillStyle(0);
+  c1_1->SetFrameLineStyle(0);
+  c1_1->SetFrameLineWidth(2);
+  c1_1->SetFrameBorderMode(0);
+  c1_1->SetFrameBorderSize(10);
+  c1_1->SetFrameFillStyle(0);
+  c1_1->SetFrameLineStyle(0);
+  c1_1->SetFrameLineWidth(2);
+  c1_1->SetFrameBorderMode(0);
+  c1_1->SetFrameBorderSize(10);
+  c1_1->SetGridy();
+
   TString JET = "FatJet1";
   TString VAR = "_GloParT_XbbVsQCD";
+
   TString variable = JET + VAR;
-  
-  // Open input files
+  TString XTitle = "FatJet TXbb";
+
   TFile *f_Data = new TFile(path_data.c_str());
   TFile *f_QCD = new TFile(path_QCD.c_str());
   TFile *f_VV = new TFile(path_VV.c_str());
   TFile *f_VJ = new TFile(path_VJ.c_str());
   TFile *f_TTbar = new TFile(path_TTbar.c_str());
   TFile *f_ttHto2B = new TFile(path_ttHto2B.c_str());
-  
-  // Get histograms
+
   TH1D *_Data_var = (TH1D *)f_Data->Get(variable);
+
   TH1D *_QCD_var = (TH1D *)f_QCD->Get(variable);
   TH1D *_TTbar_var = (TH1D *)f_TTbar->Get(variable);
   TH1D *_VV_var = (TH1D *)f_VV->Get(variable);
   TH1D *_VJ_var = (TH1D *)f_VJ->Get(variable);
   TH1D *_ttHto2B_var = (TH1D *)f_ttHto2B->Get(variable);
+
+  //  Float_t kfact=0.92;
+  // Float_t kfact = 0.9547;
+  Float_t kfact;
+  if (year == "2023") {
+      kfact = KFACT_2023;
+  } else if (year == "2022") {
+      kfact = KFACT_2022;
+  } else {
+    throw std::invalid_argument("Invalid year: " + year);
+  }
   
-  // Apply k-factor
-  Float_t kfact = (year == "2023") ? KFACT_2023 : KFACT_2022;
   _QCD_var->Scale(kfact);
   _TTbar_var->Scale(kfact);
   _VJ_var->Scale(kfact);
   _VV_var->Scale(kfact);
   _ttHto2B_var->Scale(kfact);
-  
-  // Subtract backgrounds from data
+
   for (int iB = 1; iB <= _Data_var->GetSize(); ++iB) {
     _Data_var->SetBinContent(
         iB, _Data_var->GetBinContent(iB) - _VJ_var->GetBinContent(iB) -
-                _VV_var->GetBinContent(iB) - _QCD_var->GetBinContent(iB)
-                - _ttHto2B_var->GetBinContent(iB));
+                _VV_var->GetBinContent(iB) - _QCD_var->GetBinContent(iB) - 
+                _ttHto2B_var->GetBinContent(iB));
   }
-  
-  // Create rebinned histograms
-  TH1D *_My_MC = new TH1D("My_MC", "My_MC", 13, Bound);
-  TH1D *_My_Data = new TH1D("My_Data", "My_Data", 13, Bound);
-  TH1D *_My_MC_zoomed = new TH1D("My_MC_zoomed", "My_MC_zoomed", 5, BoundZoomed);
-  TH1D *_My_Data_zoomed = new TH1D("My_Data_zoomed", "My_Data_zoomed", 5, BoundZoomed);
-  
-  // Initialize with zeros
-  for (int i = 1; i <= _My_MC->GetSize(); i++) _My_MC->SetBinContent(i, 0.0);
-  for (int i = 1; i <= _My_Data->GetSize(); i++) _My_Data->SetBinContent(i, 0.0);
-  for (int i = 1; i <= _My_MC_zoomed->GetSize(); i++) _My_MC_zoomed->SetBinContent(i, 0.0);
-  for (int i = 1; i <= _My_Data_zoomed->GetSize(); i++) _My_Data_zoomed->SetBinContent(i, 0.0);
-  
-  // Fill rebinned histograms
-  for (int i = 1; i <= _TTbar_var->GetSize() - 2; i++) {
-    Float_t bin_value = i / 100.0 - 0.005;
-    
-    // Full range
-    Int_t bin = _My_MC->GetXaxis()->FindBin(bin_value);
-    _My_MC->SetBinContent(bin, _My_MC->GetBinContent(bin) + _TTbar_var->GetBinContent(i));
-    _My_Data->SetBinContent(bin, _My_Data->GetBinContent(bin) + _Data_var->GetBinContent(i));
-    
-    // Zoomed range (TXbb > 0.8)
-    if (bin_value >= 0.8) {
-      Int_t bin_zoomed = _My_MC_zoomed->GetXaxis()->FindBin(bin_value);
-      _My_MC_zoomed->SetBinContent(bin_zoomed, _My_MC_zoomed->GetBinContent(bin_zoomed) + _TTbar_var->GetBinContent(i));
-      _My_Data_zoomed->SetBinContent(bin_zoomed, _My_Data_zoomed->GetBinContent(bin_zoomed) + _Data_var->GetBinContent(i));
-    }
-  }
-  
-  // Apply rebinning to original histograms
-  int reb = 5 * (N_TXbb / 100);
+
   _Data_var->Rebin(reb);
   _VJ_var->Rebin(reb);
   _VV_var->Rebin(reb);
   _QCD_var->Rebin(reb);
   _TTbar_var->Rebin(reb);
   _ttHto2B_var->Rebin(reb);
-  
-  // ---- Create full range plot ----
-  TCanvas *c1 = new TCanvas("SF_TXbb", "SF_TXbb", 100, 52, 800, 686);
-  c1->SetGridy();
-  
-  // Setup upper pad
-  TPad *c1_1 = new TPad("c1_1", "c1_1", 0.1, 0.35, 0.9, 0.95);
-  c1_1->Draw();
-  c1_1->cd();
-  c1_1->SetLogy();
-  c1_1->SetBottomMargin(0.15);
-  c1_1->SetLeftMargin(0.15);
-  c1_1->SetGridy();
-  
-  // Draw MC and Data histograms
-  _My_MC->SetTitle("");
-  _My_MC->GetXaxis()->SetTitle("FJet - gParT_XbbVsQCD");
-  _My_MC->GetYaxis()->SetTitle("Events");
-  _My_MC->SetFillColor(kOrange - 2);
-  _My_MC->SetLineWidth(1);
-  
+
+  _TTbar_var->GetXaxis()->SetLabelFont(42);
+  _TTbar_var->GetXaxis()->SetLabelOffset(0.15);
+  _TTbar_var->GetXaxis()->SetTitle(XTitle);
+  _TTbar_var->GetXaxis()->SetTitleSize(0.05);
+  _TTbar_var->GetXaxis()->SetTitleOffset(3.3);
+  _TTbar_var->GetXaxis()->SetTitleFont(42);
+  _TTbar_var->GetXaxis()->SetNdivisions(505);
+  _TTbar_var->GetYaxis()->SetNdivisions(505);
+  _TTbar_var->GetYaxis()->SetLabelFont(42);
+  _TTbar_var->GetYaxis()->SetLabelSize(0.04);
+  _TTbar_var->GetYaxis()->SetLabelOffset(0.01);
+  _TTbar_var->GetYaxis()->SetTitle("Events");
+  _TTbar_var->GetYaxis()->SetTitleOffset(1.5);
+  _TTbar_var->GetYaxis()->SetTitleSize(0.05);
+  _TTbar_var->GetYaxis()->SetTitleFont(42);
+  _TTbar_var->SetTitle("");
+
   double ymin = 10e-2;
-  double ymax = 15 * (_My_MC->GetMaximum());
-  _My_MC->SetMaximum(ymax);
-  _My_MC->SetMinimum(ymin);
-  _My_MC->Draw("HIST");
-  
-  _My_Data->SetMarkerColor(1);
-  _My_Data->SetMarkerStyle(20);
-  _My_Data->SetMarkerSize(1.1);
-  _My_Data->SetLineColor(1);
-  _My_Data->SetLineWidth(3);
-  _My_Data->Draw("E same");
-  
-  // Add legend
-  TLegend *leg = new TLegend(0.58, 0.8, 0.78, 0.88);
+  double ymax = 5 * (_TTbar_var->GetMaximum());
+
+  _TTbar_var->Draw("HIST");
+  _TTbar_var->SetFillColor(kOrange - 2);
+  _TTbar_var->SetLineWidth(1);
+  _TTbar_var->SetLineStyle(1);
+  _TTbar_var->SetMaximum(ymax);
+  _TTbar_var->SetMinimum(ymin);
+
+  _Data_var->Draw("E same");
+  _Data_var->SetMarkerColor(1);
+  _Data_var->SetMarkerStyle(20);
+  _Data_var->SetMarkerSize(1.1);
+  _Data_var->SetLineColor(1);
+  _Data_var->SetLineWidth(3);
+  _Data_var->SetMaximum(ymax);
+  _Data_var->SetMinimum(ymin);
+
+  TLegend *leg = new TLegend(0.2, 0.4, 0.3, 0.75);
+  leg = new TLegend(0.22, 0.78, 0.5, 0.88);
   leg->SetTextSize(0.03);
-  leg->AddEntry(_My_Data, "Data (bkg. subtracted)", "p");
-  leg->AddEntry(_My_MC, "TTbar", "f");
+  leg->AddEntry(_Data_var, "Data (bkg. subtracted)", "p");
+  leg->AddEntry(_TTbar_var, "TTbar", "f");
   leg->Draw("same");
-  
+
+  c1_1->Modified();
   c1->cd();
-  
-  // Setup lower pad
-  TPad *c1_2 = new TPad("lower", "pad", 0.1, 0.05, 0.9, 0.35);
-  c1_2->Draw();
-  c1_2->cd();
-  c1_2->SetBottomMargin(0.2);
-  c1_2->SetLeftMargin(0.15);
-  c1_2->SetGridy();
-  
-  // Create and draw SF ratio
-  TH1D *_SF_pt = (TH1D *)_My_Data->Clone();
-  TH1D *_MC_pt = (TH1D *)_My_MC->Clone();
+
+  TH1D *_SF_pt = (TH1D *)_Data_var->Clone();
+  TH1D *_MC_pt = (TH1D *)_TTbar_var->Clone();
+
   _MC_pt->Sumw2();
   _SF_pt->Sumw2();
   _SF_pt->Divide(_MC_pt);
-  
-  _SF_pt->SetTitle("");
+  _SF_pt->SetMarkerStyle(20);
+
   _SF_pt->SetMarkerColor(1);
   _SF_pt->SetMarkerStyle(20);
   _SF_pt->SetMarkerSize(1.2);
   _SF_pt->SetLineColor(1);
+  _SF_pt->GetXaxis()->SetLabelFont(42);
+  _SF_pt->GetXaxis()->SetLabelOffset(0.02);
+  _SF_pt->GetXaxis()->SetLabelSize(0.2);
+  _SF_pt->GetXaxis()->SetNdivisions(505);
+  _SF_pt->GetXaxis()->SetTickLength(0.07);
+  _SF_pt->GetYaxis()->SetRangeUser(SF_min, SF_max);
+  _SF_pt->GetYaxis()->SetNdivisions(505);
   _SF_pt->GetYaxis()->SetTitle("Scale factor");
-  _SF_pt->SetMaximum(1.5);
-  _SF_pt->SetMinimum(0.5);
+  _SF_pt->GetYaxis()->SetLabelFont(42);
+  _SF_pt->GetYaxis()->SetLabelOffset(0.1 / 5);
+  _SF_pt->GetYaxis()->SetLabelSize(0.13);
+  _SF_pt->GetYaxis()->SetTitleOffset(0.38);
+  _SF_pt->GetYaxis()->SetTickLength(0.02);
+  _SF_pt->GetYaxis()->SetTitleSize(0.16);
+  _SF_pt->GetYaxis()->SetLabelOffset(0.01);
+  _SF_pt->SetMarkerSize(1.2);
+
+  TPad *c1_2 = new TPad("lower", "pad", 0.1, 0.18, 0.9, 0.35);
+  c1_2->Draw();
+  c1_2->cd();
+  c1_2->SetFillColor(0);
+  c1_2->SetBorderMode(0);
+  c1_2->SetBorderSize(10);
+  c1_2->SetTickx(1);
+  c1_2->SetTicky(1);
+  c1_2->SetBottomMargin(0.2);
+  c1_2->SetLeftMargin(0.2);
+  c1_2->SetFrameFillStyle(0);
+  c1_2->SetFrameLineStyle(0);
+  c1_2->SetFrameLineWidth(2);
+  c1_2->SetFrameBorderMode(0);
+  c1_2->SetFrameBorderSize(10);
+  c1_2->SetFrameFillStyle(0);
+  c1_2->SetFrameLineStyle(0);
+  c1_2->SetFrameLineWidth(2);
+  c1_2->SetFrameBorderMode(0);
+  c1_2->SetFrameBorderSize(10);
+  c1_2->SetGridy();
+
   _SF_pt->Draw("e1");
-  
-  // Fit and draw confidence interval
-  TF1 *Mypol = new TF1("Mypol", "pol3", 0.01, 1.0);
+  _SF_pt->SetTitle("");
+
+  cout << "SF_pt: ";
+  for (int i = 1; i <= _SF_pt->GetNbinsX(); i++)
+    cout << _SF_pt->GetBinContent(i) << ", ";
+  cout << endl;
+
+  TF1 *Mypol = new TF1("Mypol", "pol8", 0.1, 1.0);
   _SF_pt->Fit("Mypol", "R");
-  
+
+  TH1D *hint = new TH1D("hint", "", 185, 0.1, 1.0);
+  (TVirtualFitter::GetFitter())->GetConfidenceIntervals(hint);
   (TVirtualFitter::GetFitter())->GetConfidenceIntervals(hint_68, 0.68);
+
+  hint->SetFillColor(kCyan);
   hint_68->SetFillColor(kYellow);
+
+  hint->Draw("e3same");
   hint_68->Draw("e3same");
   _SF_pt->Draw("e1same");
-  
-  // Add legend
-  TLegend *leg1 = new TLegend(0.35, 0.6, 0.55, 0.85);
-  leg1->SetTextSize(0.07);
-  leg1->AddEntry(Mypol, "pol3", "l");
-  leg1->AddEntry(hint_68, "1 #sigma", "f");
+
+  TLegend *leg1 = new TLegend(0.25, 0.3, 0.45, 0.75);
+  leg1->SetTextSize(0.15);
+  leg1->AddEntry(Mypol, "pol8", "l");
+  leg1->AddEntry(hint_68, "1#sigma", "f");
+  leg1->AddEntry(hint, "2#sigma", "f");
   leg1->Draw("same");
-  
-  // Fill the output SF histogram
+
+  c1_2->Modified();
+  c1_2->RedrawAxis();
+  c1->cd();
+
+  // Eff Histrograms to root
   for (int i = 1; i <= _SF_pt->GetNbinsX(); i++) {
     _SF->SetBinContent(i, _SF_pt->GetBinContent(i));
     _SF->SetBinError(i, _SF_pt->GetBinError(i));
   }
   
-  // ---- Create zoomed plot (TXbb > 0.8) ----
-  TCanvas *c2 = new TCanvas("SF_TXbb_zoomed", "TXbb > 0.8", 100, 52, 800, 686);
+  // Create a new canvas for the zoomed SF
+  TCanvas *c2 = new TCanvas("c2", "Zoomed SF", 800, 600);
   c2->SetGridy();
   
-  // Setup upper pad
-  TPad *c2_1 = new TPad("c2_1", "c2_1", 0.1, 0.35, 0.9, 0.95);
-  c2_1->Draw();
-  c2_1->cd();
-  c2_1->SetLogy();
-  c2_1->SetBottomMargin(0.15);
-  c2_1->SetLeftMargin(0.15);
-  c2_1->SetGridy();
+  // Create zoomed SF histogram with custom bins
+  TH1D *_SF_zoomed = new TH1D("SF_zoomed", "SF_zoomed", nBins_zoomed, bins_zoomed);
+  TH1D *hint_68_zoomed = new TH1D("hint_68_zoomed", "", 100, 0.8, 1.0);
   
-  // Draw MC and Data histograms
-  _My_MC_zoomed->SetTitle("");
-  _My_MC_zoomed->GetXaxis()->SetTitle("FJet - gParT_XbbVsQCD (Zoomed >0.8)");
-  _My_MC_zoomed->GetYaxis()->SetTitle("Events");
-  _My_MC_zoomed->SetFillColor(kOrange - 2);
-  _My_MC_zoomed->SetLineWidth(1);
+  // Fill the zoomed SF histogram from the fit function
+  for (int i = 1; i <= nBins_zoomed; i++) {
+    double binCenter = _SF_zoomed->GetBinCenter(i);
+    double value = Mypol->Eval(binCenter);
+    _SF_zoomed->SetBinContent(i, value);
+    
+    // Estimate error from the fit (can be improved)
+    double error = 0.0;
+    if (binCenter >= 0.1 && binCenter <= 1.0) {
+      // Find the closest bin in the original SF histogram
+      int closestBin = _SF_pt->FindBin(binCenter);
+      error = _SF_pt->GetBinError(closestBin);
+    }
+    _SF_zoomed->SetBinError(i, error);
+  }
   
-  double ymin_zoomed = 10e-2;
-  double ymax_zoomed = 15 * (_My_MC_zoomed->GetMaximum());
-  _My_MC_zoomed->SetMaximum(ymax_zoomed);
-  _My_MC_zoomed->SetMinimum(ymin_zoomed);
-  _My_MC_zoomed->Draw("HIST");
+  _SF_zoomed->SetMarkerColor(kBlue);
+  _SF_zoomed->SetMarkerStyle(20);
+  _SF_zoomed->SetMarkerSize(1.2);
+  _SF_zoomed->SetLineColor(kBlue);
+  _SF_zoomed->GetXaxis()->SetTitle("FatJet TXbb");
+  _SF_zoomed->GetYaxis()->SetTitle("Scale factor");
+  _SF_zoomed->GetYaxis()->SetRangeUser(SF_min, SF_max);
+  _SF_zoomed->SetTitle("Zoomed Scale Factor");
+  _SF_zoomed->Draw("e1");
   
-  _My_Data_zoomed->SetMarkerColor(1);
-  _My_Data_zoomed->SetMarkerStyle(20);
-  _My_Data_zoomed->SetMarkerSize(1.1);
-  _My_Data_zoomed->SetLineColor(1);
-  _My_Data_zoomed->SetLineWidth(3);
-  _My_Data_zoomed->Draw("E same");
-  
-  // Add legend
-  TLegend *leg_zoomed = new TLegend(0.58, 0.8, 0.78, 0.88);
-  leg_zoomed->SetTextSize(0.03);
-  leg_zoomed->AddEntry(_My_Data_zoomed, "Data (bkg. subtracted)", "p");
-  leg_zoomed->AddEntry(_My_MC_zoomed, "TTbar", "f");
-  leg_zoomed->Draw("same");
-  
-  c2->cd();
-  
-  // Setup lower pad
-  TPad *c2_2 = new TPad("lower_zoomed", "pad_zoomed", 0.1, 0.05, 0.9, 0.35);
-  c2_2->Draw();
-  c2_2->cd();
-  c2_2->SetBottomMargin(0.2);
-  c2_2->SetLeftMargin(0.15);
-  c2_2->SetGridy();
-  
-  // Create and draw SF ratio
-  TH1D *_SF_pt_zoomed = (TH1D *)_My_Data_zoomed->Clone();
-  TH1D *_MC_pt_zoomed = (TH1D *)_My_MC_zoomed->Clone();
-  _MC_pt_zoomed->Sumw2();
-  _SF_pt_zoomed->Sumw2();
-  _SF_pt_zoomed->Divide(_MC_pt_zoomed);
-  
-  _SF_pt_zoomed->SetTitle("");
-  _SF_pt_zoomed->SetMarkerColor(1);
-  _SF_pt_zoomed->SetMarkerStyle(20);
-  _SF_pt_zoomed->SetMarkerSize(1.2);
-  _SF_pt_zoomed->SetLineColor(1);
-  _SF_pt_zoomed->GetYaxis()->SetTitle("Scale factor");
-  _SF_pt_zoomed->SetMaximum(1.5);
-  _SF_pt_zoomed->SetMinimum(0.5);
-  _SF_pt_zoomed->Draw("e1");
-  
-  // Fit and draw confidence interval
+  // Fit the zoomed region with a polynomial
   TF1 *Mypol_zoomed = new TF1("Mypol_zoomed", "pol3", 0.8, 1.0);
-  _SF_pt_zoomed->Fit("Mypol_zoomed", "R");
+  _SF_zoomed->Fit("Mypol_zoomed", "R");
   
+  // Get confidence intervals for the zoomed fit
   (TVirtualFitter::GetFitter())->GetConfidenceIntervals(hint_68_zoomed, 0.68);
   hint_68_zoomed->SetFillColor(kYellow);
   hint_68_zoomed->Draw("e3same");
-  _SF_pt_zoomed->Draw("e1same");
+  _SF_zoomed->Draw("e1same");
   
-  // Add legend
-  TLegend *leg1_zoomed = new TLegend(0.35, 0.6, 0.55, 0.85);
-  leg1_zoomed->SetTextSize(0.07);
-  leg1_zoomed->AddEntry(Mypol_zoomed, "pol3", "l");
-  leg1_zoomed->AddEntry(hint_68_zoomed, "1 #sigma", "f");
-  leg1_zoomed->Draw("same");
+  TLegend *leg2 = new TLegend(0.6, 0.7, 0.89, 0.89);
+  leg2->SetTextSize(0.03);
+  leg2->AddEntry(_SF_zoomed, "SF (zoomed)", "p");
+  leg2->AddEntry(Mypol_zoomed, "pol3 fit", "l");
+  leg2->AddEntry(hint_68_zoomed, "1#sigma confidence", "f");
+  leg2->Draw();
   
-  // Fill the output SF histogram
-  for (int i = 1; i <= _SF_pt_zoomed->GetNbinsX(); i++) {
-    _SF_zoomed->SetBinContent(i, _SF_pt_zoomed->GetBinContent(i));
-    _SF_zoomed->SetBinError(i, _SF_pt_zoomed->GetBinError(i));
-  }
-  
-  // Save everything to output file
+  c2->Modified();
+  c2->Update();
+
   f->cd();
-  c1->Write("SF_TXbb_canvas");
-  c2->Write("SF_TXbb_zoomed_canvas");
-  _SF->Write();
   _SF_zoomed->Write();
-  hint_68->Write();
   hint_68_zoomed->Write();
-  f->Close();
-  
-  // Close input files
-  f_Data->Close();
-  f_QCD->Close();
-  f_VV->Close();
-  f_VJ->Close();
-  f_TTbar->Close();
-  f_ttHto2B->Close();
+  Mypol->Write();
+  Mypol_zoomed->Write();
+  f->Write();
 }

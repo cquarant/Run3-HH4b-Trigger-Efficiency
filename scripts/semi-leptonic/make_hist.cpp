@@ -118,32 +118,26 @@ void make_hist(
       continue;
     }
 
-    // adding Tau3OverTau2 SF
-    if (apply_sf_tau32) {
-      double sf_tau32 = 1.0;
-      Int_t bin_tau32 = _SF_Tau32->GetXaxis()->FindBin(fatJet1_Tau3OverTau2);
-      if (_SF_Tau32->GetBinContent(bin_tau32) > 0) {
-        sf_tau32 = _SF_Tau32->GetBinContent(bin_tau32);
-      }
-
-      if (sf_tau32 > 0) {
-        weight = weight * sf_tau32;
-      }
-
-    }
-
     // adding Xbb SF
+    Float_t sf_TXbb = 1.0;
     if (apply_sf_txbb) {
-      double sf_TXbb = 1.0;
       Int_t bin_TXbb = _SF_Xbb->GetXaxis()->FindBin(fatJet1_GloParT_XbbVsQCD);
-      if (_SF_Xbb->GetBinContent(bin_TXbb) > 0) {
-        sf_TXbb = _SF_Xbb->GetBinContent(bin_TXbb);
-      }
-
-      if (sf_TXbb > 0) {
-        weight = weight * sf_TXbb;
+      sf_TXbb = _SF_Xbb->GetBinContent(bin_TXbb);
+      if (sf_TXbb <= 0) {
+        sf_TXbb = 1.0;
       }
     }
+    weight = weight * sf_TXbb;
+
+    Float_t sf_tau32 = 1.0;
+    if (apply_sf_tau32) {
+      Int_t bin_tau32 = _SF_Tau32->GetXaxis()->FindBin(fatJet1_Tau3OverTau2);
+      sf_tau32 = _SF_Tau32->GetBinContent(bin_tau32);
+      if (sf_tau32 <= 0) {
+        sf_tau32 = 1.0;
+      }
+    }
+    weight = weight * sf_tau32;
 
     _FatJet1_pt->Fill(fatJet1_pt, weight);
     _FatJet1_eta->Fill(fatJet1_eta, weight);
@@ -184,7 +178,6 @@ void make_hist(
   _dR_JmaxL->Write();
   
   f->Write();
-  f->Close();
   
   delete f;
 }

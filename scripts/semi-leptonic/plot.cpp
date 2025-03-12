@@ -11,6 +11,7 @@
 #include <sstream>
 #include <vector>
 
+#define PLOT_CHI_2 false
 
 void plot(const std::string &year,         // 2022, 2023
           const std::string &path_data,    // path to the data root file
@@ -235,7 +236,7 @@ void plot(const std::string &year,         // 2022, 2023
   for (int iB = 1; iB <= _Data_var->GetSize(); ++iB) {
     float xData = _Data_var->GetBinContent(iB);
     float xMC = _TTbar_var->GetBinContent(iB);
-    if (xMC > 1e-1) {
+    if (xMC > 1e-8) {
       float diff2 = (xData - xMC) * (xData - xMC);
       chi2 += diff2 / xMC;
     }
@@ -348,6 +349,9 @@ void plot(const std::string &year,         // 2022, 2023
   t1->SetTextSize(0.032);
   // t1->AddText("                                                           CMS "
   //             "(2023 C-D EGamma + Muon) ~ 21.7 fb^{-1} #it{preliminary}");
+  if (PLOT_CHI_2) {
+    t1->AddText(Form("#chi^{2} = %.3f", chi2));
+  }
   t1->Draw("same");
 
   TPaveText *t11 = new TPaveText(0.2, 0.88, 0.3, 9);

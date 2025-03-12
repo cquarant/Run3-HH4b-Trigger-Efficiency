@@ -14,6 +14,9 @@
 #include <sstream>
 #include <vector>
 
+#define N_BINS_FINE 500
+#define POLY_FIT "pol4"
+
 void set_pad_style(TPad *pad) {
   pad->SetFillColor(0);
   pad->SetBorderMode(0);
@@ -223,10 +226,19 @@ void trig_eff_TXbb(const std::string &mc_path, const std::string &data_path,
   _SF_TXbb->GetYaxis()->SetTitleOffset(0.5);
   _SF_TXbb->Draw("EP");
 
-//   // Add horizontal line at 1
-//   TLine *line = new TLine(0, 1, 1, 1);
-//   line->SetLineStyle(2);
-//   line->Draw();
+  // Add a poly fit to the scale factor
+  TF1 *sf_fit = new TF1("SF_TXbb_fit", POLY_FIT, _SF_TXbb->GetXaxis()->GetXmin(), _SF_TXbb->GetXaxis()->GetXmax());
+  _SF_TXbb->Fit(sf_fit, "R0");
+  // Evaluate the fit function on a fine grid
+  TH1D *_SF_TXbb_fit_eval = new TH1D("SF_TXbb_fit_eval", "SF_TXbb_fit_eval", N_BINS_FINE, _SF_TXbb->GetXaxis()->GetXmin(), _SF_TXbb->GetXaxis()->GetXmax());
+  for (int i = 1; i <= N_BINS_FINE; i++) {
+      double x = _SF_TXbb_fit_eval->GetBinCenter(i);
+      double y = sf_fit->Eval(x);
+      _SF_TXbb_fit_eval->SetBinContent(i, y);
+      // Set small errors to make the histogram plottable
+      _SF_TXbb_fit_eval->SetBinError(i, 0.001);
+    }
+
 
   // Add grid lines
   pad1->SetGrid(0, 1);
@@ -286,11 +298,6 @@ void trig_eff_TXbb(const std::string &mc_path, const std::string &data_path,
   legend2->AddEntry(_denominator_data_over_MC, "Denominator", "ep");
   legend2->Draw();
 
-//   // Add horizontal line at 1 in upper pad
-//   TLine *lineUpper = new TLine(0, 1, 1, 1);
-//   lineUpper->SetLineStyle(2);
-//   lineUpper->Draw();
-
   // Draw lower pad (SF)
   ratiopad2->cd();
 
@@ -315,11 +322,13 @@ void trig_eff_TXbb(const std::string &mc_path, const std::string &data_path,
       (figure_path.substr(0, figure_path.find_last_of('.')) + "_ratios.pdf")
           .c_str());
 
-  // Save histograms to ROOT file
+  // Save histograms and fit to ROOT file
   f->cd();
   _eff_data->Write();
   _eff_mc->Write();
   _SF_TXbb->Write();
+  sf_fit->Write("SF_TXbb_fit");
+  _SF_TXbb_fit_eval->Write();
   _numerator_data_over_MC->Write();
   _denominator_data_over_MC->Write();
   f->Write();
@@ -328,8 +337,8 @@ void trig_eff_TXbb(const std::string &mc_path, const std::string &data_path,
   // Clean up
   delete legend;
   delete legend2;
-//   delete line;
-//   delete lineUpper;
+  delete sf_fit;
+  delete _SF_TXbb_fit_eval;
   delete pad1;
   delete pad2;
   delete ratiopad1;

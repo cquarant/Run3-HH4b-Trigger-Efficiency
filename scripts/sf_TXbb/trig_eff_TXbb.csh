@@ -9,13 +9,14 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 OUTPUT_DIR=${SCRIPT_DIR}/output
 TMP_DIR=${SCRIPT_DIR}/tmp
 # FIG_DIR=${SCRIPT_DIR}/figures
-BINS="0.8,0.9,0.94,0.97,0.99,1.0"
+# BINS="0.8,0.9,0.94,0.97,0.99,1.0"
+BINS="0.8,0.825,0.85,0.875,0.9,0.92,0.94,0.97,0.99,1.0"
 FIG_DIR=${SCRIPT_DIR}/figures_zoomed
 mkdir -p ${OUTPUT_DIR}
 mkdir -p ${FIG_DIR}
 
-# DATA_TYPES=("QCD" "TTbar")
-DATA_TYPES=("TTbar" "QCD")
+DATA_TYPES=("QCD" "TTbar")
+# DATA_TYPES=("TTbar" "QCD")
 TAGGER_NAMES=("GloParT" "PNetLegacy")
 
 process_era() {
