@@ -132,10 +132,11 @@ void tree_data(
 
   Float_t T_weight;
   Float_t T_fatJet1_pt, T_fatJet1_eta, T_fatJet1_phi, T_fatJet1_msoftdrop,
-      T_fatJet1_Tau3OverTau2;
+      T_fatJet1_GloParT_massVis, T_fatJet1_GloParT_massRes, T_fatJet1_Tau3OverTau2;
   Float_t T_fatJet1_ParticleNetLegacy_Xbb, T_fatJet1_ParticleNetLegacy_XbbVsQCD,
       T_fatJet1_globalParT_XbbVsQCD;
-  Float_t T_fatJet2_pt, T_fatJet2_eta, T_fatJet2_msoftdrop;
+  Float_t T_fatJet2_pt, T_fatJet2_eta, T_fatJet2_msoftdrop,
+      T_fatJet2_GloParT_massVis, T_fatJet2_GloParT_massRes;
   Float_t T_MET, T_lep1_pt, T_lep1_eta, T_lep1_phi, T_dR_LFJ, T_dR_JFJ_max,
       T_dR_JFJ_min, T_dR_JmaxL;
 
@@ -145,6 +146,10 @@ void tree_data(
   outputTree->Branch("fatJet1_phi", &T_fatJet1_phi, "fatJet1_phi/F");
   outputTree->Branch("fatJet1_msoftdrop", &T_fatJet1_msoftdrop,
                      "fatJet1_msoftdrop/F");
+  outputTree->Branch("fatJet1_GloParT_massVis", &T_fatJet1_GloParT_massVis,
+                     "fatJet1_GloParT_massVis/F");
+  outputTree->Branch("fatJet1_GloParT_massRes", &T_fatJet1_GloParT_massRes,
+                     "fatJet1_GloParT_massRes/F");
   outputTree->Branch("fatJet1_Tau3OverTau2", &T_fatJet1_Tau3OverTau2,
                      "fatJet1_Tau3OverTau2/F");
   outputTree->Branch("fatJet1_ParticleNetLegacy_Xbb",
@@ -159,6 +164,10 @@ void tree_data(
   outputTree->Branch("fatJet2_eta", &T_fatJet2_eta, "fatJet2_eta/F");
   outputTree->Branch("fatJet2_msoftdrop", &T_fatJet2_msoftdrop,
                      "fatJet2_msoftdrop/F");
+  outputTree->Branch("fatJet2_GloParT_massVis", &T_fatJet2_GloParT_massVis,
+                     "fatJet2_GloParT_massVis/F");
+  outputTree->Branch("fatJet2_GloParT_massRes", &T_fatJet2_GloParT_massRes,
+                     "fatJet2_GloParT_massRes/F");
   outputTree->Branch("MET", &T_MET, "MET/F");
   outputTree->Branch("lep1_pt", &T_lep1_pt, "lep1_pt/F");
   outputTree->Branch("lep1_eta", &T_lep1_eta, "lep1_eta/F");
@@ -241,6 +250,8 @@ void tree_data(
   Float_t FatJet2_phi;
   Float_t FatJet2_Mass;
   Float_t FatJet2_MassSD;
+  Float_t FatJet2GloParT_massRes;
+  Float_t FatJet2GloParT_massVis;
   Float_t FatJet2_rawFactor;
   Float_t FatJet2_Tau3OverTau2;
 
@@ -471,6 +482,8 @@ void tree_data(
     T_fatJet1_eta = FatJet1_eta;
     T_fatJet1_phi = FatJet1_phi;
     T_fatJet1_msoftdrop = FatJet1_MassSD;
+    T_fatJet1_GloParT_massVis = FatJet1GloParT_massVis * FatJet1_Mass * (1.0 - FatJet1_rawFactor);
+    T_fatJet1_GloParT_massRes = FatJet1GloParT_massRes * FatJet1_Mass * (1.0 - FatJet1_rawFactor);
     T_fatJet1_Tau3OverTau2 = FatJet1_Tau3OverTau2;
     T_fatJet1_ParticleNetLegacy_Xbb = FatJet1PNetLegacy_Xbb;
     double FatJet1PNetLegacy_XbbVsQCD =
@@ -480,7 +493,9 @@ void tree_data(
     T_fatJet2_pt = FatJet2_pt;
     T_fatJet2_eta = FatJet2_eta;
     T_fatJet2_msoftdrop = FatJet2_MassSD;
-
+    T_fatJet2_GloParT_massVis = FatJet2GloParT_massVis * FatJet2_Mass * (1.0 - FatJet2_rawFactor);
+    T_fatJet2_GloParT_massRes = FatJet2GloParT_massRes * FatJet2_Mass * (1.0 - FatJet2_rawFactor);
+    
     T_MET = MET;
     T_lep1_pt = lep1_pt;
     T_lep1_eta = lep1_eta;

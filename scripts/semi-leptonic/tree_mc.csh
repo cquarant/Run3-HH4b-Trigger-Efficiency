@@ -9,9 +9,15 @@ fi
 # Directory setup
 PROJ_ROOT="${CMSSW_BASE}/src"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-OUTPUT_DIR=${SCRIPT_DIR}/trees
+OUTPUT_DIR_ERAS=${SCRIPT_DIR}/trees/eras
+OUTPUT_DIR_YEARS=${SCRIPT_DIR}/trees/years
 TMP_DIR=${SCRIPT_DIR}/tmp/trees/mc
-mkdir -p ${OUTPUT_DIR} ${TMP_DIR}
+mkdir -p ${OUTPUT_DIR_ERAS} ${OUTPUT_DIR_YEARS} ${TMP_DIR}
+
+declare -A YEAR_DICT=(
+    ["2022"]="2022 2022EE"
+    ["2023"]="2023 2023BPix"
+)
 
 SAMPLE_DIR="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
 
@@ -135,7 +141,7 @@ process_QCD() {
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
 
-    local output_path=${OUTPUT_DIR}/Histograms_${era}_MC_QCD.root
+    local output_path=${OUTPUT_DIR_ERAS}/Histograms_${era}_MC_QCD.root
     hadd -f ${output_path} ${TMP_DIR}/Histograms_${era}_MC_QCD-4Jets_HT-*.root
 }
 
@@ -161,7 +167,7 @@ process_TTbar() {
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
     
-    local output_path="${OUTPUT_DIR}/Histograms_${era}_MC_TTbar.root"
+    local output_path="${OUTPUT_DIR_ERAS}/Histograms_${era}_MC_TTbar.root"
     hadd -f ${output_path} ${TMP_DIR}/Histograms_${era}_MC_TTto*.root
 }
 
@@ -193,7 +199,7 @@ process_VV() {
         hadd_inputs="${hadd_inputs} ${output_path}"
     done
 
-    local output_path="${OUTPUT_DIR}/Histograms_${era}_MC_VV.root"
+    local output_path="${OUTPUT_DIR_ERAS}/Histograms_${era}_MC_VV.root"
     hadd -f ${output_path} ${hadd_inputs}
 }
 
@@ -245,7 +251,7 @@ process_WtoLNu() {
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
-    output="${OUTPUT_DIR}/Histograms_${era}_WtoLNu.root"
+    output="${OUTPUT_DIR_ERAS}/Histograms_${era}_MC_WtoLNu.root"
     hadd -f ${output} ${TMP_DIR}/Histograms_${era}_MC_WtoLNu_*.root
 }
 
@@ -276,14 +282,14 @@ process_Zto2Q() {
 
 process_VJ() {
     local era=$1
-    local output_path="${OUTPUT_DIR}/Histograms_${era}_MC_VJ.root"
+    local output_path="${OUTPUT_DIR_ERAS}/Histograms_${era}_MC_VJ.root"
     hadd -f ${output_path} ${TMP_DIR}/Histograms_${era}_MC_Wto2Q_2Jets_PTQQ_*.root ${TMP_DIR}/Histograms_${era}_MC_WtoLNu*.root ${TMP_DIR}/Histograms_${era}_MC_Zto2Q_2Jets_PTQQ_*.root ${TMP_DIR}/Histograms_${era}_MC_DYto2L_2Jets_MLL_50_*.root
 }
 
 process_ttHto2B() {
     local era=$1
     local year=${era:0:4}
-    local output_path="${OUTPUT_DIR}/Histograms_${era}_MC_ttHto2B.root"
+    local output_path="${OUTPUT_DIR_ERAS}/Histograms_${era}_MC_ttHto2B.root"
     local input_file=$(ls ${SAMPLE_DIR}/${era}/ttHto2B*.root 2>/dev/null | head -n1)
 
     get_era_paths ${era} || exit 1
@@ -299,7 +305,7 @@ process_ttHto2B() {
         \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
         \"${jer_path}\", \"${jer_path_sf}\")"
 
-    cp ${output_path} ${OUTPUT_DIR}/Histograms_${era}_MC_ttHto2B.root
+    cp ${output_path} ${OUTPUT_DIR_ERAS}/Histograms_${era}_MC_ttHto2B.root
 
 }
 
@@ -307,17 +313,33 @@ process_era() {
     local era=$1
     echo "Processing era: ${era}"
 
-    process_QCD ${era}
-    process_TTbar ${era}
-    process_VV ${era}
-    process_Wto2Q ${era}
-    process_Zto2Q ${era}
+    # process_QCD ${era}
+    # process_TTbar ${era}
+    # process_VV ${era}
+    # process_Wto2Q ${era}
+    # process_Zto2Q ${era}
     process_WtoLNu ${era}
-    process_DYto2L ${era}
+    # process_DYto2L ${era}
     process_VJ ${era}
-    process_ttHto2B ${era}
+    # process_ttHto2B ${era}
 
     echo "MC processing for era ${era} completed successfully!"
+}
+
+combine_years() {
+    local mc_types=("QCD" "TTbar" "ttHto2B" "VJ" "VV")
+    # hadd eras into years by signal type using YEAR_DICT
+    for year in "${!YEAR_DICT[@]}"; do
+        for mc_type in "${mc_types[@]}"; do
+            local output_path="${OUTPUT_DIR_YEARS}/Histograms_${year}_MC_${mc_type}.root"
+            local input_paths=()
+            for era in ${YEAR_DICT[${year}]}; do
+                input_paths+=("${OUTPUT_DIR_ERAS}/Histograms_${era}_MC_${mc_type}.root")
+            done
+            echo "Combining ${mc_type} for year ${year} into: ${output_path}"
+            hadd -f ${output_path} "${input_paths[@]}"
+        done
+    done
 }
 
 # check args
@@ -329,6 +351,10 @@ if [ $# -ne 1 ]; then
     done
     wait
     echo "All MC processing completed!"
+
+    echo "Combining all years..."
+    combine_years
+    echo "All years combined successfully!"
 else
     # process single era
     process_era $1

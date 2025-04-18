@@ -111,6 +111,11 @@ void plot(const std::string &year,         // 2022, 2023
     _ttHto2B_var = rebinned_ttHto2B;
   } else {
     int reb = 5 * (N_TXbb / 100);
+
+    if (variable.Contains("GloParT") && variable.Contains("Mass")) {
+      reb = 2 * (N_TXbb / 100);
+    }
+
     _Data_var->Rebin(reb);
     _VJ_var->Rebin(reb);
     _VV_var->Rebin(reb);

@@ -15,7 +15,7 @@
 #include <vector>
 
 #define N_BINS_FINE 500
-#define POLY_FIT "pol4"
+#define POLY_FIT "pol3"
 
 void set_pad_style(TPad *pad) {
   pad->SetFillColor(0);

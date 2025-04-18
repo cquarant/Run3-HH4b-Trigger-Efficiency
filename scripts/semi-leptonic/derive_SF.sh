@@ -11,7 +11,7 @@ PROJ_ROOT="${CMSSW_BASE}/src"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 HIST_DIR=${SCRIPT_DIR}/hists
 SF_DIR=${SCRIPT_DIR}/SFs
-TREE_DIR=${SCRIPT_DIR}/trees/merged
+TREE_DIR=${SCRIPT_DIR}/trees/years
 mkdir -p ${SF_DIR} ${HIST_DIR}
 cd ${SCRIPT_DIR};
 

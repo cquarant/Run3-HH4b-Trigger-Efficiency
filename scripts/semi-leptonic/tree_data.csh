@@ -9,9 +9,15 @@ fi
 # Directory setup
 PROJ_ROOT="${CMSSW_BASE}/src"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-OUTPUT_DIR=${SCRIPT_DIR}/trees
+OUTPUT_DIR_ERAS=${SCRIPT_DIR}/trees/eras
+OUTPUT_DIR_YEARS=${SCRIPT_DIR}/trees/years
 TMP_DIR=${SCRIPT_DIR}/tmp/trees/data
-mkdir -p ${OUTPUT_DIR} ${TMP_DIR}
+mkdir -p ${OUTPUT_DIR_ERAS} ${OUTPUT_DIR_YEARS} ${TMP_DIR}
+
+declare -A YEAR_DICT=(
+    ["2022"]="2022 2022EE"
+    ["2023"]="2023 2023BPix"
+)
 
 # Configuration
 declare -A era_runs=(
@@ -138,11 +144,26 @@ process_era() {
     done
     
     # Final combination (all CHANNELS)
-    final_output="${OUTPUT_DIR}/Histograms_${era}_data.root"
+    final_output="${OUTPUT_DIR_ERAS}/Histograms_${era}_data.root"
     echo "Creating final combined output: ${final_output}"
     hadd -f "${final_output}" \
         ${TMP_DIR}/Histograms_${era}_data_Muon.root \
         ${TMP_DIR}/Histograms_${era}_data_EGamma.root
+}
+
+combine_years() {
+    # hadd eras into years using YEAR_DICT
+    for year in "${!YEAR_DICT[@]}"; do
+        year_files=()
+        for era in ${YEAR_DICT[$year]}; do
+            year_files+=("${OUTPUT_DIR_ERAS}/Histograms_${era}_data.root")
+        done
+        
+        # Combine all eras for the year
+        year_output="${OUTPUT_DIR_YEARS}/Histograms_${year}_data.root"
+        echo "Combining eras for ${year} into: ${year_output}"
+        hadd -f "${year_output}" "${year_files[@]}"
+    done
 }
 
 if [ $# -ne 1 ]; then
@@ -153,6 +174,10 @@ if [ $# -ne 1 ]; then
     done
     wait
     echo "All data processing completed!"
+
+    echo "Combining all years..."
+    combine_years
+    echo "All years combined successfully!"
 else
     # process single era
     process_era $1

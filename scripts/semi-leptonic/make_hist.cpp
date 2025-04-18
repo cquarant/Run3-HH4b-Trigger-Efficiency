@@ -16,6 +16,10 @@
 #include "TMVA/Reader.h"
 #include "TMVA/Tools.h"
 
+#define GLOPART_MASS_MIN 90
+#define GLOPART_MASS_MAX 160
+#define GLOPART_MASS_STEP 1
+
 void make_hist(
     const std::string &input_path,         // path to the input root file
     const std::string &output_path,        // path to the output root file
@@ -53,10 +57,17 @@ void make_hist(
     apply_sf_txbb = true;
   }
 
+  int N_GloParT_Mass = (GLOPART_MASS_MAX - GLOPART_MASS_MIN) / GLOPART_MASS_STEP;
   TH1D *_FatJet1_pt = new TH1D("FatJet1_pt", "FatJet1_pt", 200, 0, 1200);
   TH1D *_FatJet1_eta = new TH1D("FatJet1_eta", "FatJet1_eta", 100, -5, 5);
   TH1D *_FatJet1_MassSD =
       new TH1D("FatJet1_MassSD", "FatJet1_MassSD", 500, 0, 500);
+  TH1D *_FatJet1_GloParT_MassVis =
+      new TH1D("FatJet1_GloParT_MassVis", "FatJet1_GloParT_MassVis", 
+               N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
+  TH1D *_FatJet1_GloParT_MassRes =
+      new TH1D("FatJet1_GloParT_MassRes", "FatJet1_GloParT_MassRes", 
+               N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
   TH1D *_FatJet1_ParticleNetLegacy_XbbVsQCD =
       new TH1D("FatJet1_ParticleNetLegacy_XbbVsQCD",
                "FatJet1_ParticleNetLegacy_XbbVsQCD", N_TXbb, 0.0, 1.0);
@@ -68,6 +79,12 @@ void make_hist(
   TH1D *_FatJet2_eta = new TH1D("FatJet2_eta", "FatJet2_eta", 100, -5, 5);
   TH1D *_FatJet2_MassSD =
       new TH1D("FatJet2_MassSD", "FatJet2_MassSD", 500, 0, 500);
+  TH1D *_FatJet2_GloParT_MassVis =
+      new TH1D("FatJet2_GloParT_MassVis", "FatJet1_GloParT_MassVis", 
+               N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
+  TH1D *_FatJet2_GloParT_MassRes =
+      new TH1D("FatJet2_GloParT_MassRes", "FatJet1_GloParT_MassRes", 
+               N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
 
   TH1D *_MET = new TH1D("MET", "MET", 100, 0, 500);
   TH1D *_lep1_pt = new TH1D("lep1_pt", "lep1_pt", 300, 0, 300);
@@ -81,16 +98,20 @@ void make_hist(
 
   Float_t weight;
   Float_t fatJet1_pt, fatJet1_eta, fatJet1_phi, fatJet1_msoftdrop;
+  Float_t fatJet1_GloParT_massVis, fatJet1_GloParT_massRes;
   Float_t fatJet1_ParticleNetLegacy_XbbVsQCD;
   Float_t fatJet1_GloParT_XbbVsQCD;
   Float_t fatJet1_Tau3OverTau2;
   Float_t fatJet2_pt, fatJet2_eta, fatJet2_msoftdrop;
+  Float_t fatJet2_GloParT_massVis, fatJet2_GloParT_massRes;
   Float_t MET, lep1_pt, dR_LFJ, dR_J1FJ, dR_J2FJ, dR_JmaxL;
 
   ntuples->SetBranchAddress("weight", &weight);
   ntuples->SetBranchAddress("fatJet1_pt", &fatJet1_pt);
   ntuples->SetBranchAddress("fatJet1_eta", &fatJet1_eta);
   ntuples->SetBranchAddress("fatJet1_msoftdrop", &fatJet1_msoftdrop);
+  ntuples->SetBranchAddress("fatJet1_GloParT_massVis", &fatJet1_GloParT_massVis);
+  ntuples->SetBranchAddress("fatJet1_GloParT_massRes", &fatJet1_GloParT_massRes);
   ntuples->SetBranchAddress("fatJet1_ParticleNetLegacy_XbbVsQCD",
                             &fatJet1_ParticleNetLegacy_XbbVsQCD);
   ntuples->SetBranchAddress("fatJet1_Tau3OverTau2", &fatJet1_Tau3OverTau2);
@@ -99,6 +120,8 @@ void make_hist(
   ntuples->SetBranchAddress("fatJet2_pt", &fatJet2_pt);
   ntuples->SetBranchAddress("fatJet2_eta", &fatJet2_eta);
   ntuples->SetBranchAddress("fatJet2_msoftdrop", &fatJet2_msoftdrop);
+  ntuples->SetBranchAddress("fatJet2_GloParT_massVis", &fatJet2_GloParT_massVis);
+  ntuples->SetBranchAddress("fatJet2_GloParT_massRes", &fatJet2_GloParT_massRes);
   ntuples->SetBranchAddress("MET", &MET);
   ntuples->SetBranchAddress("lep1_pt", &lep1_pt);
   ntuples->SetBranchAddress("dR_LFJ", &dR_LFJ);
@@ -108,6 +131,7 @@ void make_hist(
 
   double pt_MIN = 250.0;
 
+  bool need_write = apply_sf_txbb || apply_sf_tau32;
   for (int i = 0; i < ntuples->GetEntries(); i++) {
     ntuples->GetEntry(i);
 
@@ -142,6 +166,8 @@ void make_hist(
     _FatJet1_pt->Fill(fatJet1_pt, weight);
     _FatJet1_eta->Fill(fatJet1_eta, weight);
     _FatJet1_MassSD->Fill(fatJet1_msoftdrop, weight);
+    _FatJet1_GloParT_MassVis->Fill(fatJet1_GloParT_massVis, weight);
+    _FatJet1_GloParT_MassRes->Fill(fatJet1_GloParT_massRes, weight);
     _FatJet1_ParticleNetLegacy_XbbVsQCD->Fill(
         fatJet1_ParticleNetLegacy_XbbVsQCD, weight);
     _FatJet1_GloParT_XbbVsQCD->Fill(fatJet1_GloParT_XbbVsQCD, weight);
@@ -149,6 +175,8 @@ void make_hist(
     _FatJet2_pt->Fill(fatJet2_pt, weight);
     _FatJet2_eta->Fill(fatJet2_eta, weight);
     _FatJet2_MassSD->Fill(fatJet2_msoftdrop, weight);
+    _FatJet2_GloParT_MassVis->Fill(fatJet2_GloParT_massVis, weight);
+    _FatJet2_GloParT_MassRes->Fill(fatJet2_GloParT_massRes, weight);
     _MET->Fill(MET, weight);
     _lep1_pt->Fill(lep1_pt, weight);
     _dR_LFJ->Fill(dR_LFJ, weight);
@@ -161,21 +189,28 @@ void make_hist(
   f->cd();      // Make sure we're writing to the output file
   
   // Write each histogram explicitly
-  _FatJet1_pt->Write();
-  _FatJet1_eta->Write();
-  _FatJet1_MassSD->Write();
-  _FatJet1_ParticleNetLegacy_XbbVsQCD->Write();
-  _FatJet1_GloParT_XbbVsQCD->Write();
-  _FatJet1_Tau3OverTau2->Write();
-  _FatJet2_pt->Write();
-  _FatJet2_eta->Write();
-  _FatJet2_MassSD->Write();
-  _MET->Write();
-  _lep1_pt->Write();
-  _dR_LFJ->Write();
-  _dR_J1FJ->Write();
-  _dR_J2FJ->Write();
-  _dR_JmaxL->Write();
+  if (need_write) {
+    _FatJet1_pt->Write();
+    _FatJet1_eta->Write();
+    _FatJet1_MassSD->Write();
+    _FatJet1_GloParT_MassVis->Write();
+    _FatJet1_GloParT_MassRes->Write();
+    _FatJet1_ParticleNetLegacy_XbbVsQCD->Write();
+    _FatJet1_GloParT_XbbVsQCD->Write();
+    _FatJet1_Tau3OverTau2->Write();
+    _FatJet2_pt->Write();
+    _FatJet2_eta->Write();
+    _FatJet2_MassSD->Write();
+    _FatJet2_GloParT_MassVis->Write();
+    _FatJet2_GloParT_MassRes->Write();
+    _MET->Write();
+    _lep1_pt->Write();
+    _dR_LFJ->Write();
+    _dR_J1FJ->Write();
+    _dR_J2FJ->Write();
+    _dR_JmaxL->Write();
+  }
+  
   
   f->Write();
   
