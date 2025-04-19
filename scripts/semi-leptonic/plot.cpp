@@ -6,12 +6,16 @@
 #include <TH1D.h>
 #include <iostream>
 #include <math.h>
-#include "kfact.h"
-#include "TXbb.h"
 #include <sstream>
 #include <vector>
+#include "TFile.h"
+#include "TLegend.h"
+#include "TPaveText.h"
 
-#define PLOT_CHI_2 false
+#include "kfact.h"
+#include "TXbb.h"
+
+#define PLOT_CHI_2 true
 
 void plot(const std::string &year,         // 2022, 2023
           const std::string &path_data,    // path to the data root file
@@ -64,6 +68,14 @@ void plot(const std::string &year,         // 2022, 2023
   TH1D *_VJ_var = (TH1D *)f_VJ->Get(variable);
   TH1D *_ttHto2B_var = (TH1D *)f_ttHto2B->Get(variable);
 
+  // Enable proper error calculation for all histograms
+  _Data_var->Sumw2();
+  _QCD_var->Sumw2();
+  _TTbar_var->Sumw2();
+  _VV_var->Sumw2();
+  _VJ_var->Sumw2();
+  _ttHto2B_var->Sumw2();
+
   // Float_t kfact = 0.9547;
   Float_t kfact;
   if (year == "2023") {
@@ -113,6 +125,9 @@ void plot(const std::string &year,         // 2022, 2023
     int reb = 5 * (N_TXbb / 100);
 
     if (variable.Contains("GloParT") && variable.Contains("Mass")) {
+      reb = 2 * (N_TXbb / 100);
+    }
+    if (variable.Contains("pTjj")) {
       reb = 2 * (N_TXbb / 100);
     }
 
@@ -212,30 +227,38 @@ void plot(const std::string &year,         // 2022, 2023
   _QCD_var->SetMaximum(ymax);
   _QCD_var->SetMinimum(ymin);
 
-  _Data_var->Draw("E same");
-  _Data_var->SetMarkerColor(1);
-  _Data_var->SetMarkerStyle(20);
-  _Data_var->SetMarkerSize(1.1);
-  _Data_var->SetLineColor(1);
-  _Data_var->SetLineWidth(3);
-  _Data_var->SetMaximum(ymax);
-  _Data_var->SetMinimum(ymin);
-
-  c1_1->Modified();
-  c1->cd();
-
   TH1D *bkgdErr = (TH1D *)_TTbar_var->Clone("bkgdErr");
-  bkgdErr->SetFillStyle(3013);
-  bkgdErr->SetFillColor(1);
-  bkgdErr->SetMarkerStyle(21);
+  bkgdErr->SetFillStyle(3004); // More visible hatching pattern
+  bkgdErr->SetFillColor(kBlack); // Black is more visible
+  bkgdErr->SetLineColor(kBlack);
+  bkgdErr->SetLineWidth(1);
+  bkgdErr->SetMarkerStyle(0);
   bkgdErr->SetMarkerSize(0);
 
-  for (int iB = 1; iB <= _Data_var->GetSize(); ++iB) {
-    float eStat = bkgdErr->GetBinError(iB);
+  // Calculate total errors for the MC histogram
+  for (int iB = 1; iB <= _TTbar_var->GetNbinsX(); ++iB) {
+    float eStat = _TTbar_var->GetBinError(iB);
+    // You might want to add systematic uncertainties here if available
     float Err = TMath::Sqrt(eStat * eStat);
     bkgdErr->SetBinError(iB, Err);
     bkgdErr->SetBinContent(iB, _TTbar_var->GetBinContent(iB));
   }
+
+  // Draw the error band on the main plot
+  bkgdErr->Draw("E2 same"); // E2 draws error bands
+
+  // Setup data points with proper error bars
+  _Data_var->SetMarkerColor(kBlack);
+  _Data_var->SetMarkerStyle(20); // Filled circle
+  _Data_var->SetMarkerSize(1.1);
+  _Data_var->SetLineColor(kBlack);
+  _Data_var->SetLineWidth(2);
+  
+  // Draw data with error bars
+  _Data_var->Draw("E same"); // E draws error bars
+
+  c1_1->Modified();
+  c1->cd();
 
   float chi2 = 0;
   for (int iB = 1; iB <= _Data_var->GetSize(); ++iB) {
@@ -250,56 +273,77 @@ void plot(const std::string &year,         // 2022, 2023
   std::cout << "Chi2 = " << chi2 << std::endl;
   std::cout << std::endl;
 
-  TH1D *ratioH = (TH1D *)_TTbar_var->Clone("ratioH");
+  TH1D *ratioH = (TH1D *)_Data_var->Clone("ratioH");
   TH1D *ratioErrH = (TH1D *)bkgdErr->Clone("ratioErrH");
-  ratioH->SetMarkerColor(1);
+  
+  // Setup ratio histogram style
+  ratioH->SetMarkerColor(kBlack);
   ratioH->SetMarkerStyle(20);
-  ratioH->SetMarkerSize(1.4);
-  ratioH->SetLineColor(1);
+  ratioH->SetMarkerSize(1.2);
+  ratioH->SetLineColor(kBlack);
+  ratioH->SetLineWidth(2);
+  
   ratioH->GetXaxis()->SetLabelFont(42);
   ratioH->GetXaxis()->SetLabelOffset(0.02);
   ratioH->GetXaxis()->SetLabelSize(0.15);
   ratioH->GetXaxis()->SetNdivisions(505);
   ratioH->GetXaxis()->SetTickLength(0.07);
 
-  ratioH->GetYaxis()->SetRangeUser(0.2, 2.0);
+  ratioH->GetYaxis()->SetRangeUser(0.5, 1.5); // Adjust range to better show errors
   ratioH->GetYaxis()->SetNdivisions(505);
   ratioH->GetYaxis()->SetTitle("Data / MC");
   ratioH->GetYaxis()->SetLabelFont(42);
-  ratioH->GetYaxis()->SetLabelOffset(0.1 / 5);
+  ratioH->GetYaxis()->SetLabelOffset(0.01);
   ratioH->GetYaxis()->SetLabelSize(0.13);
   ratioH->GetYaxis()->SetTitleOffset(0.38);
   ratioH->GetYaxis()->SetTickLength(0.02);
   ratioH->GetYaxis()->SetTitleSize(0.19);
-  ratioH->GetYaxis()->SetLabelOffset(0.01);
-  ratioH->SetMarkerSize(1.2);
 
-  for (int iB = 1; iB <= _Data_var->GetSize(); ++iB) {
-    float x1 = _Data_var->GetBinContent(iB);
-    float x2 = _TTbar_var->GetBinContent(iB);
+  // Calculate ratio and errors properly
+  for (int iB = 1; iB <= ratioH->GetNbinsX(); ++iB) {
+    float dataVal = _Data_var->GetBinContent(iB);
+    float dataErr = _Data_var->GetBinError(iB);
+    float mcVal = _TTbar_var->GetBinContent(iB);
+    float mcErr = bkgdErr->GetBinError(iB);
+    
+    // Set the error band to be centered at 1.0
     ratioErrH->SetBinContent(iB, 1.0);
-    ratioErrH->SetBinError(iB, 0.0);
-    float xBkg = bkgdErr->GetBinContent(iB);
-    float errBkg = bkgdErr->GetBinError(iB);
-    if (xBkg > 0) {
-      float relErr = errBkg / xBkg;
-      ratioErrH->SetBinError(iB, relErr);
-    }
-    if (x1 > 0 && x2 > 0) {
-      float e1 = _TTbar_var->GetBinError(iB);
-      float ratio = x1 / x2;
-      float eratio = e1 / x2;
-      ratioH->SetBinContent(iB, ratio);
-      ratioH->SetBinError(iB, eratio);
+    
+    // Calculate relative error for the MC prediction
+    if (mcVal > 1e-6) {
+      ratioErrH->SetBinError(iB, mcErr / mcVal);
     } else {
-      ratioH->SetBinContent(iB, 1000);
+      ratioErrH->SetBinError(iB, 0);
+    }
+    
+    // Calculate the data/MC ratio with proper error propagation
+    if (mcVal > 1e-6) {
+      float ratio = dataVal / mcVal;
+      
+      // Propagate errors - use data error for simplicity
+      float ratioErr = 0;
+      if (dataVal > 0) {
+        ratioErr = dataErr / mcVal;
+      }
+      
+      ratioH->SetBinContent(iB, ratio);
+      ratioH->SetBinError(iB, ratioErr);
+    } else {
+      ratioH->SetBinContent(iB, 0);
+      ratioH->SetBinError(iB, 0);
     }
   }
 
   // print the ratio
   std::cout << "Data / MC: ";
-  for (int i = 1; i <= ratioH->GetNbinsX(); i++)
+  for (int i = 1; i <= ratioH->GetNbinsX(); i++) {
     std::cout << ratioH->GetBinContent(i) << ", ";
+  }
+  std::cout << std::endl;
+  std::cout << "Data / MC error: ";
+  for (int i = 1; i <= ratioH->GetNbinsX(); i++) {
+    std::cout << ratioH->GetBinError(i) << ", ";
+  }
   std::cout << std::endl;
 
   TPad *c1_2 = new TPad("lower", "pad", 0.01, 0.11, 0.75, 0.28);
@@ -326,9 +370,28 @@ void plot(const std::string &year,         // 2022, 2023
   c1_2->SetFrameBorderMode(0);
   c1_2->SetFrameBorderSize(10);
 
-  ratioH->Draw("e1");
+  // Make the error band in the ratio plot more visible
+  ratioErrH->SetFillStyle(3004);
+  ratioErrH->SetFillColor(kBlack);
+  ratioErrH->SetLineColor(kBlack);
+  ratioErrH->SetLineWidth(1);
+  ratioErrH->SetMarkerStyle(0);
+  ratioErrH->SetMarkerSize(0);
+
+  // Draw ratio plot with error bars
+  ratioH->Draw("E1"); // E1 draws error bars
   ratioH->SetTitle("");
-  ratioErrH->Draw("e2same");
+  
+  // Draw error band
+  ratioErrH->Draw("E2 same");
+  
+  // Draw reference line at y=1 
+  TLine *line = new TLine(ratioH->GetXaxis()->GetXmin(), 1.0, 
+                         ratioH->GetXaxis()->GetXmax(), 1.0);
+  line->SetLineColor(kRed);
+  line->SetLineStyle(2); // Dashed
+  line->SetLineWidth(2);
+  line->Draw();
 
   c1_2->Modified();
   c1_2->RedrawAxis();
@@ -343,7 +406,7 @@ void plot(const std::string &year,         // 2022, 2023
   leg->AddEntry(_VV_var, "VV", "f");
   leg->AddEntry(_ttHto2B_var, "ttHto2B", "f");
   leg->AddEntry(_QCD_var, "QCD", "f");
-  leg->AddEntry(ratioErrH, "MC stat. unc.", "f");
+  leg->AddEntry(bkgdErr, "MC stat. unc.", "f");
   leg->Draw("same");
 
   TPaveText *t1 = new TPaveText(0.16, 0.92, 0.3, 0.97);

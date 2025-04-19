@@ -16,15 +16,26 @@
 #include "TMVA/Reader.h"
 #include "TMVA/Tools.h"
 
-#define GLOPART_MASS_MIN 90
-#define GLOPART_MASS_MAX 160
+#define GLOPART_MASS_MIN 0
+#define GLOPART_MASS_MAX 350
 #define GLOPART_MASS_STEP 1
+
+
+void updateHistErr(TH1D* hist, Float_t value, Float_t err, Float_t weight) {
+    // Find the bin corresponding to the value
+    int bin = hist->FindBin(value);
+    
+    // Update the bin error using quadrature sum
+    double curr_err = hist->GetBinError(bin);
+    double new_err = sqrt(pow(curr_err, 2) + pow(weight * err, 2));
+    hist->SetBinError(bin, new_err);
+}
 
 void make_hist(
     const std::string &input_path,         // path to the input root file
     const std::string &output_path,        // path to the output root file
     const std::string &sf_path_tau32 = "", // path to the Tau32 SF root file
-    const std::string &sf_path_txbb = ""   // path to the Xbb SF root file
+    const std::string &sf_path_txbb = ""  // path to the Xbb SF root file
 ) {
   TFile *f = new TFile(output_path.c_str(), "RECREATE");
 
@@ -32,7 +43,7 @@ void make_hist(
   std::cout << "Output Path: " << output_path << std::endl;
 
   bool apply_sf_tau32 = false;
-  bool apply_sf_txbb = false;
+  bool apply_sf_TXbb = false;
   TH1D *_SF_Tau32 = nullptr;
   TH1D *_SF_Xbb = nullptr;
   TFile *f_Tau3toTau2 = nullptr;
@@ -54,7 +65,7 @@ void make_hist(
       throw std::runtime_error("Could not load Xbb SF histogram");
     }
     std::cout << "Xbb SF Path: " << sf_path_txbb << std::endl;
-    apply_sf_txbb = true;
+    apply_sf_TXbb = true;
   }
 
   int N_GloParT_Mass = (GLOPART_MASS_MAX - GLOPART_MASS_MIN) / GLOPART_MASS_STEP;
@@ -80,10 +91,10 @@ void make_hist(
   TH1D *_FatJet2_MassSD =
       new TH1D("FatJet2_MassSD", "FatJet2_MassSD", 500, 0, 500);
   TH1D *_FatJet2_GloParT_MassVis =
-      new TH1D("FatJet2_GloParT_MassVis", "FatJet1_GloParT_MassVis", 
+      new TH1D("FatJet2_GloParT_MassVis", "FatJet2_GloParT_MassVis", 
                N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
   TH1D *_FatJet2_GloParT_MassRes =
-      new TH1D("FatJet2_GloParT_MassRes", "FatJet1_GloParT_MassRes", 
+      new TH1D("FatJet2_GloParT_MassRes", "FatJet2_GloParT_MassRes", 
                N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
 
   TH1D *_MET = new TH1D("MET", "MET", 100, 0, 500);
@@ -131,7 +142,6 @@ void make_hist(
 
   double pt_MIN = 250.0;
 
-  bool need_write = apply_sf_txbb || apply_sf_tau32;
   for (int i = 0; i < ntuples->GetEntries(); i++) {
     ntuples->GetEntry(i);
 
@@ -144,24 +154,40 @@ void make_hist(
 
     // adding Xbb SF
     Float_t sf_TXbb = 1.0;
-    if (apply_sf_txbb) {
+    Float_t sf_TXbb_err = 0.0;
+    if (apply_sf_TXbb) {
       Int_t bin_TXbb = _SF_Xbb->GetXaxis()->FindBin(fatJet1_GloParT_XbbVsQCD);
       sf_TXbb = _SF_Xbb->GetBinContent(bin_TXbb);
-      if (sf_TXbb <= 0) {
+      sf_TXbb_err = _SF_Xbb->GetBinError(bin_TXbb);
+      if (sf_TXbb <= 0 || sf_TXbb_err < 0) {
         sf_TXbb = 1.0;
+        sf_TXbb_err = 0.0;
       }
     }
-    weight = weight * sf_TXbb;
 
     Float_t sf_tau32 = 1.0;
+    Float_t sf_tau32_err = 0.0;
     if (apply_sf_tau32) {
       Int_t bin_tau32 = _SF_Tau32->GetXaxis()->FindBin(fatJet1_Tau3OverTau2);
       sf_tau32 = _SF_Tau32->GetBinContent(bin_tau32);
-      if (sf_tau32 <= 0) {
+      sf_tau32_err = _SF_Tau32->GetBinError(bin_tau32);
+      if (sf_tau32 <= 0 || sf_tau32_err < 0) {
         sf_tau32 = 1.0;
+        sf_tau32_err = 0.0;
       }
     }
-    weight = weight * sf_tau32;
+
+    weight = weight * sf_TXbb * sf_tau32;
+    Float_t sf_err_sq = 0.0;
+    if (apply_sf_TXbb) {
+        // partial derivative of weight w.r.t. sf_TXbb
+        sf_err_sq += pow(sf_TXbb_err * sf_tau32, 2);
+    }
+    if (apply_sf_tau32) {
+      // partial derivative of weight w.r.t. sf_tau32
+        sf_err_sq += pow(sf_TXbb * sf_tau32_err, 2);
+    }
+    Float_t sf_err = sqrt(sf_err_sq);
 
     _FatJet1_pt->Fill(fatJet1_pt, weight);
     _FatJet1_eta->Fill(fatJet1_eta, weight);
@@ -183,13 +209,34 @@ void make_hist(
     _dR_J1FJ->Fill(dR_J1FJ, weight);
     _dR_J2FJ->Fill(dR_J2FJ, weight);
     _dR_JmaxL->Fill(dR_JmaxL, weight);
+
+    if (apply_sf_TXbb || apply_sf_tau32) {
+      updateHistErr(_FatJet1_pt, fatJet1_pt, sf_err, weight);
+      updateHistErr(_FatJet1_eta, fatJet1_eta, sf_err, weight);
+      updateHistErr(_FatJet1_MassSD, fatJet1_msoftdrop, sf_err, weight);
+      updateHistErr(_FatJet1_GloParT_MassVis, fatJet1_GloParT_massVis, sf_err, weight);
+      updateHistErr(_FatJet1_GloParT_MassRes, fatJet1_GloParT_massRes, sf_err, weight);
+      updateHistErr(_FatJet1_ParticleNetLegacy_XbbVsQCD, fatJet1_ParticleNetLegacy_XbbVsQCD, sf_err, weight);
+      updateHistErr(_FatJet1_GloParT_XbbVsQCD, fatJet1_GloParT_XbbVsQCD, sf_err, weight);
+      updateHistErr(_FatJet1_Tau3OverTau2, fatJet1_Tau3OverTau2, sf_err, weight);
+      updateHistErr(_FatJet2_pt, fatJet2_pt, sf_err, weight);
+      updateHistErr(_FatJet2_eta, fatJet2_eta, sf_err, weight);
+      updateHistErr(_FatJet2_MassSD, fatJet2_msoftdrop, sf_err, weight);
+      updateHistErr(_FatJet2_GloParT_MassVis, fatJet2_GloParT_massVis, sf_err, weight);
+      updateHistErr(_FatJet2_GloParT_MassRes, fatJet2_GloParT_massRes, sf_err, weight);
+      updateHistErr(_MET, MET, sf_err, weight);
+      updateHistErr(_lep1_pt, lep1_pt, sf_err, weight);
+      updateHistErr(_dR_LFJ, dR_LFJ, sf_err, weight);
+      updateHistErr(_dR_J1FJ, dR_J1FJ, sf_err, weight);
+      updateHistErr(_dR_J2FJ, dR_J2FJ, sf_err, weight);
+      updateHistErr(_dR_JmaxL, dR_JmaxL, sf_err, weight);
+    }
   }
 
   f0->Close();  // Close input file
-  f->cd();      // Make sure we're writing to the output file
   
-  // Write each histogram explicitly
-  if (need_write) {
+  if (apply_sf_TXbb || apply_sf_tau32) {
+    f->cd();      // Make sure we're writing to the output file
     _FatJet1_pt->Write();
     _FatJet1_eta->Write();
     _FatJet1_MassSD->Write();
@@ -210,9 +257,17 @@ void make_hist(
     _dR_J2FJ->Write();
     _dR_JmaxL->Write();
   }
-  
-  
   f->Write();
+
+  // Close scale factor files
+  if (f_Tau3toTau2) {
+    f_Tau3toTau2->Close();
+    delete f_Tau3toTau2;
+  }
+  if (f_Xbb) {
+    f_Xbb->Close();
+    delete f_Xbb;
+  }
   
   delete f;
 }

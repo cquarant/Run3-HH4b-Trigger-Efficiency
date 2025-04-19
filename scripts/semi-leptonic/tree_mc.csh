@@ -313,15 +313,15 @@ process_era() {
     local era=$1
     echo "Processing era: ${era}"
 
-    # process_QCD ${era}
-    # process_TTbar ${era}
-    # process_VV ${era}
-    # process_Wto2Q ${era}
-    # process_Zto2Q ${era}
+    process_QCD ${era}
+    process_TTbar ${era}
+    process_VV ${era}
+    process_Wto2Q ${era}
+    process_Zto2Q ${era}
     process_WtoLNu ${era}
-    # process_DYto2L ${era}
+    process_DYto2L ${era}
     process_VJ ${era}
-    # process_ttHto2B ${era}
+    process_ttHto2B ${era}
 
     echo "MC processing for era ${era} completed successfully!"
 }
