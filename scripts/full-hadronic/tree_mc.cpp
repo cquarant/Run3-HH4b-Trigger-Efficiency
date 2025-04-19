@@ -692,6 +692,8 @@ void tree_mc(const std::string &year,      // 2022, 2023
   InputTree->SetBranchAddress("fatJet2_Tau3OverTau2", &FatJet2_Tau3OverTau2);
   InputTree->SetBranchAddress("fatJet2_globalParT_XbbVsQCD",
                               &FatJet2_GloParT_XbbVsQCD);
+  InputTree->SetBranchAddress("fatJet2_globalParT_massRes", &FatJet2_GloParT_massRes);
+  InputTree->SetBranchAddress("fatJet2_globalParT_massVis", &FatJet2_GloParT_massVis);
 
   // gen-level jets
   InputTree->SetBranchAddress("nGenJet", &nGenJet);
@@ -753,11 +755,11 @@ void tree_mc(const std::string &year,      // 2022, 2023
 
     // Selections
     // // pT > 450, |eta| < 2.5, massSD > 50, TXbb > 0.1, tau3/tau2 < 0.46
-    // if (FatJet1_pt < 450 || fabs(FatJet1_eta) > 2.5 || FatJet1_MassSD < 50 || FatJet1_GloParT_XbbVsQCD < 0.1 || FatJet1_Tau3OverTau2 > 0.46) continue;
-    // if (FatJet2_pt < 450 || fabs(FatJet2_eta) > 2.5 || FatJet2_MassSD < 50 || FatJet2_GloParT_XbbVsQCD < 0.1 || FatJet2_Tau3OverTau2 > 0.46) continue;
-    // pT > 450, |eta| < 2.5, massSD > 50, TXbb > 0.1, tau3/tau2 < 0.46
-    if (FatJet1_pt < 450 || fabs(FatJet1_eta) > 2.5 || FatJet1_MassSD < 50) continue;
-    if (FatJet2_pt < 450 || fabs(FatJet2_eta) > 2.5 || FatJet2_MassSD < 50) continue;
+    if (FatJet1_pt <= 450 || fabs(FatJet1_eta) >= 2.5 || FatJet1_MassSD <= 50 || FatJet1_GloParT_XbbVsQCD <= 0.1 || FatJet1_Tau3OverTau2 >= 0.46) continue;
+    if (FatJet2_pt <= 450 || fabs(FatJet2_eta) >= 2.5 || FatJet2_MassSD <= 50 || FatJet2_GloParT_XbbVsQCD <= 0.1 || FatJet2_Tau3OverTau2 >= 0.46) continue;
+    // // pT > 450, |eta| < 2.5, massSD > 50, TXbb > 0.1, tau3/tau2 < 0.46
+    // if (FatJet1_pt < 450 || fabs(FatJet1_eta) > 2.5 || FatJet1_MassSD < 50) continue;
+    // if (FatJet2_pt < 450 || fabs(FatJet2_eta) > 2.5 || FatJet2_MassSD < 50) continue;
 
 
     // Each jet matched to HLT_AK8PFJet425_SoftDropMass40 trigger
