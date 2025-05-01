@@ -50,7 +50,9 @@ double get_dynamic_marker_size(TH2D *hist, double min_size = 0.05,
 void set_histo_style(TH2D *hist, std::string plot_title,
                      const std::string &x_axis_title,
                      const std::string &y_axis_title,
-                     float hist_min, float hist_max) {
+                     const std::string &z_axis_title,
+                     float hist_min, float hist_max
+                    ) {
   hist->SetMarkerStyle(23);
   // hist->SetMarkerSize(0.05);
   // hist->SetMarkerSize(1.0);
@@ -81,7 +83,7 @@ void set_histo_style(TH2D *hist, std::string plot_title,
   hist->GetYaxis()->SetNdivisions(510);   // primary:5, secondary:10
 
   // z axis
-  hist->GetZaxis()->SetTitle("Efficiency");
+  hist->GetZaxis()->SetTitle(z_axis_title.c_str());
 
   if (SET_LOG) {
     hist->GetYaxis()->SetMoreLogLabels(kTRUE); // Show more labels in log scale
@@ -208,7 +210,7 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   std::string x_axis_title = "FatJet m_{SD} [GeV]";
   std::string y_axis_title = "FatJet p_{T} [GeV]";
 
-  set_histo_style(_eff_data, plot_title, x_axis_title, y_axis_title, 0, 1.2);
+  set_histo_style(_eff_data, plot_title, x_axis_title, y_axis_title, "Efficiency", 0, 1.2);
   c1->cd();
   _eff_data->GetXaxis()->SetRangeUser(x_min, x_max);
   _eff_data->GetYaxis()->SetRangeUser(y_min, y_max);
@@ -216,7 +218,7 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   c1->SaveAs(figure_data_path.c_str());
 
   // Draw MC efficiency
-  set_histo_style(_eff_mc, plot_title, x_axis_title, y_axis_title, 0, 1.2);
+  set_histo_style(_eff_mc, plot_title, x_axis_title, y_axis_title, "Efficiency", 0, 1.2);
   c2->cd();
   _eff_mc->GetXaxis()->SetRangeUser(x_min, x_max);
   _eff_mc->GetYaxis()->SetRangeUser(y_min, y_max);
@@ -224,7 +226,7 @@ void trig_eff_mass_pt(const std::string &hist_mc_path,
   c2->SaveAs(figure_mc_path.c_str());
 
   // Draw Scale Factors
-  set_histo_style(_sf, plot_title, x_axis_title, y_axis_title, 0.5, 1.5);
+  set_histo_style(_sf, plot_title, x_axis_title, y_axis_title, "SF", 0.5, 1.5);
   c3->cd();
   _sf->GetXaxis()->SetRangeUser(x_min, x_max);
   _sf->GetYaxis()->SetRangeUser(y_min, y_max);
