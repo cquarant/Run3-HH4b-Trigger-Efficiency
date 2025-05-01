@@ -24,7 +24,9 @@ mkdir -p ${PLOT_DIR}
 
 # Variables and their labels
 declare -A LABEL_DICT
-VARS=("FatJet1_Tau3OverTau2" "FatJet1_GloParT_XbbVsQCD" "FatJet1_GloParT_MassVis" "FatJet2_Tau3OverTau2" "FatJet2_GloParT_XbbVsQCD" "FatJet2_GloParT_MassVis" "FatJet1_pt" "FatJet1_MassSD" "FatJet2_pt" "FatJet2_MassSD")
+VARS=("pTjj" "FatJet1_Tau3OverTau2" "FatJet1_GloParT_XbbVsQCD" "FatJet1_GloParT_MassVis" "FatJet2_Tau3OverTau2" "FatJet2_GloParT_XbbVsQCD" "FatJet2_GloParT_MassVis" "FatJet1_pt" "FatJet1_MassSD" "FatJet2_pt" "FatJet2_MassSD")
+
+LABEL_DICT["pTjj"]="p_{T}^{JJ} [GeV]"
 
 LABEL_DICT["FatJet1_pt"]="FatJet p_{T} [GeV]"
 LABEL_DICT["FatJet1_MassSD"]="FatJet m_{SD} [GeV]"

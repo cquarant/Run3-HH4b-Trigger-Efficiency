@@ -16,8 +16,8 @@
 #include "TMVA/Reader.h"
 #include "TMVA/Tools.h"
 
-#define GLOPART_MASS_MIN 0
-#define GLOPART_MASS_MAX 350
+#define GLOPART_MASS_MIN 90
+#define GLOPART_MASS_MAX 160
 #define GLOPART_MASS_STEP 1
 
 
@@ -123,6 +123,9 @@ void make_hist(
                                                     "FatJet2_GloParT_XbbVsQCD", N_TXbb, 0.0, 1.0);
     hists[var]["FatJet2_Tau3OverTau2"] = new TH1D(("FatJet2_Tau3OverTau2_" + var).c_str(), 
                                                 "FatJet2_Tau3OverTau2", 100, 0.0, 1.0);
+
+    // pTjj
+    hists[var]["pTjj"] = new TH1D(("pTjj_" + var).c_str(), "pTjj", 200, 0, 1200);
                                                 
     // Enable proper error calculation for all histograms
     for (auto& hist_pair : hists[var]) {
@@ -142,6 +145,7 @@ void make_hist(
   Float_t fatJet2_pt, fatJet2_eta, fatJet2_msoftdrop;
   Float_t fatJet2_GloParT_massVis, fatJet2_GloParT_massRes;
   Float_t fatJet2_GloParT_XbbVsQCD, fatJet2_Tau3OverTau2;
+  Float_t pTjj;
   
   // Set branch addresses
   ntuples->SetBranchAddress("weight", &weight);
@@ -160,6 +164,8 @@ void make_hist(
   ntuples->SetBranchAddress("fatJet2_GloParT_massRes", &fatJet2_GloParT_massRes);
   ntuples->SetBranchAddress("fatJet2_Tau3OverTau2", &fatJet2_Tau3OverTau2);
   ntuples->SetBranchAddress("fatJet2_GloParT_XbbVsQCD", &fatJet2_GloParT_XbbVsQCD);
+  ntuples->SetBranchAddress("pTjj", &pTjj);
+
 
   // Loop over all events
   for (int i = 0; i < ntuples->GetEntries(); i++) {
@@ -170,6 +176,10 @@ void make_hist(
         fatJet1_GloParT_XbbVsQCD <= 0.1 || fatJet1_Tau3OverTau2 >= 0.46) continue;
     if (fatJet2_pt <= 450 || fabs(fatJet2_eta) >= 2.5 || fatJet2_msoftdrop <= 50 || 
         fatJet2_GloParT_XbbVsQCD <= 0.1 || fatJet2_Tau3OverTau2 >= 0.46) continue;
+
+    // TODO: now add cut on massVis
+    // if (fatJet1_GloParT_massVis < GLOPART_MASS_MIN || fatJet1_GloParT_massVis > GLOPART_MASS_MAX) continue;
+    if (fatJet2_GloParT_massVis < GLOPART_MASS_MIN || fatJet2_GloParT_massVis > GLOPART_MASS_MAX) continue;
 
     // Get scale factors and their uncertainties
     Float_t sf_TXbb = 1.0, sf_TXbb_err = 0.0;
@@ -238,6 +248,8 @@ void make_hist(
     hists["nominal"]["FatJet2_GloParT_MassRes"]->Fill(fatJet2_GloParT_massRes, weight_nominal);
     hists["nominal"]["FatJet2_GloParT_XbbVsQCD"]->Fill(fatJet2_GloParT_XbbVsQCD, weight_nominal);
     hists["nominal"]["FatJet2_Tau3OverTau2"]->Fill(fatJet2_Tau3OverTau2, weight_nominal);
+
+    hists["nominal"]["pTjj"]->Fill(pTjj, weight_nominal);
     
     // Fill up/down variations if any scale factors are applied
     if (apply_any_sf) {
@@ -265,6 +277,8 @@ void make_hist(
       hists["up"]["FatJet2_GloParT_MassRes"]->Fill(fatJet2_GloParT_massRes, weight_up);
       hists["up"]["FatJet2_GloParT_XbbVsQCD"]->Fill(fatJet2_GloParT_XbbVsQCD, weight_up);
       hists["up"]["FatJet2_Tau3OverTau2"]->Fill(fatJet2_Tau3OverTau2, weight_up);
+
+      hists["up"]["pTjj"]->Fill(pTjj, weight_up);
       
       // Down variation
       hists["down"]["FatJet1_pt"]->Fill(fatJet1_pt, weight_down);
@@ -282,6 +296,8 @@ void make_hist(
       hists["down"]["FatJet2_GloParT_MassRes"]->Fill(fatJet2_GloParT_massRes, weight_down);
       hists["down"]["FatJet2_GloParT_XbbVsQCD"]->Fill(fatJet2_GloParT_XbbVsQCD, weight_down);
       hists["down"]["FatJet2_Tau3OverTau2"]->Fill(fatJet2_Tau3OverTau2, weight_down);
+
+      hists["down"]["pTjj"]->Fill(pTjj, weight_down);
     }
   }
 
@@ -308,6 +324,8 @@ void make_hist(
     hists["nominal"]["FatJet2_GloParT_MassRes"]->Write();
     hists["nominal"]["FatJet2_GloParT_XbbVsQCD"]->Write();
     hists["nominal"]["FatJet2_Tau3OverTau2"]->Write();
+
+    hists["nominal"]["pTjj"]->Write();
     
     // Write up variation histograms explicitly
     hists["up"]["FatJet1_pt"]->Write();
@@ -325,6 +343,8 @@ void make_hist(
     hists["up"]["FatJet2_GloParT_MassRes"]->Write();
     hists["up"]["FatJet2_GloParT_XbbVsQCD"]->Write();
     hists["up"]["FatJet2_Tau3OverTau2"]->Write();
+
+    hists["up"]["pTjj"]->Write();
     
     // Write down variation histograms explicitly
     hists["down"]["FatJet1_pt"]->Write();
@@ -342,6 +362,8 @@ void make_hist(
     hists["down"]["FatJet2_GloParT_MassRes"]->Write();
     hists["down"]["FatJet2_GloParT_XbbVsQCD"]->Write();
     hists["down"]["FatJet2_Tau3OverTau2"]->Write();
+
+    hists["down"]["pTjj"]->Write();
   }
   
   // Call Write() on the file to ensure everything is written
