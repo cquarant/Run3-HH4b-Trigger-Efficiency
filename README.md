@@ -7,12 +7,12 @@
     - Run `scripts/sf_mass_pt/scripts/sf_TXbb/histo_data.csh` and `scripts/sf_TXbb/histo_mc.csh`
     - Run `scripts/sf_mass_pt/trig_eff_TXbb.csh`
 
-## Semi-Leptonic Corrections
-1. Prepare trees for the semi-leptonic corrections
-    1. Run `scripts/semi-leptonic/tree_mc.csh` and `scripts/semi-leptonic/tree_data.csh`
-    2. Merge 2022 and 2022EE into 2022, and 2023 and 2023EE into 2023: `scripts/semi-leptonic/merge_trees.csh`
-2. Derive the SF
-    - Run `scripts/semi-leptonic/derive_SF.csh`
+## $\bar{t}t$ Background Shape Corrections
+1. Prepare trees for the semi-leptonic corrections by running `scripts/semi-leptonic/tree_mc.csh` and `scripts/semi-leptonic/tree_data.csh`
+    - CR for $\tau_3 / \tau_2$ and $T_\mathrm{Xbb}$ corrections
+2. Prepare trees for the full-hadronic corrections by running `scripts/full-hadronic/tree_mc.csh` and `scripts/full-hadronic/tree_data.csh`
+    - CR for top recoil $p_\mathrm{T}^{jj}$ corrections
+3. Derive and plot the corrections using notebooks under `scripts/mplhep_plots/`
 
 ## References
 - [Run-3 Analysis Twiki](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis)
