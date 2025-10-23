@@ -21,6 +21,16 @@
 #define GLOPART_MASS_STEP 1
 
 
+void updateHistErr(TH1D* hist, Float_t value, Float_t err, Float_t weight) {
+    // Find the bin corresponding to the value
+    int bin = hist->FindBin(value);
+    
+    // Update the bin error using quadrature sum
+    double curr_err = hist->GetBinError(bin);
+    double new_err = sqrt(pow(curr_err, 2) + pow(weight * err, 2));
+    hist->SetBinError(bin, new_err);
+}
+
 void make_hist(
     const std::string &input_path,         // path to the input root file
     const std::string &output_path,        // path to the output root file
@@ -73,65 +83,34 @@ void make_hist(
 
   int N_GloParT_Mass = (GLOPART_MASS_MAX - GLOPART_MASS_MIN) / GLOPART_MASS_STEP;
   
-  // Define the variations based on whether any scale factors are applied
-  std::vector<std::string> variations = {"nominal"};
+  // FatJet1 histograms
+  TH1D *_FatJet1_pt = new TH1D("FatJet1_pt", "FatJet1_pt", 200, 0, 1200);
+  TH1D *_FatJet1_eta = new TH1D("FatJet1_eta", "FatJet1_eta", 100, -5, 5);
+  TH1D *_FatJet1_MassSD = new TH1D("FatJet1_MassSD", "FatJet1_MassSD", 500, 0, 500);
+  TH1D *_FatJet1_GloParT_MassVis = new TH1D("FatJet1_GloParT_MassVis", "FatJet1_GloParT_MassVis", 
+                                             N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
+  TH1D *_FatJet1_GloParT_MassRes = new TH1D("FatJet1_GloParT_MassRes", "FatJet1_GloParT_MassRes", 
+                                             N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
+  TH1D *_FatJet1_GloParT_XbbVsQCD = new TH1D("FatJet1_GloParT_XbbVsQCD", "FatJet1_GloParT_XbbVsQCD", 
+                                              N_TXbb, 0.0, 1.0);
+  TH1D *_FatJet1_Tau3OverTau2 = new TH1D("FatJet1_Tau3OverTau2", "FatJet1_Tau3OverTau2", 
+                                          100, 0.0, 1.0);
   
-  // Only add up/down variations if any scale factors are applied
-  bool apply_any_sf = apply_sf_tau32 || apply_sf_TXbb || apply_sf_ptjj;
-  if (apply_any_sf) {
-    variations.push_back("up");
-    variations.push_back("down");
-  }
-  
-  // Create map to store all histograms for each variation
-  std::map<std::string, std::map<std::string, TH1D*>> hists;
-  
-  // Initialize histograms for all variations
-  for (const auto& var : variations) {
-    // FatJet1 histograms
-    hists[var]["FatJet1_pt"] = new TH1D(("FatJet1_pt_" + var).c_str(), 
-                                      "FatJet1_pt", 200, 0, 1200);
-    hists[var]["FatJet1_eta"] = new TH1D(("FatJet1_eta_" + var).c_str(), 
-                                       "FatJet1_eta", 100, -5, 5);
-    hists[var]["FatJet1_MassSD"] = new TH1D(("FatJet1_MassSD_" + var).c_str(), 
-                                          "FatJet1_MassSD", 500, 0, 500);
-    hists[var]["FatJet1_GloParT_MassVis"] = new TH1D(("FatJet1_GloParT_MassVis_" + var).c_str(), 
-                                                   "FatJet1_GloParT_MassVis", 
-                                                   N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
-    hists[var]["FatJet1_GloParT_MassRes"] = new TH1D(("FatJet1_GloParT_MassRes_" + var).c_str(), 
-                                                   "FatJet1_GloParT_MassRes", 
-                                                   N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
-    hists[var]["FatJet1_GloParT_XbbVsQCD"] = new TH1D(("FatJet1_GloParT_XbbVsQCD_" + var).c_str(), 
-                                                    "FatJet1_GloParT_XbbVsQCD", N_TXbb, 0.0, 1.0);
-    hists[var]["FatJet1_Tau3OverTau2"] = new TH1D(("FatJet1_Tau3OverTau2_" + var).c_str(), 
-                                                "FatJet1_Tau3OverTau2", 100, 0.0, 1.0);
-    
-    // FatJet 2 Histograms
-    hists[var]["FatJet2_pt"] = new TH1D(("FatJet2_pt_" + var).c_str(), 
-                                      "FatJet2_pt", 200, 0, 1200);
-    hists[var]["FatJet2_eta"] = new TH1D(("FatJet2_eta_" + var).c_str(), 
-                                       "FatJet2_eta", 100, -5, 5);
-    hists[var]["FatJet2_MassSD"] = new TH1D(("FatJet2_MassSD_" + var).c_str(), 
-                                          "FatJet2_MassSD", 500, 0, 500);
-    hists[var]["FatJet2_GloParT_MassVis"] = new TH1D(("FatJet2_GloParT_MassVis_" + var).c_str(), 
-                                                   "FatJet2_GloParT_MassVis", 
-                                                   N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
-    hists[var]["FatJet2_GloParT_MassRes"] = new TH1D(("FatJet2_GloParT_MassRes_" + var).c_str(), 
-                                                   "FatJet2_GloParT_MassRes", 
-                                                   N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
-    hists[var]["FatJet2_GloParT_XbbVsQCD"] = new TH1D(("FatJet2_GloParT_XbbVsQCD_" + var).c_str(), 
-                                                    "FatJet2_GloParT_XbbVsQCD", N_TXbb, 0.0, 1.0);
-    hists[var]["FatJet2_Tau3OverTau2"] = new TH1D(("FatJet2_Tau3OverTau2_" + var).c_str(), 
-                                                "FatJet2_Tau3OverTau2", 100, 0.0, 1.0);
+  // FatJet2 histograms
+  TH1D *_FatJet2_pt = new TH1D("FatJet2_pt", "FatJet2_pt", 200, 0, 1200);
+  TH1D *_FatJet2_eta = new TH1D("FatJet2_eta", "FatJet2_eta", 100, -5, 5);
+  TH1D *_FatJet2_MassSD = new TH1D("FatJet2_MassSD", "FatJet2_MassSD", 500, 0, 500);
+  TH1D *_FatJet2_GloParT_MassVis = new TH1D("FatJet2_GloParT_MassVis", "FatJet2_GloParT_MassVis", 
+                                             N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
+  TH1D *_FatJet2_GloParT_MassRes = new TH1D("FatJet2_GloParT_MassRes", "FatJet2_GloParT_MassRes", 
+                                             N_GloParT_Mass, GLOPART_MASS_MIN, GLOPART_MASS_MAX);
+  TH1D *_FatJet2_GloParT_XbbVsQCD = new TH1D("FatJet2_GloParT_XbbVsQCD", "FatJet2_GloParT_XbbVsQCD", 
+                                              N_TXbb, 0.0, 1.0);
+  TH1D *_FatJet2_Tau3OverTau2 = new TH1D("FatJet2_Tau3OverTau2", "FatJet2_Tau3OverTau2", 
+                                          100, 0.0, 1.0);
 
-    // pTjj
-    hists[var]["pTjj"] = new TH1D(("pTjj_" + var).c_str(), "pTjj", 200, 0, 1200);
-                                                
-    // Enable proper error calculation for all histograms
-    for (auto& hist_pair : hists[var]) {
-      hist_pair.second->Sumw2();
-    }
-  }
+  // pTjj histogram
+  TH1D *_pTjj = new TH1D("pTjj", "pTjj", 200, 0, 1200);
   
   // Open and set up input file
   TFile *f0 = TFile::Open(input_path.c_str());
@@ -166,7 +145,6 @@ void make_hist(
   ntuples->SetBranchAddress("fatJet2_GloParT_XbbVsQCD", &fatJet2_GloParT_XbbVsQCD);
   ntuples->SetBranchAddress("pTjj", &pTjj);
 
-
   // Loop over all events
   for (int i = 0; i < ntuples->GetEntries(); i++) {
     ntuples->GetEntry(i);
@@ -177,7 +155,7 @@ void make_hist(
     if (fatJet2_pt <= 450 || fabs(fatJet2_eta) >= 2.5 || fatJet2_msoftdrop <= 50 || 
         fatJet2_GloParT_XbbVsQCD <= 0.1 || fatJet2_Tau3OverTau2 >= 0.46) continue;
 
-    // TODO: now add cut on massVis
+    // Mass cuts
     // if (fatJet1_GloParT_massVis < GLOPART_MASS_MIN || fatJet1_GloParT_massVis > GLOPART_MASS_MAX) continue;
     if (fatJet2_GloParT_massVis < GLOPART_MASS_MIN || fatJet2_GloParT_massVis > GLOPART_MASS_MAX) continue;
 
@@ -207,15 +185,15 @@ void make_hist(
     }
 
     if (apply_sf_ptjj) {
-      Int_t bin_ptjj = _SF_ptjj->GetXaxis()->FindBin(fatJet1_pt);
+      Int_t bin_ptjj = _SF_ptjj->GetXaxis()->FindBin(pTjj);
       sf_ptjj = _SF_ptjj->GetBinContent(bin_ptjj);
       sf_ptjj_err = _SF_ptjj->GetBinError(bin_ptjj);
-      if (sf_ptjj <= 0 || sf_ptjj_err < 0) {
-        sf_ptjj = 1.0;
-        sf_ptjj_err = 0.0;
-      }
+      // std::cout << "pTjj: " << pTjj << ", bin: " << bin_ptjj << ", SF: " << sf_ptjj << " +/- " << sf_ptjj_err << std::endl;
     }
 
+    // Apply scale factors to weight
+    weight = weight * sf_TXbb * sf_tau32 * sf_ptjj;
+    
     // Calculate combined systematic uncertainty using quadrature sum
     Float_t sf_err_sq = 0.0;
     if (apply_sf_TXbb) {
@@ -228,149 +206,77 @@ void make_hist(
       sf_err_sq += pow(sf_TXbb * sf_tau32 * sf_ptjj_err, 2);
     }
     Float_t sf_err = sqrt(sf_err_sq);
-    
-    // Calculate weights
-    Float_t weight_nominal = weight * sf_TXbb * sf_tau32 * sf_ptjj;
-    
-    // Fill nominal histograms
-    hists["nominal"]["FatJet1_pt"]->Fill(fatJet1_pt, weight_nominal);
-    hists["nominal"]["FatJet1_eta"]->Fill(fatJet1_eta, weight_nominal);
-    hists["nominal"]["FatJet1_MassSD"]->Fill(fatJet1_msoftdrop, weight_nominal);
-    hists["nominal"]["FatJet1_GloParT_MassVis"]->Fill(fatJet1_GloParT_massVis, weight_nominal);
-    hists["nominal"]["FatJet1_GloParT_MassRes"]->Fill(fatJet1_GloParT_massRes, weight_nominal);
-    hists["nominal"]["FatJet1_GloParT_XbbVsQCD"]->Fill(fatJet1_GloParT_XbbVsQCD, weight_nominal);
-    hists["nominal"]["FatJet1_Tau3OverTau2"]->Fill(fatJet1_Tau3OverTau2, weight_nominal);
-    
-    hists["nominal"]["FatJet2_pt"]->Fill(fatJet2_pt, weight_nominal);
-    hists["nominal"]["FatJet2_eta"]->Fill(fatJet2_eta, weight_nominal);
-    hists["nominal"]["FatJet2_MassSD"]->Fill(fatJet2_msoftdrop, weight_nominal);
-    hists["nominal"]["FatJet2_GloParT_MassVis"]->Fill(fatJet2_GloParT_massVis, weight_nominal);
-    hists["nominal"]["FatJet2_GloParT_MassRes"]->Fill(fatJet2_GloParT_massRes, weight_nominal);
-    hists["nominal"]["FatJet2_GloParT_XbbVsQCD"]->Fill(fatJet2_GloParT_XbbVsQCD, weight_nominal);
-    hists["nominal"]["FatJet2_Tau3OverTau2"]->Fill(fatJet2_Tau3OverTau2, weight_nominal);
 
-    hists["nominal"]["pTjj"]->Fill(pTjj, weight_nominal);
+    // Fill histograms with nominal weights
+    _FatJet1_pt->Fill(fatJet1_pt, weight);
+    _FatJet1_eta->Fill(fatJet1_eta, weight);
+    _FatJet1_MassSD->Fill(fatJet1_msoftdrop, weight);
+    _FatJet1_GloParT_MassVis->Fill(fatJet1_GloParT_massVis, weight);
+    _FatJet1_GloParT_MassRes->Fill(fatJet1_GloParT_massRes, weight);
+    _FatJet1_GloParT_XbbVsQCD->Fill(fatJet1_GloParT_XbbVsQCD, weight);
+    _FatJet1_Tau3OverTau2->Fill(fatJet1_Tau3OverTau2, weight);
     
-    // Fill up/down variations if any scale factors are applied
-    if (apply_any_sf) {
-      // weight_up = weight * (sf + sf_err) = weight_nominal + weight * sf_err
-      // weight_dn = weight * (sf - sf_err) = weight_nominal - weight * sf_err
-      Float_t weight_up = weight_nominal + weight * sf_err;
-      Float_t weight_down = weight_nominal - weight * sf_err;
-      
-      // Prevent negative weights in down variation
-      if (weight_down < 0) weight_down = 0;
-      
-      // Up variation
-      hists["up"]["FatJet1_pt"]->Fill(fatJet1_pt, weight_up);
-      hists["up"]["FatJet1_eta"]->Fill(fatJet1_eta, weight_up);
-      hists["up"]["FatJet1_MassSD"]->Fill(fatJet1_msoftdrop, weight_up);
-      hists["up"]["FatJet1_GloParT_MassVis"]->Fill(fatJet1_GloParT_massVis, weight_up);
-      hists["up"]["FatJet1_GloParT_MassRes"]->Fill(fatJet1_GloParT_massRes, weight_up);
-      hists["up"]["FatJet1_GloParT_XbbVsQCD"]->Fill(fatJet1_GloParT_XbbVsQCD, weight_up);
-      hists["up"]["FatJet1_Tau3OverTau2"]->Fill(fatJet1_Tau3OverTau2, weight_up);
-      
-      hists["up"]["FatJet2_pt"]->Fill(fatJet2_pt, weight_up);
-      hists["up"]["FatJet2_eta"]->Fill(fatJet2_eta, weight_up);
-      hists["up"]["FatJet2_MassSD"]->Fill(fatJet2_msoftdrop, weight_up);
-      hists["up"]["FatJet2_GloParT_MassVis"]->Fill(fatJet2_GloParT_massVis, weight_up);
-      hists["up"]["FatJet2_GloParT_MassRes"]->Fill(fatJet2_GloParT_massRes, weight_up);
-      hists["up"]["FatJet2_GloParT_XbbVsQCD"]->Fill(fatJet2_GloParT_XbbVsQCD, weight_up);
-      hists["up"]["FatJet2_Tau3OverTau2"]->Fill(fatJet2_Tau3OverTau2, weight_up);
+    _FatJet2_pt->Fill(fatJet2_pt, weight);
+    _FatJet2_eta->Fill(fatJet2_eta, weight);
+    _FatJet2_MassSD->Fill(fatJet2_msoftdrop, weight);
+    _FatJet2_GloParT_MassVis->Fill(fatJet2_GloParT_massVis, weight);
+    _FatJet2_GloParT_MassRes->Fill(fatJet2_GloParT_massRes, weight);
+    _FatJet2_GloParT_XbbVsQCD->Fill(fatJet2_GloParT_XbbVsQCD, weight);
+    _FatJet2_Tau3OverTau2->Fill(fatJet2_Tau3OverTau2, weight);
 
-      hists["up"]["pTjj"]->Fill(pTjj, weight_up);
-      
-      // Down variation
-      hists["down"]["FatJet1_pt"]->Fill(fatJet1_pt, weight_down);
-      hists["down"]["FatJet1_eta"]->Fill(fatJet1_eta, weight_down);
-      hists["down"]["FatJet1_MassSD"]->Fill(fatJet1_msoftdrop, weight_down);
-      hists["down"]["FatJet1_GloParT_MassVis"]->Fill(fatJet1_GloParT_massVis, weight_down);
-      hists["down"]["FatJet1_GloParT_MassRes"]->Fill(fatJet1_GloParT_massRes, weight_down);
-      hists["down"]["FatJet1_GloParT_XbbVsQCD"]->Fill(fatJet1_GloParT_XbbVsQCD, weight_down);
-      hists["down"]["FatJet1_Tau3OverTau2"]->Fill(fatJet1_Tau3OverTau2, weight_down);
-      
-      hists["down"]["FatJet2_pt"]->Fill(fatJet2_pt, weight_down);
-      hists["down"]["FatJet2_eta"]->Fill(fatJet2_eta, weight_down);
-      hists["down"]["FatJet2_MassSD"]->Fill(fatJet2_msoftdrop, weight_down);
-      hists["down"]["FatJet2_GloParT_MassVis"]->Fill(fatJet2_GloParT_massVis, weight_down);
-      hists["down"]["FatJet2_GloParT_MassRes"]->Fill(fatJet2_GloParT_massRes, weight_down);
-      hists["down"]["FatJet2_GloParT_XbbVsQCD"]->Fill(fatJet2_GloParT_XbbVsQCD, weight_down);
-      hists["down"]["FatJet2_Tau3OverTau2"]->Fill(fatJet2_Tau3OverTau2, weight_down);
+    _pTjj->Fill(pTjj, weight);
 
-      hists["down"]["pTjj"]->Fill(pTjj, weight_down);
+    // Update histogram errors with systematic uncertainties
+    if (apply_sf_TXbb || apply_sf_tau32 || apply_sf_ptjj) {
+      updateHistErr(_FatJet1_pt, fatJet1_pt, sf_err, weight);
+      updateHistErr(_FatJet1_eta, fatJet1_eta, sf_err, weight);
+      updateHistErr(_FatJet1_MassSD, fatJet1_msoftdrop, sf_err, weight);
+      updateHistErr(_FatJet1_GloParT_MassVis, fatJet1_GloParT_massVis, sf_err, weight);
+      updateHistErr(_FatJet1_GloParT_MassRes, fatJet1_GloParT_massRes, sf_err, weight);
+      updateHistErr(_FatJet1_GloParT_XbbVsQCD, fatJet1_GloParT_XbbVsQCD, sf_err, weight);
+      updateHistErr(_FatJet1_Tau3OverTau2, fatJet1_Tau3OverTau2, sf_err, weight);
+      
+      updateHistErr(_FatJet2_pt, fatJet2_pt, sf_err, weight);
+      updateHistErr(_FatJet2_eta, fatJet2_eta, sf_err, weight);
+      updateHistErr(_FatJet2_MassSD, fatJet2_msoftdrop, sf_err, weight);
+      updateHistErr(_FatJet2_GloParT_MassVis, fatJet2_GloParT_massVis, sf_err, weight);
+      updateHistErr(_FatJet2_GloParT_MassRes, fatJet2_GloParT_massRes, sf_err, weight);
+      updateHistErr(_FatJet2_GloParT_XbbVsQCD, fatJet2_GloParT_XbbVsQCD, sf_err, weight);
+      updateHistErr(_FatJet2_Tau3OverTau2, fatJet2_Tau3OverTau2, sf_err, weight);
+
+      updateHistErr(_pTjj, pTjj, sf_err, weight);
     }
   }
 
   // Close input file
   f0->Close();
 
-  // Force write each histogram to deal with potential bugs
-  if (apply_any_sf) {
+  // Write histograms to output file
+  if (apply_sf_TXbb || apply_sf_tau32 || apply_sf_ptjj) {
     f->cd();  // Make sure we're writing to the output file
+    _FatJet1_pt->Write();
+    _FatJet1_eta->Write();
+    _FatJet1_MassSD->Write();
+    _FatJet1_GloParT_MassVis->Write();
+    _FatJet1_GloParT_MassRes->Write();
+    _FatJet1_GloParT_XbbVsQCD->Write();
+    _FatJet1_Tau3OverTau2->Write();
     
-    // Write nominal histograms explicitly
-    hists["nominal"]["FatJet1_pt"]->Write();
-    hists["nominal"]["FatJet1_eta"]->Write();
-    hists["nominal"]["FatJet1_MassSD"]->Write();
-    hists["nominal"]["FatJet1_GloParT_MassVis"]->Write();
-    hists["nominal"]["FatJet1_GloParT_MassRes"]->Write();
-    hists["nominal"]["FatJet1_GloParT_XbbVsQCD"]->Write();
-    hists["nominal"]["FatJet1_Tau3OverTau2"]->Write();
-    
-    hists["nominal"]["FatJet2_pt"]->Write();
-    hists["nominal"]["FatJet2_eta"]->Write();
-    hists["nominal"]["FatJet2_MassSD"]->Write();
-    hists["nominal"]["FatJet2_GloParT_MassVis"]->Write();
-    hists["nominal"]["FatJet2_GloParT_MassRes"]->Write();
-    hists["nominal"]["FatJet2_GloParT_XbbVsQCD"]->Write();
-    hists["nominal"]["FatJet2_Tau3OverTau2"]->Write();
+    _FatJet2_pt->Write();
+    _FatJet2_eta->Write();
+    _FatJet2_MassSD->Write();
+    _FatJet2_GloParT_MassVis->Write();
+    _FatJet2_GloParT_MassRes->Write();
+    _FatJet2_GloParT_XbbVsQCD->Write();
+    _FatJet2_Tau3OverTau2->Write();
 
-    hists["nominal"]["pTjj"]->Write();
-    
-    // Write up variation histograms explicitly
-    hists["up"]["FatJet1_pt"]->Write();
-    hists["up"]["FatJet1_eta"]->Write();
-    hists["up"]["FatJet1_MassSD"]->Write();
-    hists["up"]["FatJet1_GloParT_MassVis"]->Write();
-    hists["up"]["FatJet1_GloParT_MassRes"]->Write();
-    hists["up"]["FatJet1_GloParT_XbbVsQCD"]->Write();
-    hists["up"]["FatJet1_Tau3OverTau2"]->Write();
-    
-    hists["up"]["FatJet2_pt"]->Write();
-    hists["up"]["FatJet2_eta"]->Write();
-    hists["up"]["FatJet2_MassSD"]->Write();
-    hists["up"]["FatJet2_GloParT_MassVis"]->Write();
-    hists["up"]["FatJet2_GloParT_MassRes"]->Write();
-    hists["up"]["FatJet2_GloParT_XbbVsQCD"]->Write();
-    hists["up"]["FatJet2_Tau3OverTau2"]->Write();
-
-    hists["up"]["pTjj"]->Write();
-    
-    // Write down variation histograms explicitly
-    hists["down"]["FatJet1_pt"]->Write();
-    hists["down"]["FatJet1_eta"]->Write();
-    hists["down"]["FatJet1_MassSD"]->Write();
-    hists["down"]["FatJet1_GloParT_MassVis"]->Write();
-    hists["down"]["FatJet1_GloParT_MassRes"]->Write();
-    hists["down"]["FatJet1_GloParT_XbbVsQCD"]->Write();
-    hists["down"]["FatJet1_Tau3OverTau2"]->Write();
-    
-    hists["down"]["FatJet2_pt"]->Write();
-    hists["down"]["FatJet2_eta"]->Write();
-    hists["down"]["FatJet2_MassSD"]->Write();
-    hists["down"]["FatJet2_GloParT_MassVis"]->Write();
-    hists["down"]["FatJet2_GloParT_MassRes"]->Write();
-    hists["down"]["FatJet2_GloParT_XbbVsQCD"]->Write();
-    hists["down"]["FatJet2_Tau3OverTau2"]->Write();
-
-    hists["down"]["pTjj"]->Write();
+    _pTjj->Write();
   }
   
-  // Call Write() on the file to ensure everything is written
   f->Write();
   std::cout << "Wrote histograms to output file." << std::endl;
   
-  // Clean up
+  // Clean up scale factor files
   if (f_Tau3toTau2) {
     f_Tau3toTau2->Close();
     delete f_Tau3toTau2;
@@ -387,5 +293,4 @@ void make_hist(
   // Close and save output file
   f->Close();
   delete f;
-  
 }

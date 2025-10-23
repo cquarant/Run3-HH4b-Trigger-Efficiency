@@ -52,7 +52,7 @@ get_paths() {
 
     path_sf_tau32="${SF_DIR}/SF_tau3overtau2_${year}.root"
     path_sf_TXbb="${SF_DIR}/SF_TXbb_${year}.root"
-    path_sf_pTjj="${SF_DIR}/SF_pTjj_${year}.root"
+    # path_sf_pTjj="${SF_DIR}/SF_pTjj_${year}.root"
 }
 
 process_data() {
@@ -106,13 +106,13 @@ plot_year() {
         suffix=""
     fi
     
-    # Loop over all variables
-    for var in "${VARS[@]}"; do
-        local var_label="${LABEL_DICT[$var]}"
-        local output_path="${PLOT_DIR}/var_${year}_${var}${suffix}.pdf"
-        echo "Processing ${var} for year ${year} with ${corr_flag:-no} correction"
-        root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${ttbar_path}\", \"${path_ttHto2B}\", \"${output_path}\", \"${var}\", \"${var_label}\", \"${BIN}\")"
-    done
+    # # Loop over all variables
+    # for var in "${VARS[@]}"; do
+    #     local var_label="${LABEL_DICT[$var]}"
+    #     local output_path="${PLOT_DIR}/var_${year}_${var}${suffix}.pdf"
+    #     echo "Processing ${var} for year ${year} with ${corr_flag:-no} correction"
+    #     root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${ttbar_path}\", \"${path_ttHto2B}\", \"${output_path}\", \"${var}\", \"${var_label}\", \"${BIN}\")"
+    # done
 }
 
 process_year() {
@@ -148,14 +148,14 @@ process_year() {
     python3 ${SCRIPT_DIR}/kfact.py --year ${year} --ttbar-corr "tau32_TXbb"
     plot_year ${year} "tau32_TXbb"
 
-    # make histograms with tau32+TXbb+pTjj SF to TTbar
-    input_path="${TREE_DIR}/Histograms_${year}_MC_TTbar.root"
-    output_path="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32_TXbb_pTjj.root"
-    root -l -b -q "make_hist.cpp(\"${input_path}\", \"${output_path}\", \"${path_sf_tau32}\", \"${path_sf_TXbb}\", \"${path_sf_pTjj}\")"
+    # # make histograms with tau32+TXbb+pTjj SF to TTbar
+    # input_path="${TREE_DIR}/Histograms_${year}_MC_TTbar.root"
+    # output_path="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32_TXbb_pTjj.root"
+    # root -l -b -q "make_hist.cpp(\"${input_path}\", \"${output_path}\", \"${path_sf_tau32}\", \"${path_sf_TXbb}\", \"${path_sf_pTjj}\")"
 
     # derive prescale factors for tau32+TXbb+pTjj
-    python3 ${SCRIPT_DIR}/kfact.py --year ${year} --ttbar-corr "tau32_TXbb_pTjj"
-    plot_year ${year} "tau32_TXbb_pTjj"
+    # python3 ${SCRIPT_DIR}/kfact.py --year ${year} --ttbar-corr "tau32_TXbb_pTjj"
+    # plot_year ${year} "tau32_TXbb_pTjj"
     
 }
 

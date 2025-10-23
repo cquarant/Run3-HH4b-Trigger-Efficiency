@@ -4,8 +4,8 @@ import uproot
 
 years = ["2022", "2023"]  # TODO: add more years if needed
 
-def calculate_kfactor(year, ttbar_corr="", key="FatJet1_pt"):
-    """Calculate the k-factor for a given year using only FatJet1_pt."""
+def calculate_kfactor(year, ttbar_corr="", key="pTjj"):
+    """Calculate the k-factor for a given year using only pTjj."""
     path_data = Path(f"hists/Histograms_{year}_data.root")
     TTbar_label = "TTbar"
     if ttbar_corr:
@@ -75,7 +75,7 @@ def update_kfactor_file(year, kfactor):
     
     # Write all years to file with TODO comment
     # header = "// TODO: Check if all k-factors are properly calculated\n"
-    header = "// K-factors are calculated using FatJet1_pt distribution\n"
+    header = "// K-factors are calculated using pTjj distribution\n"
     header += "// A value of 0.000 means that year's k-factor hasn't been calculated yet\n\n"
     
     lines = [f"#define KFACT_{yr} {content[yr]:.3f}" for yr in years]

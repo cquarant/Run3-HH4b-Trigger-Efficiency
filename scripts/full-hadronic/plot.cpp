@@ -65,12 +65,12 @@ void plot(const std::string &year,         // 2022, 2023
   TFile *f_TTbar = new TFile(path_TTbar.c_str());
   TFile *f_ttHto2B = new TFile(path_ttHto2B.c_str());
 
-  TH1D *_Data_var = (TH1D *)f_Data->Get(variable + "_nominal");
-  TH1D *_QCD_var = (TH1D *)f_QCD->Get(variable + "_nominal");
-  TH1D *_TTbar_var = (TH1D *)f_TTbar->Get(variable + "_nominal");
-  TH1D *_VV_var = (TH1D *)f_VV->Get(variable + "_nominal");
-  TH1D *_VJ_var = (TH1D *)f_VJ->Get(variable + "_nominal");
-  TH1D *_ttHto2B_var = (TH1D *)f_ttHto2B->Get(variable + "_nominal");
+  TH1D *_Data_var = (TH1D *)f_Data->Get(variable);
+  TH1D *_QCD_var = (TH1D *)f_QCD->Get(variable);
+  TH1D *_TTbar_var = (TH1D *)f_TTbar->Get(variable);
+  TH1D *_VV_var = (TH1D *)f_VV->Get(variable);
+  TH1D *_VJ_var = (TH1D *)f_VJ->Get(variable);
+  TH1D *_ttHto2B_var = (TH1D *)f_ttHto2B->Get(variable);
 
   // Check for TTbar up/down variations
   TH1D *_TTbar_var_up = (TH1D *)f_TTbar->Get(variable + "_up");
@@ -181,7 +181,38 @@ void plot(const std::string &year,         // 2022, 2023
       _TTbar_var_up = rebinned_TTbar_up;
       _TTbar_var_down = rebinned_TTbar_down;
     }
-  } else {
+  } 
+  else if (variable.Contains("pTjj")) {
+    // Custom binning for pTjj variable
+    const int n_custom_bins = 7;
+    Double_t custom_bins[n_custom_bins + 1] = {0, 50, 100, 150, 200, 300, 500, 1000};
+    
+    TH1D* rebinned_Data = (TH1D*)_Data_var->Rebin(n_custom_bins, "rebinned_Data", custom_bins);
+    TH1D* rebinned_QCD = (TH1D*)_QCD_var->Rebin(n_custom_bins, "rebinned_QCD", custom_bins);
+    TH1D* rebinned_VV = (TH1D*)_VV_var->Rebin(n_custom_bins, "rebinned_VV", custom_bins);
+    TH1D* rebinned_VJ = (TH1D*)_VJ_var->Rebin(n_custom_bins, "rebinned_VJ", custom_bins);
+    TH1D* rebinned_TTbar = (TH1D*)_TTbar_var->Rebin(n_custom_bins, "rebinned_TTbar", custom_bins);
+    TH1D* rebinned_ttHto2B = (TH1D*)_ttHto2B_var->Rebin(n_custom_bins, "rebinned_ttHto2B", custom_bins);
+    
+    // Replace original histograms with rebinned ones
+    _Data_var = rebinned_Data;
+    _QCD_var = rebinned_QCD;
+    _VV_var = rebinned_VV;
+    _VJ_var = rebinned_VJ;
+    _TTbar_var = rebinned_TTbar;
+    _ttHto2B_var = rebinned_ttHto2B;
+
+    TH1D* rebinned_TTbar_up = nullptr;
+    TH1D* rebinned_TTbar_down = nullptr;
+    if (has_TTbar_syst) {
+      rebinned_TTbar_up = (TH1D*)_TTbar_var_up->Rebin(n_custom_bins, "rebinned_TTbar_up", custom_bins);
+      rebinned_TTbar_down = (TH1D*)_TTbar_var_down->Rebin(n_custom_bins, "rebinned_TTbar_down", custom_bins);
+      
+      _TTbar_var_up = rebinned_TTbar_up;
+      _TTbar_var_down = rebinned_TTbar_down;
+    }
+  } 
+  else {
     int reb = 5 * (N_TXbb / 100);
 
     if (variable.Contains("GloParT") && variable.Contains("Mass")) {

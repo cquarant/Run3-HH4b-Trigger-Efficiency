@@ -18,8 +18,8 @@ mkdir -p ${PLOT_DIR}
 
 # Variables and their labels
 declare -A LABEL_DICT
-VARS=("FatJet1_Tau3OverTau2" "FatJet1_GloParT_XbbVsQCD" "FatJet1_GloParT_MassVis" "FatJet2_Tau3OverTau2" "FatJet2_GloParT_XbbVsQCD" "FatJet2_GloParT_MassVis" "FatJet1_pt" "FatJet1_MassSD" "FatJet2_pt" "FatJet2_MassSD")
-
+# VARS=("FatJet1_Tau3OverTau2" "FatJet1_GloParT_XbbVsQCD" "FatJet1_GloParT_MassVis" "FatJet2_Tau3OverTau2" "FatJet2_GloParT_XbbVsQCD" "FatJet2_GloParT_MassVis" "FatJet1_pt" "FatJet1_MassSD" "FatJet2_pt" "FatJet2_MassSD")
+VARS=("pTjj")
 LABEL_DICT["FatJet1_pt"]="FatJet p_{T} [GeV]"
 LABEL_DICT["FatJet1_MassSD"]="FatJet m_{SD} [GeV]"
 LABEL_DICT["FatJet1_GloParT_XbbVsQCD"]="FatJet T_{Xbb}"
@@ -31,6 +31,8 @@ LABEL_DICT["FatJet2_MassSD"]="FatJet m_{SD} [GeV]"
 LABEL_DICT["FatJet2_GloParT_XbbVsQCD"]="FatJet T_{Xbb}"
 LABEL_DICT["FatJet2_GloParT_MassVis"]="FatJet M_{GloParT} [GeV]"
 LABEL_DICT["FatJet2_Tau3OverTau2"]="FatJet #tau_{3}/#tau_{2}"
+
+LABEL_DICT["pTjj"]="p_{T}(jj) [GeV]"
 
 get_paths() {
     year=$1;
@@ -68,8 +70,8 @@ process_year() {
         root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32_TXbb}\", \"${path_ttHto2B}\", \"${output_path}\", \"${var}\", \"${var_label}\", \"${BIN}\")"
 
         # tau32+TXbb+ptjj correction
-        output_path="${PLOT_DIR}/var_${year}_${var}_tau32TXbbptjjcorr.pdf"
-        path_TTbar_tau32_TXbb_ptjj="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32_TXbb_ptjj.root"
+        output_path="${PLOT_DIR}/var_${year}_${var}_tau32TXbbpTjjcorr.pdf"
+        path_TTbar_tau32_TXbb_ptjj="${HIST_DIR}/Histograms_${year}_MC_TTbar_tau32_TXbb_pTjj.root"
         echo "Processing ${var} with tau32+TXbb+ptjj correction for year ${year}"
         root -l -b -q "plot.cpp(\"${year}\", \"${path_data}\", \"${path_QCD}\", \"${path_VV}\", \"${path_VJ}\", \"${path_TTbar_tau32_TXbb_ptjj}\", \"${path_ttHto2B}\", \"${output_path}\", \"${var}\", \"${var_label}\", \"${BIN}\")"
     done
