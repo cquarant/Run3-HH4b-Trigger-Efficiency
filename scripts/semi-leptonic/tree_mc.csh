@@ -19,7 +19,8 @@ declare -A YEAR_DICT=(
     ["2023"]="2023 2023BPix"
 )
 
-SAMPLE_DIR="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
+# SAMPLE_DIR="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
+SAMPLE_DIR="/eos/user/j/jinwa/25Sep23AddVars_v12_private_signal/25Sep23AddVars_v12_private_signal/"
 
 # Era Configuration
 declare -A era_runs=(
@@ -31,10 +32,10 @@ declare -A era_runs=(
 
 # JEC configurations
 declare -A jec_configs=(
-    ["2023"]="Summer23Prompt23_V1_MC"
-    ["2023BPix"]="Summer23BPixPrompt23_V1_MC"
-    ["2022"]="Summer22_22Sep2023_V2_MC"
-    ["2022EE"]="Summer22EE_22Sep2023_V2_MC"
+    ["2023"]="Summer23Prompt23_V3_MC"
+    ["2023BPix"]="Summer23BPixPrompt23_V3_MC"
+    ["2022"]="Summer22_22Sep2023_V3_MC"
+    ["2022EE"]="Summer22EE_22Sep2023_V3_MC"
 )
 
 # JER configurations
@@ -127,6 +128,8 @@ process_QCD() {
             search_pattern="QCD-4Jets_HT-${ht_bin}*.root"
         fi
 
+        echo "Processing DYto2L for era ${era}, jets: ${jet}"
+        echo "Searching path: ${SAMPLE_DIR}/${era}/${search_pattern}*.root"
         local input_file=$(ls ${SAMPLE_DIR}/${era}/${search_pattern} 2>/dev/null | head -n1)
         
         if [ -z "${input_file}" ]; then
