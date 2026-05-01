@@ -20,8 +20,6 @@ double XSec_TTto4Q             =       410.90;
 double XSec_TTtoLNu2Q          =       410.30;
 double XSec_TTto2L2Nu          =       102.40;
 
-double XSec_ttHto2B_M_125      =       0.331968;
-
 double XSec_WW                 =       116.80;
 double XSec_WZ                 =        54.30;
 double XSec_ZZ                 =        16.70;
@@ -62,5 +60,29 @@ double XSec_WtoLNu_2Jets_2J = 3532.0;
 double XSec_WtoLNu_4Jets_1J = 9625.0;
 double XSec_WtoLNu_4Jets_2J = 3161.0;
 double XSec_WtoLNu_4Jets_3J = 1468.0;
+
+double XSec_GluGluHto2B_M_125          = 30.2;
+double XSec_GluGluHto2B_PT_200_M_125   = 0.5246;
+double XSec_VBFHto2B_M_125             = 4.18;
+double XSec_ttHto2B_M_125              = 0.331968;
+double XSec_WminusH_Hto2B_Wto2Q_M_125  = 0.3916;
+double XSec_WminusH_Hto2B_WtoLNu_M_125 = 0.1887;
+double XSec_WplusH_Hto2B_Wto2Q_M_125   = 0.623;
+double XSec_WplusH_Hto2B_WtoLNu_M_125  = 0.3001;
+double XSec_ZH_Hto2B_Zto2L_M_125       = 0.08545;
+double XSec_ZH_Hto2B_Zto2Nu_M_125      = 0.168;
+double XSec_ZH_Hto2B_Zto2Q_M_125       = 0.5958;
+double XSec_ZH_Hto2C_Zto2Q_M_125       = 0.5958;
+double XSec_ggZH_Hto2B_Zto2L_M_125     = 0.006838;
+double XSec_ggZH_Hto2B_Zto2Nu_M_125    = 0.01351;
+double XSec_ggZH_Hto2B_Zto2Q_M_125     = 0.04776;
+double XSec_ggZH_Hto2C_Zto2Q_M_125     = 0.04776;
+
+double XSec_TBbarQ_t_channel_4FS = 123.8;
+double XSec_TbarBQ_t_channel_4FS = 75.47;
+double XSec_TWminusto4Q = 35.99;
+double XSec_TWminustoLNu2Q = 35.99;
+double XSec_TbarWplusto4Q = 36.05;
+double XSec_TbarWplustoLNu2Q = 36.05;
 
 double XSec_GluGlutoHHto4B  = 0.02964;
