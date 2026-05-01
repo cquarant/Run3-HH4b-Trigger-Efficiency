@@ -7,12 +7,13 @@ if [ -z "${CMSSW_BASE}" ]; then
 fi
 
 # Directory setup
-PROJ_ROOT="${CMSSW_BASE}/src"
+PROJ_ROOT="${CMSSW_BASE}/src/TTbarBkgEstimation/Run3-HH4b-Trigger-Efficiency"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-OUTPUT_DIR_ERAS=${SCRIPT_DIR}/trees/eras
-OUTPUT_DIR_YEARS=${SCRIPT_DIR}/trees/years
+OUTPUT_DIR_ERAS=${SCRIPT_DIR}/condor_trees/eras
+OUTPUT_DIR_YEARS=${SCRIPT_DIR}/condor_trees/years
 TMP_DIR=${SCRIPT_DIR}/tmp/trees/data
-mkdir -p ${OUTPUT_DIR_ERAS} ${OUTPUT_DIR_YEARS} ${TMP_DIR}
+CONDOR_DIR=${SCRIPT_DIR}/condor
+mkdir -p ${OUTPUT_DIR_ERAS} ${OUTPUT_DIR_YEARS} ${TMP_DIR} ${CONDOR_DIR} 
 
 declare -A YEAR_DICT=(
     ["2022"]="2022 2022EE"
@@ -29,18 +30,23 @@ declare -A era_runs=(
 
 # JEC configurations
 declare -A jec_configs=(
-    ["2022_RunC"]="Summer22_22Sep2023_RunCD_V2_DATA"
-    ["2022_RunD"]="Summer22_22Sep2023_RunCD_V2_DATA"
-    ["2022EE_RunE"]="Summer22EE_22Sep2023_RunE_V2_DATA"
-    ["2022EE_RunF"]="Summer22EE_22Sep2023_RunF_V2_DATA"
-    ["2022EE_RunG"]="Summer22EE_22Sep2023_RunG_V2_DATA"
-    ["2023_v123"]="Summer23Prompt23_RunCv123_V1_DATA"
-    ["2023_v4"]="Summer23Prompt23_RunCv4_V1_DATA"
-    ["2023BPix"]="Summer23BPixPrompt23_RunD_V1_DATA"
+    ["2022_RunC"]="Summer22_22Sep2023_RunCD_V3_DATA"
+    ["2022_RunD"]="Summer22_22Sep2023_RunCD_V3_DATA"
+    ["2022EE_RunE"]="Summer22EE_22Sep2023_RunE_V3_DATA"
+    ["2022EE_RunF"]="Summer22EE_22Sep2023_RunF_V3_DATA"
+    ["2022EE_RunG"]="Summer22EE_22Sep2023_RunG_V3_DATA"
+    ["2023_v123"]="Summer23Prompt23_RunCv123_V3_DATA"
+    ["2023_v4"]="Summer23Prompt23_RunCv4_V3_DATA"
+    ["2023BPix"]="Summer23BPixPrompt23_RunD_V3_DATA"
 )
 
-CHANNELS=("Muon" "EGamma")
-SAMPLE_DIR="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
+# CHANNELS=("EGamma")
+CHANNELS=("Muon")
+# SAMPLE_DIR="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
+# SAMPLE_DIR="/eos/home-c/cquarant/bbtautau/skimmer/04Jan2026_2023BPix_v12_private_signal"
+SAMPLE_DIR="/eos/home-c/cquarant/bbtautau/skimmer/28Mar2026_2023BPix_v12_private_signal"
+# SAMPLE_DIR="/eos/home-c/cquarant/bbtautau/skimmer/28Mar2026_2023_v12_private_signal"
+
 jec_base="${PROJ_ROOT}/JECs"
 
 process_single_file() {
@@ -48,6 +54,8 @@ process_single_file() {
     local channel=$2
     local version=$3
     local run_tag=$4
+    local files_x_job=$5
+    local lepton=$6
     
     # Get the year from era
     local year=${era:0:4}
@@ -86,7 +94,7 @@ process_single_file() {
     fi
 
     # Set up paths
-    local sample_path="${SAMPLE_DIR}/${year}/${channel}_${run_tag}${input_version}.root"
+    local sample_path="${SAMPLE_DIR}/${era}/${channel}_Run${run_tag}${input_version}/root"
     local output_path="${TMP_DIR}/Histograms_${era}_data_${channel}_${output_tag}.root"
     
     # Set appropriate JEC paths
@@ -94,13 +102,84 @@ process_single_file() {
     local jec_path_L2Relative="${jec_dir}/${jec_config}_L2Relative_AK8PFPuppi.txt"
     local jec_path_L2L3Residual="${jec_dir}/${jec_config}_L2L3Residual_AK8PFPuppi.txt"
 
-    echo "Processing ${era} ${channel} ${run_tag}${input_version} with ${jec_config} JECs"
-    echo "Input file: ${sample_path}"
-    root -l -b -q "tree_data.cpp(\"${year}\", \"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${output_path}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\")"
+    # Process CONDOR jobs for DATA samples
+    local sample_type="${channel}"
+    local sample_name="${channel}_Run${run_tag}${input_version}"
+    echo "Processing Sample ${sample_name} for era ${era} (files per job = ${files_x_job})"
+    local input_dir="${SAMPLE_DIR}/${era}/${sample_name}/root"
+    if [ ! -d "${input_dir}" ]; then
+        echo "Warning: No ${sample_name} directory found for era ${era}: ${input_dir}"
+        return 1
+    fi
+
+    echo "Sample type: ${sample_type}  Sample name: ${sample_name}"
+
+    # gather files (use nullglob to avoid literal when no matches)
+    shopt -s nullglob
+    local files=("${input_dir}"/*.root)
+    shopt -u nullglob
+    local N=${#files[@]}
+    if [ ${N} -eq 0 ]; then
+        echo "Warning: No .root files found in ${input_dir}"
+        return 1
+    fi
+
+    local groups=$(( (N + files_x_job - 1) / files_x_job ))
+
+    for ((g=0; g<groups; g++)); do
+        local b=$(( g * files_x_job ))
+        local e=$(( b + files_x_job - 1 ))
+        if [ ${e} -ge $((N-1)) ]; then
+            e=$((N-1))
+        fi
+
+        local workdir="${CONDOR_DIR}/${era}_h${lepton}/"
+        local logdir="${workdir}/logs"
+        local shfile="${workdir}/condor_${sample_type}${input_version}_g${g}.sh"
+        local subfile="${workdir}/condor_${sample_type}${input_version}_g${g}.sub"
+        local out_log="${logdir}/condor_${sample_type}${input_version}_g${g}.out"
+        local err_log="${logdir}/condor_${sample_type}${input_version}_g${g}.err"
+        local log_file="${logdir}/condor_${sample_type}${input_version}_g${g}.log"
+        local outputdir="${OUTPUT_DIR_ERAS}/${era}_h${lepton}"
+        local group_output="${outputdir}/Histograms_${era}_DATA_${sample_type}${input_version}_g${g}.root"
+        mkdir -p "${workdir}" "${logdir}" "${outputdir}"
+
+        # root -l -b -q "tree_data_he.cpp(\"${year}\", \"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${group_output}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\", ${b}, ${e})"
+        cat > "${shfile}" <<EOF
+            #!/bin/bash
+            set -e
+            cd "${SCRIPT_DIR}"
+            cmsenv
+            # Run the macro for files index range [${b},${e}]
+            root -l -b -q "tree_data_hl.cpp(\"${lepton}\", \"${year}\", \"${run_tag}\", \"${channel}\", \"${sample_path}\", \"${group_output}\", \"${jec_path_L2Relative}\", \"${jec_path_L2L3Residual}\", ${b}, ${e})"
+EOF
+        chmod +x "${shfile}"
+
+        cat > "${subfile}" <<EOF
+            universe = vanilla
+            executable = /bin/bash
+            arguments = ${shfile}
+            output = ${out_log}
+            error = ${err_log}
+            log = ${log_file}
+            request_cpus = 1
+            request_memory = 4096MB
+            should_transfer_files = YES
+            when_to_transfer_output = ON_EXIT
+            +JobFlavour = "longlunch"
+            queue
+EOF
+
+        echo "Created condor job for group ${g}: files [${b}..${e}] -> ${group_output}"
+        condor_submit "${subfile}"
+        echo "Submitted condor job for group ${g}"
+    done
+
 }
 
 process_era() {
     local era=$1
+    local lepton=$2
     echo "Processing era: ${era}"
     
     case ${era} in
@@ -108,11 +187,11 @@ process_era() {
             for run_tag in ${era_runs[${era}]}; do
                 for channel in "${CHANNELS[@]}"; do
                     # Process v1-v3 with first JEC set
-                    for version in v1 v2 v3; do
-                        process_single_file "$era" "$channel" "$version" "$run_tag"
+                    for version in 0v3 1v3 1v4; do
+                        process_single_file "$era" "$channel" "$version" "$run_tag" 25 "$lepton"
                     done
                     # Process v4 with its specific JEC set
-                    process_single_file "$era" "$channel" "v4" "$run_tag"
+                    process_single_file "$era" "$channel" "0v4" "$run_tag" 25 "$lepton"
                 done
             done
             ;;
@@ -120,8 +199,8 @@ process_era() {
         "2023BPix")
             for run_tag in ${era_runs[${era}]}; do
                 for channel in "${CHANNELS[@]}"; do
-                    for version in v1 v2; do
-                        process_single_file "$era" "$channel" "$version" "$run_tag"
+                    for version in 0v1 0v2 1v1 1v2; do
+                        process_single_file "$era" "$channel" "$version" "$run_tag" 25 "$lepton"
                     done
                 done
             done
@@ -130,25 +209,25 @@ process_era() {
         "2022"|"2022EE")
             for run_tag in ${era_runs[${era}]}; do
                 for channel in "${CHANNELS[@]}"; do
-                    process_single_file "$era" "$channel" "" "$run_tag"
+                    process_single_file "$era" "$channel" "" "$run_tag" 25 "$lepton"
                 done
             done
             ;;
     esac
     
     # Combine all runs for each channel
-    for channel in "${CHANNELS[@]}"; do
-        channel_output="${TMP_DIR}/Histograms_${era}_data_${channel}.root"
-        echo "Combining runs for ${channel} into: ${channel_output}"
-        hadd -f "${channel_output}" ${TMP_DIR}/Histograms_${era}_data_${channel}_*.root
-    done
+    # for channel in "${CHANNELS[@]}"; do
+    #     channel_output="${TMP_DIR}/Histograms_${era}_data_${channel}.root"
+    #     echo "Combining runs for ${channel} into: ${channel_output}"
+    #     hadd -f "${channel_output}" ${TMP_DIR}/Histograms_${era}_data_${channel}_*.root
+    # done
     
-    # Final combination (all CHANNELS)
-    final_output="${OUTPUT_DIR_ERAS}/Histograms_${era}_data.root"
-    echo "Creating final combined output: ${final_output}"
-    hadd -f "${final_output}" \
-        ${TMP_DIR}/Histograms_${era}_data_Muon.root \
-        ${TMP_DIR}/Histograms_${era}_data_EGamma.root
+    # # Final combination (all CHANNELS)
+    # final_output="${OUTPUT_DIR_ERAS}/Histograms_${era}_data.root"
+    # echo "Creating final combined output: ${final_output}"
+    # hadd -f "${final_output}" \
+    #     ${TMP_DIR}/Histograms_${era}_data_Muon.root \
+    #     ${TMP_DIR}/Histograms_${era}_data_EGamma.root
 }
 
 combine_years() {
@@ -166,19 +245,21 @@ combine_years() {
     done
 }
 
-if [ $# -ne 1 ]; then
-    # process all eras
-    eras=("2022" "2022EE" "2023" "2023BPix")
-    for era in "${eras[@]}"; do
-        process_era ${era}
-    done
-    wait
-    echo "All data processing completed!"
+# if [ $# -ne 1 ]; then
+#     # process all eras
+#     eras=("2022" "2022EE" "2023" "2023BPix")
+#     for era in "${eras[@]}"; do
+#         process_era ${era}
+#     done
+#     wait
+#     echo "All data processing completed!"
 
-    echo "Combining all years..."
-    combine_years
-    echo "All years combined successfully!"
-else
-    # process single era
-    process_era $1
-fi
+#     echo "Combining all years..."
+#     combine_years
+#     echo "All years combined successfully!"
+# else
+#     # process single era
+#     process_era $1 $2
+# fi
+# process single era
+process_era $1 $2

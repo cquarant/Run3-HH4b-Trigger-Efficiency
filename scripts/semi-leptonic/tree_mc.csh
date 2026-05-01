@@ -7,7 +7,7 @@ if [ -z "${CMSSW_BASE}" ]; then
 fi
 
 # Directory setup
-PROJ_ROOT="${CMSSW_BASE}/src"
+PROJ_ROOT="${CMSSW_BASE}/src/TTbarBkgEstimation/Run3-HH4b-Trigger-Efficiency"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 OUTPUT_DIR_ERAS=${SCRIPT_DIR}/trees/eras
 OUTPUT_DIR_YEARS=${SCRIPT_DIR}/trees/years
@@ -20,15 +20,7 @@ declare -A YEAR_DICT=(
 )
 
 # SAMPLE_DIR="/eos/uscms/store/group/lpcdihiggsboost/sixie/analyzer/HHTo4BNtupler/ArmenVersion/nano/run3/combined"
-SAMPLE_DIR="/eos/user/j/jinwa/25Sep23AddVars_v12_private_signal/25Sep23AddVars_v12_private_signal/"
-
-# Era Configuration
-declare -A era_runs=(
-    ["2022"]="2022C 2022D"
-    ["2022EE"]="2022E 2022F 2022G"
-    ["2023"]="2023C"
-    ["2023BPix"]="2023D"
-)
+SAMPLE_DIR="/eos/home-c/cquarant/bbtautau/skimmer/04Jan2026_2023BPix_v12_private_signal"
 
 # JEC configurations
 declare -A jec_configs=(
@@ -97,7 +89,9 @@ process_DYto2L() {
     JETS=(0 1 2)
     for jet in "${JETS[@]}"; do
         # DYto2L-2Jets_MLL-50_0J.root
-        local input_file=$(ls ${SAMPLE_DIR}/${era}/DYto2L-2Jets_MLL-50_${jet}J*.root 2>/dev/null | head -n1)
+        input_file="${SAMPLE_DIR}/${era}/DYto2L-2Jets_MLL-50_${jet}J/root/"
+
+
         
         if [ -z "${input_file}" ]; then
             echo "Warning: No DY file found for era ${era}"
@@ -106,7 +100,7 @@ process_DYto2L() {
         local sample_type="DYto2L_2Jets_MLL_50_${jet}J"
         local output_path="${TMP_DIR}/Histograms_${era}_MC_DYto2L_2Jets_MLL_50_${jet}J.root"
         
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
+        root -l -b -q "tree_mc_he.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
@@ -123,14 +117,15 @@ process_QCD() {
     
     for ht_bin in "${HT_BINS[@]}"; do
         if [ "${ht_bin}" == "2000toInf" ]; then
-            search_pattern="QCD-4Jets_HT-2000*.root"
+            search_pattern="QCD-4Jets_HT-2000/root/"
         else
-            search_pattern="QCD-4Jets_HT-${ht_bin}*.root"
+            search_pattern="QCD-4Jets_HT-${ht_bin}/root/"
         fi
 
-        echo "Processing DYto2L for era ${era}, jets: ${jet}"
-        echo "Searching path: ${SAMPLE_DIR}/${era}/${search_pattern}*.root"
-        local input_file=$(ls ${SAMPLE_DIR}/${era}/${search_pattern} 2>/dev/null | head -n1)
+        echo "Processing QCD ${ht_bin} for era ${era}, jets: ${jet}"
+        echo "Searching path: ${SAMPLE_DIR}/${era}/${search_pattern}/*.root"
+        # local file_name=$(ls ${SAMPLE_DIR}/${era}/${search_pattern} 2>/dev/null | head -n1)
+        input_file="${SAMPLE_DIR}/${era}/${search_pattern%}/"
         
         if [ -z "${input_file}" ]; then
             echo "Warning: No QCD file found for era ${era}"
@@ -139,7 +134,7 @@ process_QCD() {
         local sample_type="QCD_HT_${ht_bin}"
         local output_path=${TMP_DIR}/Histograms_${era}_MC_QCD-4Jets_HT-${ht_bin}.root
 
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
+        root -l -b -q "tree_mc_he.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
@@ -157,7 +152,9 @@ process_TTbar() {
     local TTbar_types=("TTtoLNu2Q" "TTto2L2Nu" "TTto4Q")
 
     for ttbar_type in "${TTbar_types[@]}"; do
-        local input_file=$(ls ${SAMPLE_DIR}/${era}/${ttbar_type}*.root 2>/dev/null | head -n1)
+        # local input_file=$(ls ${SAMPLE_DIR}/${era}/${ttbar_type}/root/*.root 2>/dev/null | head -n1)
+        input_file="${SAMPLE_DIR}/${era}/${ttbar_type}/root/"
+
         
         if [ -z "${input_file}" ]; then
             echo "Warning: No TTBar file found for era ${era}"
@@ -165,7 +162,7 @@ process_TTbar() {
         fi
         local output_path="${TMP_DIR}/Histograms_${era}_MC_${ttbar_type}.root"
         
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${ttbar_type}\", \"${input_file}\", \
+        root -l -b -q "tree_mc_he.cpp(\"${year}\", \"${ttbar_type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
@@ -188,7 +185,9 @@ process_VV() {
 
     for type in "${types[@]}"; do
 
-        local input_file=$(ls ${SAMPLE_DIR}/${era}/${type}.root 2>/dev/null | head -n1)
+        # local file_name=$(ls ${SAMPLE_DIR}/${era}/${type}/root/*.root 2>/dev/null | head -n1)
+        input_file="${SAMPLE_DIR}/${era}/${type}/root/"
+
         
         if [ -z "${input_file}" ]; then
             echo "Warning: No VV file found for era ${era}"
@@ -196,7 +195,7 @@ process_VV() {
         fi
         local output_path="${TMP_DIR}/Histograms_${era}_MC_${type}.root"
         
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${type}\", \"${input_file}\", \
+        root -l -b -q "tree_mc_he.cpp(\"${year}\", \"${type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
         hadd_inputs="${hadd_inputs} ${output_path}"
@@ -213,10 +212,13 @@ process_Wto2Q() {
     get_era_paths ${era} || exit 1
 
     PT_BINS=("100to200" "200to400" "400to600" "600")
+    # PT_BINS=("600")
     JETS=(1 2)
     for pt_bin in "${PT_BINS[@]}"; do
         for jet in "${JETS[@]}"; do
-            local input_file=$(ls ${SAMPLE_DIR}/${era}/Wto2Q-2Jets_PTQQ-${pt_bin}_${jet}J*.root 2>/dev/null | head -n1)
+            # local file_name=$(ls ${SAMPLE_DIR}/${era}/Wto2Q-2Jets_PTQQ-${pt_bin}_${jet}J/root/*.root 2>/dev/null | head -n1)
+            input_file="${SAMPLE_DIR}/${era}/Wto2Q-2Jets_PTQQ-${pt_bin}_${jet}J/root/"
+
             if [ -z "${input_file}" ]; then
                 echo "Warning: No Wto2Q file found for era ${era}"
                 exit 1
@@ -224,7 +226,7 @@ process_Wto2Q() {
             local sample_type="Wto2Q_2Jets_PTQQ_${pt_bin}_${jet}J"
             local output_path="${TMP_DIR}/Histograms_${era}_MC_Wto2Q_2Jets_PTQQ_${pt_bin}_${jet}J.root"
             
-            root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
+            root -l -b -q "tree_mc_he.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
                 \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
                 \"${jer_path}\", \"${jer_path_sf}\")"
         done
@@ -238,11 +240,12 @@ process_WtoLNu() {
     get_era_paths ${era} || exit 1
     JETS=(0 1 2)
     if [ ${era} == "2023BPix" ]; then
-        JETS=(0 1)  # TODO: Fix 2 for 2023BPix (corrupted file)
+        JETS=(0 1 2)  # TODO: Fix 2 for 2023BPix (corrupted file)
     fi
     for jet in "${JETS[@]}"; do
-        local input_file=$(ls ${SAMPLE_DIR}/${era}/WtoLNu-2Jets_${jet}J.root 2>/dev/null | head -n1)
-        
+        # local input_file=$(ls ${SAMPLE_DIR}/${era}/WtoLNu-2Jets_${jet}J.root 2>/dev/null | head -n1)
+        input_file="${SAMPLE_DIR}/${era}/WtoLNu-2Jets_${jet}J/root/"
+
         if [ -z "${input_file}" ]; then
             echo "Warning: No WtoLNu file found for era ${era}"
             exit 1
@@ -250,7 +253,7 @@ process_WtoLNu() {
         local sample_type="WtoLNu_2Jets_${jet}J"
         local output_path="${TMP_DIR}/Histograms_${era}_MC_WtoLNu_2Jets_${jet}J.root"
         
-        root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
+        root -l -b -q "tree_mc_he.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
             \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
             \"${jer_path}\", \"${jer_path_sf}\")"
     done
@@ -267,7 +270,8 @@ process_Zto2Q() {
     JETS=(1 2)
     for pt_bin in "${PT_BINS[@]}"; do
         for jet in "${JETS[@]}"; do
-            local input_file=$(ls ${SAMPLE_DIR}/${era}/Zto2Q-2Jets_PTQQ-${pt_bin}_${jet}J*.root 2>/dev/null | head -n1)
+            # local input_file=$(ls ${SAMPLE_DIR}/${era}/Zto2Q-2Jets_PTQQ-${pt_bin}_${jet}J*.root 2>/dev/null | head -n1)
+            input_file="${SAMPLE_DIR}/${era}/Zto2Q-2Jets_PTQQ-${pt_bin}_${jet}J/root/"
             
             if [ -z "${input_file}" ]; then
                 echo "Warning: No Zto2Q file found for era ${era}"
@@ -276,7 +280,7 @@ process_Zto2Q() {
             local sample_type="Zto2Q_2Jets_PTQQ_${pt_bin}_${jet}J"
             local output_path="${TMP_DIR}/Histograms_${era}_MC_Zto2Q_2Jets_PTQQ_${pt_bin}_${jet}J.root"
             
-            root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
+            root -l -b -q "tree_mc_he.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
                 \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
                 \"${jer_path}\", \"${jer_path_sf}\")"
         done
@@ -293,7 +297,8 @@ process_ttHto2B() {
     local era=$1
     local year=${era:0:4}
     local output_path="${OUTPUT_DIR_ERAS}/Histograms_${era}_MC_ttHto2B.root"
-    local input_file=$(ls ${SAMPLE_DIR}/${era}/ttHto2B*.root 2>/dev/null | head -n1)
+    # local input_file=$(ls ${SAMPLE_DIR}/${era}/ttHto2B*.root 2>/dev/null | head -n1)
+    input_file="${SAMPLE_DIR}/${era}/ttHto2B_M-125/root/"
 
     get_era_paths ${era} || exit 1
 
@@ -304,7 +309,7 @@ process_ttHto2B() {
     local sample_type="ttHto2B_M_125"
     local output_path="${TMP_DIR}/Histograms_${era}_MC_ttHto2B.root"
     
-    root -l -b -q "tree_mc.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
+    root -l -b -q "tree_mc_he.cpp(\"${year}\", \"${sample_type}\", \"${input_file}\", \
         \"${output_path}\", \"${pu_path}\", \"${param_path}\", \"${jec_path}\", \
         \"${jer_path}\", \"${jer_path_sf}\")"
 
@@ -316,15 +321,15 @@ process_era() {
     local era=$1
     echo "Processing era: ${era}"
 
-    process_QCD ${era}
-    process_TTbar ${era}
-    process_VV ${era}
+    # process_QCD ${era}
+    # process_TTbar ${era}
+    # process_VV ${era}
     process_Wto2Q ${era}
     process_Zto2Q ${era}
     process_WtoLNu ${era}
     process_DYto2L ${era}
     process_VJ ${era}
-    process_ttHto2B ${era}
+    # process_ttHto2B ${era}
 
     echo "MC processing for era ${era} completed successfully!"
 }

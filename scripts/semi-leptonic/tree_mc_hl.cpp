@@ -1,3 +1,4 @@
+#include "nlohmann/json.hpp"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "TCanvas.h"
@@ -21,6 +22,7 @@
 #include <vector>
 
 #define ARR_SIZE 10000
+#define DEBUG true
 
 std::string to_lower(std::string str) {
   std::transform(str.begin(), str.end(), str.begin(), ::tolower);
@@ -59,9 +61,6 @@ struct ParamDict {
   double XSec_TTto4Q;
   double XSec_TTtoLNu2Q;
   double XSec_TTto2L2Nu;
-
-  // ttHto2B sample
-  double XSec_ttHto2B_M_125;
 
   // Diboson samples
   double XSec_WW;
@@ -113,6 +112,7 @@ struct ParamDict {
   double XSec_WtoLNu_4Jets_2J;
   double XSec_WtoLNu_4Jets_3J;
 
+  // Hbb samples  
   // VH samples
   double XSec_WplusH_Hto2B_Wto2Q_M_125;
   double XSec_WplusH_Hto2B_WtoLNu_M_125;
@@ -128,6 +128,12 @@ struct ParamDict {
   double XSec_ggZH_Hto2B_Zto2Nu_M_125;
   double XSec_ggZH_Hto2B_Zto2Q_M_125;
   double XSec_ggZH_Hto2C_Zto2Q_M_125;
+
+  // other Hbb sample
+  double XSec_GluGluHto2B_M_125;
+  double XSec_GluGluHto2B_PT_200_M_125;
+  double XSec_VBFHto2B_M_125;
+  double XSec_ttHto2B_M_125;
 
   // singleT samples
   double XSec_TBbarQ_t_channel_4FS;
@@ -186,8 +192,6 @@ void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
           {"XSec_TTto4Q", &ParamDict::XSec_TTto4Q},
           {"XSec_TTtoLNu2Q", &ParamDict::XSec_TTtoLNu2Q},
           {"XSec_TTto2L2Nu", &ParamDict::XSec_TTto2L2Nu},
-          // ttH
-          {"XSec_ttHto2B_M_125", &ParamDict::XSec_ttHto2B_M_125},
           // Diboson
           {"XSec_WW", &ParamDict::XSec_WW},
           {"XSec_WZ", &ParamDict::XSec_WZ},
@@ -258,6 +262,7 @@ void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
           {"XSec_WtoLNu_4Jets_1J", &ParamDict::XSec_WtoLNu_4Jets_1J},
           {"XSec_WtoLNu_4Jets_2J", &ParamDict::XSec_WtoLNu_4Jets_2J},
           {"XSec_WtoLNu_4Jets_3J", &ParamDict::XSec_WtoLNu_4Jets_3J},
+          //// Hbb
           // VH
           {"XSec_WplusH_Hto2B_Wto2Q_M_125",
            &ParamDict::XSec_WplusH_Hto2B_Wto2Q_M_125},
@@ -276,6 +281,11 @@ void loadParamDict(ParamDict *param_dict, const std::string &param_path) {
           {"XSec_ggZH_Hto2B_Zto2Nu_M_125", &ParamDict::XSec_ggZH_Hto2B_Zto2Nu_M_125},
           {"XSec_ggZH_Hto2B_Zto2Q_M_125", &ParamDict::XSec_ggZH_Hto2B_Zto2Q_M_125},
           {"XSec_ggZH_Hto2C_Zto2Q_M_125", &ParamDict::XSec_ggZH_Hto2C_Zto2Q_M_125},
+          // other Hbb
+          {"XSec_GluGluHto2B_PT_200_M_125", &ParamDict::XSec_GluGluHto2B_PT_200_M_125},
+          {"XSec_GluGluHto2B_M_125", &ParamDict::XSec_GluGluHto2B_M_125},
+          {"XSec_VBFHto2B_M_125", &ParamDict::XSec_VBFHto2B_M_125},
+          {"XSec_ttHto2B_M_125", &ParamDict::XSec_ttHto2B_M_125},
           // singleT
           {"XSec_TBbarQ_t_channel_4FS", &ParamDict::XSec_TBbarQ_t_channel_4FS},
           {"XSec_TbarBQ_t_channel_4FS", &ParamDict::XSec_TbarBQ_t_channel_4FS},
@@ -303,8 +313,6 @@ double getXSec(ParamDict *param_dict, std::string data_type) {
       {"TTto4Q", &ParamDict::XSec_TTto4Q},
       {"TTtoLNu2Q", &ParamDict::XSec_TTtoLNu2Q},
       {"TTto2L2Nu", &ParamDict::XSec_TTto2L2Nu},
-      // ttHto2B sample
-      {"ttHto2B_M_125", &ParamDict::XSec_ttHto2B_M_125},
       // QCD samples
       {"QCD_HT_100to200", &ParamDict::XSec_QCD_HT_100to200},
       {"QCD_HT_200to400", &ParamDict::XSec_QCD_HT_200to400},
@@ -370,6 +378,7 @@ double getXSec(ParamDict *param_dict, std::string data_type) {
       {"WtoLNu_4Jets_1J", &ParamDict::XSec_WtoLNu_4Jets_1J},
       {"WtoLNu_4Jets_2J", &ParamDict::XSec_WtoLNu_4Jets_2J},
       {"WtoLNu_4Jets_3J", &ParamDict::XSec_WtoLNu_4Jets_3J},
+      // Hbb
       // VH
       {"WplusH_Hto2B_Wto2Q_M_125",
         &ParamDict::XSec_WplusH_Hto2B_Wto2Q_M_125},
@@ -388,6 +397,11 @@ double getXSec(ParamDict *param_dict, std::string data_type) {
       {"ggZH_Hto2B_Zto2Nu_M_125", &ParamDict::XSec_ggZH_Hto2B_Zto2Nu_M_125},
       {"ggZH_Hto2B_Zto2Q_M_125", &ParamDict::XSec_ggZH_Hto2B_Zto2Q_M_125},
       {"ggZH_Hto2C_Zto2Q_M_125", &ParamDict::XSec_ggZH_Hto2C_Zto2Q_M_125},
+      // other Hbb
+      {"GluGluHto2B_PT_200_M_125", &ParamDict::XSec_GluGluHto2B_PT_200_M_125},
+      {"GluGluHto2B_M_125", &ParamDict::XSec_GluGluHto2B_M_125},
+      {"VBFHto2B_M_125", &ParamDict::XSec_VBFHto2B_M_125},
+      {"ttHto2B_M_125", &ParamDict::XSec_ttHto2B_M_125},
       // singleT
       {"TBbarQ_t_channel_4FS", &ParamDict::XSec_TBbarQ_t_channel_4FS},
       {"TbarBQ_t_channel_4FS", &ParamDict::XSec_TbarBQ_t_channel_4FS},
@@ -495,6 +509,7 @@ applyJER(double jet_pt, double jet_eta, double jet_phi, double jet_massSD,
 
 void tree_mc_hl(const std::string &lepton,      // ele, muon
                 const std::string &year,      // 2022, 2023
+                const std::string &sample_name, // Example: TTtoLNu2Q, QCD_HT100to200
                 const std::string &data_type, // Example: TTtoLNu2Q, QCD_HT100to200
                 const std::string &sample_path, // path to the root file
                 const std::string &output_path, // path to the output root file
@@ -564,7 +579,8 @@ void tree_mc_hl(const std::string &lepton,      // ele, muon
 
   TTree *outputTree = new TTree("tree", "");
 
-  Float_t T_weight;
+  Float_t T_weight, T_weight_original, T_weight_noxsec,  T_weight_noxsec_x_xsec,
+          T_single_weight_ps_FSR, T_single_weight_ps_ISR, T_single_weight_genweight, T_single_weight_genweight_noxsec, T_single_weight_pu;
   Float_t T_fatJet1_pt, T_fatJet1_eta, T_fatJet1_phi, T_fatJet1_mass, T_fatJet1_msd,
       T_fatJet1_CAmass, T_fatJet1_CAmsoftdrop, T_fatJet1_CAmass_et,
       T_fatJet1_CAmsoftdrop_et, T_fatJet1_CAmass_fatjet_et,
@@ -585,6 +601,14 @@ void tree_mc_hl(const std::string &lepton,      // ele, muon
 
 
   outputTree->Branch("weight", &T_weight, "weight/F");
+  outputTree->Branch("weight_original", &T_weight_original, "weight_original/F");
+  outputTree->Branch("weight_noxsec", &T_weight_noxsec, "weight_noxsec/F");
+  outputTree->Branch("single_weight_ps_FSR", &T_single_weight_ps_FSR, "single_weight_ps_FSR/F");
+  outputTree->Branch("single_weight_ps_ISR", &T_single_weight_ps_ISR, "single_weight_ps_ISR/F");
+  outputTree->Branch("genweight", &T_single_weight_genweight, "single_weight_genweight/F");
+  outputTree->Branch("genweight_noxsec", &T_single_weight_genweight_noxsec, "single_weight_genweight_noxsec/F");
+  outputTree->Branch("single_weight_pu", &T_single_weight_pu, "single_weight_pu/F");
+  outputTree->Branch("weight_noxsec_x_xsec", &T_weight_noxsec_x_xsec, "weight_noxsec_x_xsec/F");
   outputTree->Branch("fatJet1_pt", &T_fatJet1_pt, "fatJet1_pt/F");
   outputTree->Branch("fatJet1_eta", &T_fatJet1_eta, "fatJet1_eta/F");
   outputTree->Branch("fatJet1_phi", &T_fatJet1_phi, "fatJet1_phi/F");
@@ -697,7 +721,15 @@ void tree_mc_hl(const std::string &lepton,      // ele, muon
   std::cout << "Total files added to TChain: " << i - begin_file_index << std::endl;
   
   
+
   Double_t weight;
+  Double_t weight_noxsec;
+  Double_t single_weight_ps_FSR;
+  Double_t single_weight_ps_ISR;
+  Double_t single_weight_genweight;
+  Double_t single_weight_genweight_noxsec;
+  Double_t single_weight_pu;
+  Double_t weight_noxsec_x_xsec;
   UInt_t run;
   UInt_t lumi;
   Int_t npu;
@@ -790,6 +822,11 @@ void tree_mc_hl(const std::string &lepton,      // ele, muon
   // Float_t GenJetAK8_pt[ARR_SIZE];
 
   InputTree->SetBranchAddress("weight", &weight);
+  InputTree->SetBranchAddress("weight_noxsec", &weight_noxsec);
+  InputTree->SetBranchAddress("single_weight_FSRPartonShower", &single_weight_ps_FSR);
+  InputTree->SetBranchAddress("single_weight_ISRPartonShower", &single_weight_ps_ISR);
+  InputTree->SetBranchAddress("single_weight_genweight", &single_weight_genweight);
+  InputTree->SetBranchAddress("single_weight_pileup", &single_weight_pu);
   InputTree->SetBranchAddress("run", &run);
   InputTree->SetBranchAddress("luminosityBlock", &lumi);
   InputTree->SetBranchAddress("nPU", &npu);
@@ -897,16 +934,39 @@ void tree_mc_hl(const std::string &lepton,      // ele, muon
   // InputTree->SetBranchAddress("GenJetAK8_phi", GenJetAK8_phi);
   // InputTree->SetBranchAddress("GenJetAK8_pt", GenJetAK8_pt);
 
-
-  int Nentries = InputTree->GetEntries();
+  // Load Sum of GenWeights from json
+  // json is obtained by running `python scripts/sum_np_nominal.py 
+  // that calculate the sum of genweights for the sample before any preselection
   double SumGenWeights = 0.0;
-  for (int i = 0; i < Nentries; i++) {
-    InputTree->GetEntry(i);
-    SumGenWeights += weight;
+  
+  // Load sum_np_nominal.json
+  std::string json_path = "/afs/cern.ch/work/c/cquarant/Hbt2/CMSSW_16_0_0_pre3/src/TTbarBkgEstimation/Run3-HH4b-Trigger-Efficiency/scripts/semi-leptonic/np_nominal_sums_2023BPix.json";
+  std::ifstream json_file(json_path);
+  if (json_file.is_open()) {
+    try {
+      nlohmann::json json_data;
+      json_file >> json_data;
+      
+      // Get np_nominal value for the sample_name
+      if (json_data.contains(sample_name)) {
+        if (json_data[sample_name].contains("np_nominal")) {
+          SumGenWeights = json_data[sample_name]["np_nominal"].get<double>();
+        }
+      } else {
+        std::cerr << "Warning: sample_name '" << sample_name << "' not found in JSON file." << std::endl;
+      }
+    } catch (const std::exception &e) {
+      std::cerr << "Error parsing JSON file: " << e.what() << std::endl;
+    }
+    json_file.close();
+  } else {
+    std::cerr << "Warning: Could not open " << json_path << std::endl;
   }
+  
   std::cout << "SumGenWeights (Total Entries): " << SumGenWeights << std::endl;
   
   // Events Loop
+  int Nentries = InputTree->GetEntries();
   for (int i = 0; i < Nentries; i++) {
     InputTree->GetEntry(i);
     if (i % 100000 == 0) {
@@ -928,36 +988,37 @@ void tree_mc_hl(const std::string &lepton,      // ele, muon
     // FatJets correction (JEC and JER)
     JetCorrectionResult jec1 =
         applyJEC(ak8FatJetPt0, ak8FatJetEta0, ak8FatJetPhi0, ak8FatJetrawFactor0,
-                 ak8FatJetCAmsoftdrop0, corrector);
+                 ak8FatJetMsd0, corrector);
     ak8FatJetPt0 = jec1.corrected_pt;
-    ak8FatJetCAmsoftdrop0 = jec1.corrected_massSD;
+    ak8FatJetMsd0 = jec1.corrected_massSD;
 
     // JetCorrectionResult jer1 =
-    //     applyJER(ak8FatJetPt0, ak8FatJetEta0, ak8FatJetPhi0, ak8FatJetCAmsoftdrop0,
+    //     applyJER(ak8FatJetPt0, ak8FatJetEta0, ak8FatJetPhi0, ak8FatJetMsd0,
     //              resolution_pt, resolution_pt_sf, rho, GenJetAK8_pt,
     //              GenJetAK8_eta, GenJetAK8_phi, nGenJetAK8);
     // ak8FatJetPt0 = jer1.corrected_pt;
-    // ak8FatJetCAmsoftdrop0 = jer1.corrected_massSD;
+    // ak8FatJetMsd0 = jer1.corrected_massSD;
+
     JetCorrectionResult jec2 =
         applyJEC(ak8FatJetPt1, ak8FatJetEta1, ak8FatJetPhi1, ak8FatJetrawFactor1,
-                 ak8FatJetCAmsoftdrop1, corrector);
+                 ak8FatJetMsd1, corrector);
     ak8FatJetPt1 = jec2.corrected_pt;
-    ak8FatJetCAmsoftdrop1 = jec2.corrected_massSD;
+    ak8FatJetMsd1 = jec2.corrected_massSD;
 
     // JetCorrectionResult jer2 =
-    //     applyJER(ak8FatJetPt1, ak8FatJetEta1, ak8FatJetPhi1, ak8FatJetCAmsoftdrop1,
+    //     applyJER(ak8FatJetPt1, ak8FatJetEta1, ak8FatJetPhi1, ak8FatJetMsd1,
     //              resolution_pt, resolution_pt_sf, rho, GenJetAK8_pt,
     //              GenJetAK8_eta, GenJetAK8_phi, nGenJetAK8);
     // ak8FatJetPt1 = jer2.corrected_pt;
-    // ak8FatJetCAmsoftdrop1 = jer2.corrected_massSD;
+    // ak8FatJetMsd1 = jer2.corrected_massSD;
 
 
     // Selection
     if (year == "2022") {
-      if (ak8FatJetPt0 < 270 || fabs(ak8FatJetEta0) > 2.4 || ak8FatJetMass0 < 50) {
+      if (ak8FatJetPt0 < 270 || fabs(ak8FatJetEta0) > 2.4 || ak8FatJetMsd0 < 50) {
           continue;
       }
-      if (ak8FatJetPt1 > 250 && ak8FatJetMass1 > 50) {
+      if (ak8FatJetPt1 > 250 && ak8FatJetMsd1 > 50) {
         continue;
       }
       if (ElectronPt0 < 50 || ElectronPt1 > 30) {
@@ -967,22 +1028,22 @@ void tree_mc_hl(const std::string &lepton,      // ele, muon
         continue;
       }
     } else if (year == "2023") {
-      if (ak8FatJetPt0 < 250 || fabs(ak8FatJetEta0) > 2.4 || ak8FatJetMass0 < 50) {
+      if (ak8FatJetPt0 < 250 || fabs(ak8FatJetEta0) > 2.4 || ak8FatJetMsd0 < 50) {
       continue;
       }
       h_cutflow->Fill(2.5); // After fatjet0 selection
 
-      if (ak8FatJetPt1 > 200 && ak8FatJetMass1 > 50) {
+      if (ak8FatJetPt1 > 200 && ak8FatJetMsd1 > 50) {
         continue;
       }
       h_cutflow->Fill(3.5); // After fatjet1 selection
       if (lepton == "ele") {
-        if (ElectronPt0 < 50 || ElectronPt1 > 30) {
+        if (ElectronPt0 < 50 || ElectronPt1 > 30 || MuonPt0 > 30) {
           continue;
         }
       }
       else if (lepton == "muon") {
-        if (MuonPt0 < 50 || MuonPt1 > 30) {
+        if (MuonPt0 < 50 || MuonPt1 > 30 || ElectronPt0 > 30) {
           continue;
         }
       } else {
@@ -1029,13 +1090,28 @@ void tree_mc_hl(const std::string &lepton,      // ele, muon
     }
     
     // weight
-    weight = (weight / Double_t(SumGenWeights)) * xsec * param_dict.Lumi;
-    double PU_weight = PU_Rew[(int)npu];
-    if (PU_weight < 20.0) {
-      weight = weight * PU_weight;
+    weight_noxsec_x_xsec = weight_noxsec * xsec * param_dict.Lumi;
+    single_weight_genweight_noxsec = single_weight_genweight * weight_noxsec / weight ;
+    if (DEBUG) {
+      std::cout << "\nOriginal weight: " << weight << std::endl;
+      std::cout << "Rescaled weight: " << weight / SumGenWeights << std::endl;
+      std::cout << "weight_noxsec: " << weight_noxsec << std::endl;
+      std::cout << "single_weight_ps_FSR: " << single_weight_ps_FSR << std::endl;
+      std::cout << "single_weight_ps_ISR: " << single_weight_ps_ISR << std::endl;
+      std::cout << "single_weight_genweight: " << single_weight_genweight << std::endl;
+      std::cout << "single_weight_genweight_noxsec: " << single_weight_genweight_noxsec << std::endl;
+      std::cout << "single_weight_pu: " << single_weight_pu << std::endl;
     }
 
-    T_weight = weight;
+    T_weight = weight / SumGenWeights; // Normalize weight by total gen weights (only valid if no preselection at skimmer level)
+    T_weight_original = weight;
+    T_weight_noxsec = weight_noxsec;
+    T_single_weight_ps_FSR = single_weight_ps_FSR;
+    T_single_weight_ps_ISR = single_weight_ps_ISR;
+    T_single_weight_genweight = single_weight_genweight;
+    T_single_weight_genweight_noxsec = single_weight_genweight_noxsec;
+    T_single_weight_pu = single_weight_pu;
+    T_weight_noxsec_x_xsec = weight_noxsec_x_xsec;
     T_fatJet1_pt =  ak8FatJetPt0;
     T_fatJet1_eta = ak8FatJetEta0;
     T_fatJet1_phi = ak8FatJetPhi0;

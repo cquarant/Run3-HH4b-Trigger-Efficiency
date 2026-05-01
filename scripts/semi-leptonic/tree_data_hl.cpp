@@ -176,6 +176,7 @@ void tree_data_hl(const std::string &lepton,       // Example: Run3
   outputTree->Branch("fatJet1_eta", &T_fatJet1_eta, "fatJet1_eta/F");
   outputTree->Branch("fatJet1_phi", &T_fatJet1_phi, "fatJet1_phi/F");
   outputTree->Branch("fatJet1_msd", &T_fatJet1_msd, "fatJet1_msd/F");
+  outputTree->Branch("fatJet1_mass", &T_fatJet1_mass, "fatJet1_mass/F");
   outputTree->Branch("fatJet1_CAmass", &T_fatJet1_CAmass, "fatJet1_CAmass/F");
   outputTree->Branch("fatJet1_GloParT_massVis", &T_fatJet1_GloParT_massVis,
                      "fatJet1_GloParT_massVis/F");
@@ -525,23 +526,23 @@ void tree_data_hl(const std::string &lepton,       // Example: Run3
     // FatJets correction (JEC and JER)
     JetCorrectionResult jec1 =
         applyJEC(ak8FatJetPt0, ak8FatJetEta0, ak8FatJetPhi0, ak8FatJetrawFactor0,
-                 ak8FatJetCAmsoftdrop0, corrector);
+                 ak8FatJetMsd0, corrector);
     ak8FatJetPt0 = jec1.corrected_pt;
-    ak8FatJetCAmsoftdrop0 = jec1.corrected_massSD;
+    ak8FatJetMsd0 = jec1.corrected_massSD;
 
     JetCorrectionResult jec2 =
         applyJEC(ak8FatJetPt1, ak8FatJetEta1, ak8FatJetPhi1, ak8FatJetrawFactor1,
-                 ak8FatJetCAmsoftdrop1, corrector);
+                 ak8FatJetMsd1, corrector);
     ak8FatJetPt1 = jec2.corrected_pt;
-    ak8FatJetCAmsoftdrop1 = jec2.corrected_massSD;
+    ak8FatJetMsd1 = jec2.corrected_massSD;
 
 
     // Selection
     if (year == "2022") {
-      if (ak8FatJetPt0 < 270 || fabs(ak8FatJetEta0) > 2.4 || ak8FatJetMass0 < 50) {
+      if (ak8FatJetPt0 < 270 || fabs(ak8FatJetEta0) > 2.4 || ak8FatJetMsd0 < 50) {
           continue;
       }
-      if (ak8FatJetPt1 > 250 && ak8FatJetMass1 > 50) {
+      if (ak8FatJetPt1 > 250 && ak8FatJetMsd1 > 50) {
         continue;
       }
       if (ElectronPt0 < 50 || ElectronPt1 > 30) {
@@ -551,22 +552,22 @@ void tree_data_hl(const std::string &lepton,       // Example: Run3
         continue;
       }
     } else if (year == "2023") {
-      if (ak8FatJetPt0 < 250 || fabs(ak8FatJetEta0) > 2.4 || ak8FatJetMass0 < 50) {
+      if (ak8FatJetPt0 < 250 || fabs(ak8FatJetEta0) > 2.4 || ak8FatJetMsd0 < 50) {
       continue;
       }
       h_cutflow->Fill(2.5); // After fatjet0 kinematic selection
-      if (ak8FatJetPt1 > 200 && ak8FatJetMass1 > 50) {
+      if (ak8FatJetPt1 > 200 && ak8FatJetMsd1 > 50) {
         continue;
       }
       h_cutflow->Fill(3.5); // After fatjet1 kinematic selection
 
       if (lepton == "ele") {
-        if (ElectronPt0 < 50 || ElectronPt1 > 30) {
+        if (ElectronPt0 < 50 || ElectronPt1 > 30 || MuonPt0 > 30) {
           continue;
         }
       }
       else if (lepton == "muon") {
-        if (MuonPt0 < 50 || MuonPt1 > 30) {
+        if (MuonPt0 < 50 || MuonPt1 > 30 || ElectronPt0 > 50) {
           continue;
         }
       } else {
